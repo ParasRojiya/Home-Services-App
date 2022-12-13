@@ -99,8 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                           .snapshots()
                           .forEach((element) async {
                         if (element.data()?['role'] == 'admin') {
-                          prefs.setBool('isAdmin', true);
-                          prefs.setBool('isLoggedIn', true);
+                          await prefs.setBool('isAdmin', true);
+                          await prefs.setBool('isLoggedIn', true);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? true;
 
                           User? user = await FireBaseAuthHelper
@@ -109,8 +109,8 @@ class _LoginPageState extends State<LoginPage> {
                           snackBar(
                               user: user, context: context, name: "Sign In");
                         } else {
-                          prefs.setBool('isAdmin', false);
-                          prefs.setBool('isLoggedIn', true);
+                          await prefs.setBool('isAdmin', false);
+                          await prefs.setBool('isLoggedIn', true);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? false;
 
                           User? user = await FireBaseAuthHelper

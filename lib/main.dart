@@ -26,6 +26,7 @@ void main() async {
         GetPage(name: '/sign_up_page', page: () => const SignUpPage()),
         GetPage(name: '/history_page', page: () => const HistoryPage()),
         GetPage(name: '/account_page', page: () => const AccountPage()),
+        GetPage(name: '/all_categories', page: () => const AccountPage()),
       ],
     ),
   );
