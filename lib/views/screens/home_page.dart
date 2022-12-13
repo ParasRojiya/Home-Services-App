@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../global/global.dart';
 import '../../widgets/category_container.dart';
 import '../../widgets/nav_bar_item.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/worker_container.dart';
 
 class HomePage extends StatefulWidget {
@@ -42,6 +42,9 @@ class _HomePageState extends State<HomePage> {
               prefs.remove('isAdmin');
               await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
               Get.offAndToNamed("/login_page");
+
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('isSignedIn', false);
             },
             icon: const Icon(Icons.power_settings_new),
           ),
@@ -72,7 +75,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const Spacer(),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.toNamed("/all_categories");
+                        },
                         style: TextButton.styleFrom(
                             textStyle: GoogleFonts.poppins()),
                         child: const Text("View all"),
