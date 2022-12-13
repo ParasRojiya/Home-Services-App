@@ -57,6 +57,7 @@ dev_dependencies:
   google_sign_in:
   persistent_bottom_nav_bar:
   shared_preferences:
+  firebase_storage:
 
 
 # For information on the generic Dart part of this file, see the

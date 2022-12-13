@@ -7,7 +7,36 @@ class CloudFirestoreHelper {
 
   static final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   late CollectionReference userRef;
+  late CollectionReference categoryRef;
 
+  //CATEGORIES COLLECTION HELPER
+  connectionWithCategoryCollection() {
+    categoryRef = firebaseFirestore.collection('categories');
+  }
+
+  Future<void> addCategory(
+      {required String name, required Map<String, dynamic> data}) async {
+    connectionWithCategoryCollection();
+    categoryRef.doc(name).set(data);
+  }
+
+  Future<void> updateCategory(
+      {required String name, required Map<String, dynamic> data}) async {
+    connectionWithCategoryCollection();
+    await categoryRef.doc(name).update(data);
+  }
+
+  Future<void> deleteCategory({required String name}) async {
+    connectionWithCategoryCollection();
+    await categoryRef.doc(name).delete();
+  }
+
+  Stream<QuerySnapshot> fetchAllCategories() {
+    connectionWithCategoryCollection();
+    return categoryRef.snapshots();
+  }
+
+  //USERS COLLECTION HELPER
   connectionWithUsersCollection() {
     userRef = firebaseFirestore.collection('users');
   }
@@ -23,17 +52,17 @@ class CloudFirestoreHelper {
 
     return userRef.snapshots();
   }
-  //
-  // Future<void> updateRecords(
-  //     {required String id, required Map<String, dynamic> data}) async {
-  //   connectionWithUsersCollection();
-  //
-  //   userRef.doc(id).update(data);
-  // }
-  //
-  // Future<void> deleteRecords({required String id}) async {
-  //   connectionWithUsersCollection();
-  //
-  //   userRef.doc(id).delete();
-  // }
+
+  Future<void> updateRecords(
+      {required String id, required Map<String, dynamic> data}) async {
+    connectionWithUsersCollection();
+
+    userRef.doc(id).update(data);
+  }
+
+  Future<void> deleteRecords({required String id}) async {
+    connectionWithUsersCollection();
+
+    userRef.doc(id).delete();
+  }
 }

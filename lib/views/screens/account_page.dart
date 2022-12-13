@@ -25,7 +25,9 @@ class _AccountPageState extends State<AccountPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 10),
-            CircleAvatar(),
+            CircleAvatar(
+              radius: 90,
+            ),
             SizedBox(height: 10),
             accountOptionContainer(
               title: "Change Password",
