@@ -3,7 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/snack_bar.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../global/button_syle.dart';
 import '../../global/global.dart';
 import '../../global/text_field_decoration.dart';
@@ -102,6 +102,10 @@ class _LoginPageState extends State<LoginPage> {
                               .signIn(email: email!, password: password!);
                           snackBar(
                               user: user, context: context, name: "Sign In");
+
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setBool('isSignedIn', true);
                         } else {
                           Global.isAdmin = false;
                           User? user = await FireBaseAuthHelper
@@ -109,6 +113,10 @@ class _LoginPageState extends State<LoginPage> {
                               .signIn(email: email!, password: password!);
                           snackBar(
                               user: user, context: context, name: "Sign In");
+
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setBool('isSignedIn', true);
                         }
                       });
                     }
@@ -156,6 +164,10 @@ class _LoginPageState extends State<LoginPage> {
                     User? user = await FireBaseAuthHelper.fireBaseAuthHelper
                         .signInWithGoogle();
                     await snackBar(user: user, context: context, name: "Login");
+
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setBool('isSignedIn', true);
                   } else {
                     connectionSnackBar(context: context);
                   }
