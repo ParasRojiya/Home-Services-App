@@ -5,14 +5,26 @@ import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/history_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../global/global.dart';
 import '../../widgets/category_container.dart';
 import '../../widgets/nav_bar_item.dart';
 
 import '../../widgets/worker_container.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +37,9 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setBool('isLoggedIn', false);
+              prefs.remove('isAdmin');
               await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
               Get.offAndToNamed("/login_page");
             },
@@ -147,11 +162,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late PersistentTabController persistentTabController;
+  // isAdmin() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   Global.isAdmin = prefs.getBool('isAdmin')!;
+  // }
 
   @override
   void initState() {
     super.initState();
-
+    // isAdmin();
     persistentTabController = PersistentTabController(initialIndex: 0);
   }
 

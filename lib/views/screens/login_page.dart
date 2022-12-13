@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/snack_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../global/button_syle.dart';
 import '../../global/global.dart';
@@ -81,7 +82,9 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  print("dfdfdfdfdfdfdfdfdfdfdfffffffffff");
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+
                   ConnectivityResult connectivityResult =
                       await (Connectivity().checkConnectivity());
 
@@ -96,14 +99,20 @@ class _LoginPageState extends State<LoginPage> {
                           .snapshots()
                           .forEach((element) async {
                         if (element.data()?['role'] == 'admin') {
-                          Global.isAdmin = true;
+                          prefs.setBool('isAdmin', true);
+                          prefs.setBool('isLoggedIn', true);
+                          Global.isAdmin = prefs.getBool('isAdmin') ?? true;
+
                           User? user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
                           snackBar(
                               user: user, context: context, name: "Sign In");
                         } else {
-                          Global.isAdmin = false;
+                          prefs.setBool('isAdmin', false);
+                          prefs.setBool('isLoggedIn', true);
+                          Global.isAdmin = prefs.getBool('isAdmin') ?? false;
+
                           User? user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
