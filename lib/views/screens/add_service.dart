@@ -97,22 +97,16 @@ class _AddServiceState extends State<AddService> {
                               actions: [
                                 ElevatedButton(
                                     onPressed: () async {
-                                      serviceCategoryController.pickedImage =
-                                          await _picker.pickImage(
-                                              source: ImageSource.gallery);
-
-                                      serviceCategoryController.addImage();
+                                      serviceCategoryController
+                                          .addImage(ImageSource.gallery);
 
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text("Gallery")),
                                 ElevatedButton(
                                     onPressed: () async {
-                                      serviceCategoryController.pickedImage =
-                                          await _picker.pickImage(
-                                              source: ImageSource.camera);
-
-                                      serviceCategoryController.addImage();
+                                      serviceCategoryController
+                                          .addImage(ImageSource.camera);
 
                                       Navigator.of(context).pop();
                                     },
@@ -217,7 +211,32 @@ class _AddServiceState extends State<AddService> {
                   margin:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (formKey.currentState!.validate() &&
+                          serviceCategoryController.image != null &&
+                          serviceCategoryController.dropDownVal != null) {
+                        formKey.currentState!.save();
+                      } else if (serviceCategoryController.image == null ||
+                          serviceCategoryController.dropDownVal == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: (serviceCategoryController.image == null &&
+                                    serviceCategoryController.dropDownVal ==
+                                        null)
+                                ? const Text(
+                                    "Please add image & select category")
+                                : (serviceCategoryController.image == null)
+                                    ? const Text("Please add image")
+                                    : (serviceCategoryController.dropDownVal ==
+                                            null)
+                                        ? const Text("Please select category")
+                                        : const Text(""),
+                            backgroundColor: Colors.red,
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
+                    },
                     style: elevatedButtonStyle(),
                     child: const Text("Add Service"),
                   ),

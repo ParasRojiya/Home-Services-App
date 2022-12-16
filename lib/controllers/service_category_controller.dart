@@ -6,13 +6,16 @@ class ServiceCategoryController extends GetxController {
   String? dropDownVal;
   XFile? pickedImage;
   File? image;
+  final ImagePicker _picker = ImagePicker();
 
   selectCategory(String category) {
     dropDownVal = category;
     update();
   }
 
-  addImage() {
+  addImage(ImageSource source) async {
+    pickedImage = await _picker.pickImage(source: source);
+
     image = File(pickedImage!.path);
     update();
   }
