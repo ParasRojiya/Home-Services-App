@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                                 experience: "7 Years Exp.",
                                 ratings: "⭐⭐⭐⭐",
                                 imageURL:
-                                    "https://source.unsplash.com/random/?$i background,dark"));
+                                    "https://source.unsplash.com/random/?$i people"));
                       },
                     ),
                   ),

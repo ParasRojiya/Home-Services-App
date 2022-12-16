@@ -58,6 +58,7 @@ dev_dependencies:
   persistent_bottom_nav_bar:
   shared_preferences:
   firebase_storage:
+  image_picker:
 
 
 # For information on the generic Dart part of this file, see the

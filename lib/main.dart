@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:home_services_app/views/screens/add_category.dart';
+import 'package:home_services_app/views/screens/add_service.dart';
 import 'package:home_services_app/views/screens/all_categories_page.dart';
 import 'global/global.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
@@ -29,7 +29,7 @@ void main() async {
         GetPage(name: '/history_page', page: () => const HistoryPage()),
         GetPage(name: '/account_page', page: () => const AccountPage()),
         GetPage(name: '/all_categories', page: () => const AllCategories()),
-        GetPage(name: '/add_category', page: () => const AddCategory()),
+        GetPage(name: '/add_service', page: () => const AddService()),
       ],
     ),
   );
