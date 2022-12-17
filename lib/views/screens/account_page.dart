@@ -35,14 +35,6 @@ class _AccountPageState extends State<AccountPage> {
               icon: Icons.lock,
             ),
             accountOptionContainer(
-              title: "Log Out",
-              onTap: () async {
-                await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-                Get.offAndToNamed("/login_page");
-              },
-              icon: Icons.logout,
-            ),
-            accountOptionContainer(
               title: "Contact US",
               onTap: null,
               icon: Icons.contact_mail_sharp,
@@ -56,6 +48,14 @@ class _AccountPageState extends State<AccountPage> {
               title: "Help",
               onTap: null,
               icon: Icons.help,
+            ),
+            accountOptionContainer(
+              title: "Log Out",
+              onTap: () async {
+                await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+                Get.offAndToNamed("/login_page");
+              },
+              icon: Icons.logout,
             ),
           ],
         ),

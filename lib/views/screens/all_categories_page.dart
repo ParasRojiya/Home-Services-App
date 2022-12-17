@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:home_services_app/global/global.dart';
 import 'package:get/get.dart';
+import '../../helper/cloud_firestore_helper.dart';
 import '../../widgets/category_container.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AllCategories extends StatelessWidget {
   const AllCategories({Key? key}) : super(key: key);
@@ -15,28 +17,37 @@ class AllCategories extends StatelessWidget {
       ),
       body: Container(
         margin: const EdgeInsets.all(8),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            mainAxisExtent: 220,
-          ),
-          itemCount: 8,
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (context, i) {
-            return categoryContainer();
-            //   Container(
-            //   decoration:
-            //       BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
-            //     BoxShadow(
-            //       color: Colors.grey.withOpacity(0.4),
-            //       blurRadius: 4,
-            //       spreadRadius: 2,
-            //       offset: const Offset(0, 0),
-            //     ),
-            //   ]),
-            // );
+        child: StreamBuilder<QuerySnapshot>(
+          stream:
+              CloudFirestoreHelper.cloudFirestoreHelper.fetchAllCategories(),
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              QuerySnapshot? document = snapshot.data;
+              List<QueryDocumentSnapshot> documents = document!.docs;
+
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  mainAxisExtent: 220,
+                ),
+                itemCount: documents.length,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, i) {
+                  return categoryContainer(
+                      categoryName: documents[i].id,
+                      imageURL: documents[i]['imageURL']);
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text("Error: ${snapshot.error}"),
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           },
         ),
       ),

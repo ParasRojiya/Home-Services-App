@@ -14,13 +14,13 @@ class CloudFirestoreHelper {
     categoryRef = firebaseFirestore.collection('categories');
   }
 
-  Future<void> addCategory(
+  Future<void> addService(
       {required String name, required Map<String, dynamic> data}) async {
     connectionWithCategoryCollection();
-    categoryRef.doc(name).set(data);
+    await categoryRef.doc(name).set(data);
   }
 
-  Future<void> updateCategory(
+  Future<void> updateService(
       {required String name, required Map<String, dynamic> data}) async {
     connectionWithCategoryCollection();
     await categoryRef.doc(name).update(data);

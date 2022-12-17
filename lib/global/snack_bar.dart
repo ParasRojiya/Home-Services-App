@@ -50,3 +50,23 @@ connectionSnackBar({required BuildContext context}) {
     ),
   );
 }
+
+successSnackBar({required String msg, required BuildContext context}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(msg),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.green,
+    ),
+  );
+}
+
+errorSnackBar({required String msg, required BuildContext context}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(msg),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.red,
+    ),
+  );
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-categoryContainer() {
+categoryContainer({required String categoryName, required String imageURL}) {
   return Container(
     decoration: BoxDecoration(
       color: Colors.white,
@@ -16,15 +17,32 @@ categoryContainer() {
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         Expanded(
           flex: 4,
-          child: Text("Category Icon/Image"),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12)),
+                image: DecorationImage(
+                  image: NetworkImage(
+                    imageURL,
+                  ),
+                  fit: BoxFit.cover,
+                )),
+          ),
         ),
-        Divider(
+        const Divider(
           color: Colors.black,
         ),
-        Expanded(child: Text("Category Name")),
+        Expanded(
+            child: Text(
+          categoryName.toUpperCase(),
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w500,
+          ),
+        )),
       ],
     ),
   );

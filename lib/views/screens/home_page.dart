@@ -6,8 +6,10 @@ import 'package:home_services_app/views/screens/history_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../global/global.dart';
+import '../../helper/cloud_firestore_helper.dart';
 import '../../widgets/category_container.dart';
 import '../../widgets/nav_bar_item.dart';
 import '../../widgets/worker_container.dart';
@@ -82,18 +84,50 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Container(
                     height: 420,
-                    child: GridView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 14,
-                        crossAxisSpacing: 14,
-                        mainAxisExtent: 200,
-                      ),
-                      itemCount: 4,
-                      itemBuilder: (context, i) {
-                        return categoryContainer();
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: CloudFirestoreHelper.cloudFirestoreHelper
+                          .fetchAllCategories(),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          QuerySnapshot? document = snapshot.data;
+                          List<QueryDocumentSnapshot> documents =
+                              document!.docs;
+
+                          return GridView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 14,
+                              crossAxisSpacing: 14,
+                              mainAxisExtent: 200,
+                            ),
+                            itemCount:
+                                (documents.length >= 4) ? 4 : documents.length,
+                            itemBuilder: (context, i) {
+                              return InkWell(
+                                onTap: () {
+                                  Get.toNamed('/add_service',
+                                      arguments: documents[i]);
+                                },
+                                child: categoryContainer(
+                                    categoryName: documents[i].id,
+                                    imageURL: documents[i]['imageURL']),
+                              );
+                            },
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              "Error: ${snapshot.error}",
+                              style: GoogleFonts.poppins(),
+                            ),
+                          );
+                        }
+
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       },
                     ),
                   ),
