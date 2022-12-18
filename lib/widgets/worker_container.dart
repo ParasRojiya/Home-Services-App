@@ -60,7 +60,7 @@ Widget workerContainer({
                   ),
                 ),
                 Text(
-                  experience,
+                  "${experience} Exp.",
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.white.withOpacity(0.8),

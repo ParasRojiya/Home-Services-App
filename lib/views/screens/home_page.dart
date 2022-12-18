@@ -146,7 +146,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const Spacer(),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.toNamed("/all_workers");
+                        },
                         style: TextButton.styleFrom(
                             textStyle: GoogleFonts.poppins()),
                         child: const Text("View all"),
@@ -154,27 +156,55 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   Container(
-                    height: 500,
-                    child: GridView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 14,
-                        crossAxisSpacing: 14,
-                        mainAxisExtent: 240,
-                      ),
-                      itemCount: 4,
-                      itemBuilder: (context, i) {
-                        return GestureDetector(
-                            onTap: () {},
-                            child: workerContainer(
-                                name: "John Smith",
-                                rate: 110,
-                                experience: "7 Years Exp.",
-                                ratings: "⭐⭐⭐⭐",
-                                imageURL:
-                                    "https://source.unsplash.com/random/?$i people"));
+                    height: 420,
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: CloudFirestoreHelper.cloudFirestoreHelper
+                          .fetchAllWorker(),
+                      builder: (context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          QuerySnapshot? document = snapshot.data;
+                          List<QueryDocumentSnapshot> documents =
+                              document!.docs;
+
+                          return GridView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 14,
+                              crossAxisSpacing: 14,
+                              mainAxisExtent: 200,
+                            ),
+                            itemCount:
+                                (documents.length >= 4) ? 4 : documents.length,
+                            itemBuilder: (context, i) {
+                              return InkWell(
+                                onTap: () {
+                                  Get.toNamed('/add_worker',
+                                      arguments: documents[i]);
+                                },
+                                child: workerContainer(
+                                  ratings: "⭐⭐⭐⭐⭐",
+                                  rate: documents[i]['price'],
+                                  name: documents[i]['name'],
+                                  experience: documents[i]['experience'],
+                                  imageURL: documents[i]['imageURL'],
+                                ),
+                              );
+                            },
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              "Error: ${snapshot.error}",
+                              style: GoogleFonts.poppins(),
+                            ),
+                          );
+                        }
+
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       },
                     ),
                   ),

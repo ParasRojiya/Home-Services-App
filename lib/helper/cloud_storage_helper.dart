@@ -16,6 +16,7 @@ class CloudStorageHelper {
 
   storeWorkerImage({required File image, required String name}) async {
     await workersRef.child(name).putFile(image);
+    Global.imageURL = await workersRef.child(name).getDownloadURL();
   }
 
   deleteWorkerImage({required String name}) async {

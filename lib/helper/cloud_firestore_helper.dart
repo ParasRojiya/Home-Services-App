@@ -8,6 +8,7 @@ class CloudFirestoreHelper {
   static final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   late CollectionReference userRef;
   late CollectionReference categoryRef;
+  late CollectionReference workerRef;
 
   //CATEGORIES COLLECTION HELPER
   connectionWithCategoryCollection() {
@@ -34,6 +35,28 @@ class CloudFirestoreHelper {
   Stream<QuerySnapshot> fetchAllCategories() {
     connectionWithCategoryCollection();
     return categoryRef.snapshots();
+  }
+
+  //WORKERS COLLECTION HELPER
+  connectionWithWorkerCollection() {
+    workerRef = firebaseFirestore.collection('workers');
+  }
+
+  Future<void> addWorker(
+      {required String name, required Map<String, dynamic> data}) async {
+    connectionWithWorkerCollection();
+    await workerRef.doc(name).set(data);
+  }
+
+  Future<void> updateWorker(
+      {required String name, required Map<String, dynamic> data}) async {
+    connectionWithWorkerCollection();
+    await workerRef.doc(name).update(data);
+  }
+
+  Stream<QuerySnapshot> fetchAllWorker() {
+    connectionWithWorkerCollection();
+    return workerRef.snapshots();
   }
 
   //USERS COLLECTION HELPER
