@@ -26,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String? email;
   String? password;
+  bool isNotVisible = true;
 
   @override
   void dispose() {
@@ -73,10 +74,24 @@ class _LoginPageState extends State<LoginPage> {
                 onSaved: (val) {
                   password = val;
                 },
-                obscureText: true,
-                decoration: textFieldDecoration(
-                  icon: Icons.password,
-                  name: "Password",
+                obscureText: isNotVisible,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  prefixIcon: Icon(Icons.password),
+                  label: Text("Password"),
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        (isNotVisible == false)
+                            ? isNotVisible = true
+                            : isNotVisible = false;
+                      });
+                    },
+                    child: Icon((isNotVisible == false)
+                        ? Icons.hide_source
+                        : Icons.remove_red_eye),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),

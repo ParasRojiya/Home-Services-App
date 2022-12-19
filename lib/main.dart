@@ -6,6 +6,7 @@ import 'package:home_services_app/views/screens/add_worker.dart';
 import 'package:home_services_app/views/screens/all_categories_page.dart';
 import 'package:home_services_app/views/screens/all_workers_page.dart';
 import 'package:home_services_app/views/screens/services_page.dart';
+import 'package:home_services_app/views/screens/user/worker_details_page.dart';
 import 'global/global.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/history_page.dart';
@@ -35,6 +36,7 @@ void main() async {
         GetPage(name: '/all_workers', page: () => const AllWorkers()),
         GetPage(name: '/add_service', page: () => const AddService()),
         GetPage(name: '/add_worker', page: () => const AddWorker()),
+        GetPage(name: '/worker_details', page: () => const WorkerDetailsPage()),
         GetPage(
             name: '/service_details_page',
             page: () => const ServiceDetailsPage()),

@@ -39,7 +39,7 @@ Widget workerContainer({
           ),
         ),
         Expanded(
-          flex: 4,
+          flex: 5,
           child: Container(
             width: double.infinity,
             decoration: const BoxDecoration(

@@ -107,8 +107,10 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                  Get.toNamed('/add_service',
-                                      arguments: documents[i]);
+                                  (Global.isAdmin)
+                                      ? Get.toNamed('/add_service',
+                                          arguments: documents[i])
+                                      : null;
                                 },
                                 child: categoryContainer(
                                     categoryName: documents[i].id,
@@ -180,8 +182,11 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                  Get.toNamed('/add_worker',
-                                      arguments: documents[i]);
+                                  (Global.isAdmin)
+                                      ? Get.toNamed('/add_worker',
+                                          arguments: documents[i])
+                                      : Get.toNamed('/worker_details',
+                                          arguments: documents[i]);
                                 },
                                 child: workerContainer(
                                   ratings: "⭐⭐⭐⭐⭐",
