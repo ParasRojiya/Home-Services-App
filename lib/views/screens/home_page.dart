@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/history_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -22,8 +25,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  currentUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Global.user = FireBaseAuthHelper.firebaseAuth.currentUser;
+
+    await CloudFirestoreHelper.firebaseFirestore
+        .collection('users')
+        .doc(prefs.getString('currentUser'))
+        .snapshots()
+        .forEach((element) async {
+      Global.currentUser = {
+        'name': element.data()?['name'],
+        'email': element.data()?['email'],
+        'password': element.data()?['password'],
+        'role': element.data()?['role'],
+      };
+    });
+  }
+
   @override
   void initState() {
+    currentUserData();
     super.initState();
   }
 
@@ -158,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   Container(
-                    height: 420,
+                    height: 470,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: CloudFirestoreHelper.cloudFirestoreHelper
                           .fetchAllWorker(),
@@ -169,13 +191,12 @@ class _HomePageState extends State<HomePage> {
                               document!.docs;
 
                           return GridView.builder(
-                            physics: const BouncingScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               mainAxisSpacing: 14,
                               crossAxisSpacing: 14,
-                              mainAxisExtent: 200,
+                              mainAxisExtent: 225,
                             ),
                             itemCount:
                                 (documents.length >= 4) ? 4 : documents.length,

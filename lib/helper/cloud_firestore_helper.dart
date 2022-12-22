@@ -76,16 +76,16 @@ class CloudFirestoreHelper {
     return userRef.snapshots();
   }
 
-  Future<void> updateRecords(
+  Future<void> updateUsersRecords(
       {required String id, required Map<String, dynamic> data}) async {
     connectionWithUsersCollection();
 
-    userRef.doc(id).update(data);
+    await userRef.doc(id).update(data);
   }
 
-  Future<void> deleteRecords({required String id}) async {
+  Future<void> deleteUsersRecords({required String id}) async {
     connectionWithUsersCollection();
 
-    userRef.doc(id).delete();
+    await userRef.doc(id).delete();
   }
 }

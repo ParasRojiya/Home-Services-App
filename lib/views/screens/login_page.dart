@@ -89,8 +89,8 @@ class _LoginPageState extends State<LoginPage> {
                       });
                     },
                     child: Icon((isNotVisible == false)
-                        ? Icons.hide_source
-                        : Icons.remove_red_eye),
+                        ? Icons.visibility_off
+                        : Icons.visibility),
                   ),
                 ),
               ),
@@ -108,31 +108,44 @@ class _LoginPageState extends State<LoginPage> {
                     if (formKey.currentState!.validate()) {
                       formKey.currentState!.save();
 
+                      prefs.setString('currentUser', email!);
+
                       await CloudFirestoreHelper.firebaseFirestore
                           .collection('users')
                           .doc(email)
                           .snapshots()
                           .forEach((element) async {
+                        Global.currentUser = {
+                          'name': element.data()?['name'],
+                          'email': element.data()?['email'],
+                          'password': element.data()?['password'],
+                          'role': element.data()?['role'],
+                        };
+
                         if (element.data()?['role'] == 'admin') {
                           await prefs.setBool('isAdmin', true);
                           await prefs.setBool('isLoggedIn', true);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? true;
 
-                          User? user = await FireBaseAuthHelper
+                          Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
                           snackBar(
-                              user: user, context: context, name: "Sign In");
+                              user: Global.user,
+                              context: context,
+                              name: "Sign In");
                         } else {
                           await prefs.setBool('isAdmin', false);
                           await prefs.setBool('isLoggedIn', true);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? false;
 
-                          User? user = await FireBaseAuthHelper
+                          Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
                           snackBar(
-                              user: user, context: context, name: "Sign In");
+                              user: Global.user,
+                              context: context,
+                              name: "Sign In");
                         }
                       });
                     }
@@ -177,9 +190,28 @@ class _LoginPageState extends State<LoginPage> {
 
                   if (connectivityResult == ConnectivityResult.mobile ||
                       connectivityResult == ConnectivityResult.wifi) {
-                    User? user = await FireBaseAuthHelper.fireBaseAuthHelper
+                    Global.user = await FireBaseAuthHelper.fireBaseAuthHelper
                         .signInWithGoogle();
-                    await snackBar(user: user, context: context, name: "Login");
+
+                    if (Global.user != null) {
+                      Global.currentUser = {
+                        "name": Global.user!.displayName,
+                        "email": Global.user!.email,
+                        "role": "user",
+                        "password": "password"
+                      };
+
+                      Map<String, dynamic> data = {
+                        "name": Global.user!.displayName,
+                        "email": Global.user!.email,
+                        "role": "user",
+                        "password": "password"
+                      };
+                      await CloudFirestoreHelper.cloudFirestoreHelper
+                          .insertDataInUsersCollection(data: data);
+                    }
+                    await snackBar(
+                        user: Global.user, context: context, name: "Login");
                   } else {
                     connectionSnackBar(context: context);
                   }
