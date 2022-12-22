@@ -34,13 +34,21 @@ class AllWorkers extends StatelessWidget {
                 itemCount: documents.length,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, i) {
-                  return workerContainer(
-                    ratings: "⭐⭐⭐⭐⭐",
-                    rate: documents[i]['price'],
-                    name: documents[i]['name'],
-                    experience: documents[i]['experience'],
-                    imageURL: documents[i]['imageURL'],
-                    // imageURL: "",
+                  return InkWell(
+                    onTap: () {
+                      (Global.isAdmin)
+                          ? Get.toNamed('/edit_worker', arguments: documents[i])
+                          : Get.toNamed('/worker_details',
+                              arguments: documents[i]);
+                    },
+                    child: workerContainer(
+                      ratings: "⭐⭐⭐⭐⭐",
+                      rate: documents[i]['price'],
+                      name: documents[i]['name'],
+                      experience: documents[i]['experience'],
+                      imageURL: documents[i]['imageURL'],
+                      // imageURL: "",
+                    ),
                   );
                 },
               );
@@ -58,9 +66,9 @@ class AllWorkers extends StatelessWidget {
       floatingActionButton: (Global.isAdmin)
           ? FloatingActionButton.extended(
               onPressed: () {
-                Get.toNamed('/add_worker');
+                Get.toNamed('/edit_worker');
               },
-              label: Text("Add Worker"),
+              label: const Text("Add Worker"),
             )
           : null,
     );

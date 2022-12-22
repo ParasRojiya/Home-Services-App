@@ -10,15 +10,16 @@ import '../../helper/cloud_firestore_helper.dart';
 import '../../helper/cloud_storage_helper.dart';
 import '../../global/button_syle.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class AddWorker extends StatefulWidget {
-  const AddWorker({Key? key}) : super(key: key);
+class EditWorker extends StatefulWidget {
+  const EditWorker({Key? key}) : super(key: key);
 
   @override
-  State<AddWorker> createState() => _AddWorkerState();
+  State<EditWorker> createState() => _EditWorkerState();
 }
 
-class _AddWorkerState extends State<AddWorker> {
+class _EditWorkerState extends State<EditWorker> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController workerNameController = TextEditingController();
   final TextEditingController workerEmailController = TextEditingController();
@@ -50,6 +51,7 @@ class _AddWorkerState extends State<AddWorker> {
     dynamic res = ModalRoute.of(context)!.settings.arguments;
 
     if (res != null) {
+      workerName = res.id;
       workerNameController.text = res['name'];
       workerEmailController.text = res['email'];
       workerMobileNumberController.text = res['number'].toString();
@@ -187,71 +189,88 @@ class _AddWorkerState extends State<AddWorker> {
                     decoration: textFieldDecoration(
                         name: "Worker Experience", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
-                Container(
-                  width: Get.width,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (formKey.currentState!.validate() &&
-                          workerController.image != null) {
-                        formKey.currentState!.save();
+                Row(
+                  children: [
+                    Container(
+                      width:
+                          (res != null) ? Get.width * 0.75 : Get.width * 0.90,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (formKey.currentState!.validate() &&
+                              workerController.image != null) {
+                            formKey.currentState!.save();
 
-                        await CloudStorageHelper.cloudStorageHelper
-                            .storeWorkerImage(
-                                image: workerController.image!,
-                                name: workerName!);
+                            await CloudStorageHelper.cloudStorageHelper
+                                .storeWorkerImage(
+                                    image: workerController.image!,
+                                    name: workerName!);
 
-                        Map<String, dynamic> data = {
-                          'name': workerName!,
-                          'email': workerEmail,
-                          'number': workerMobileNumber,
-                          'price': workerHourlyPrice,
-                          'experience': workerExperience,
-                          'imageURL': Global.imageURL,
-                        };
+                            Map<String, dynamic> data = {
+                              'name': workerName!,
+                              'email': workerEmail,
+                              'number': workerMobileNumber,
+                              'price': workerHourlyPrice,
+                              'experience': workerExperience,
+                              'imageURL': Global.imageURL,
+                            };
 
-                        (res != null)
-                            ? await CloudFirestoreHelper.cloudFirestoreHelper
-                                .updateWorker(
-                                    name: workerName!.toLowerCase(), data: data)
-                            : await CloudFirestoreHelper.cloudFirestoreHelper
-                                .addWorker(
-                                    name: workerName!
-                                        .toLowerCase(), //serviceCategoryController.dropDownVal!,
-                                    data: data);
+                            (res != null)
+                                ? await CloudFirestoreHelper
+                                    .cloudFirestoreHelper
+                                    .updateWorker(
+                                        name: workerName!.toLowerCase(),
+                                        data: data)
+                                : await CloudFirestoreHelper
+                                    .cloudFirestoreHelper
+                                    .addWorker(
+                                        name: workerName!
+                                            .toLowerCase(), //serviceCategoryController.dropDownVal!,
+                                        data: data);
 
-                        successSnackBar(
-                            msg: "Worker successfully added in database",
-                            context: context);
+                            successSnackBar(
+                                msg: "Worker successfully added in database",
+                                context: context);
 
-                        workerNameController.clear();
-                        workerEmailController.clear();
-                        workerMobileNumberController.clear();
-                        workerHourlyPriceController.clear();
-                        workerExperienceController.clear();
+                            workerNameController.clear();
+                            workerEmailController.clear();
+                            workerMobileNumberController.clear();
+                            workerHourlyPriceController.clear();
+                            workerExperienceController.clear();
 
-                        workerName = null;
-                        workerEmail = null;
-                        workerMobileNumber = null;
-                        workerHourlyPrice = null;
-                        workerExperience = null;
-                        Get.back();
-                      } else if (workerController.image == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Please add image"),
+                            workerName = null;
+                            workerEmail = null;
+                            workerMobileNumber = null;
+                            workerHourlyPrice = null;
+                            workerExperience = null;
+                            Get.back();
+                          } else if (workerController.image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Please add image"),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
+                        },
+                        style: elevatedButtonStyle(),
+                        child: (res != null)
+                            ? const Text("Update Worker")
+                            : const Text("Add Worker"),
+                      ),
+                    ),
+                    (res != null)
+                        ? FloatingActionButton(
+                            onPressed: () {
+                              deleteWorker();
+                            },
                             backgroundColor: Colors.red,
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      }
-                    },
-                    style: elevatedButtonStyle(),
-                    child: (res != null)
-                        ? const Text("Update Worker")
-                        : const Text("Add Worker"),
-                  ),
+                            child: const Icon(Icons.delete),
+                          )
+                        : Container(),
+                  ],
                 ),
               ],
             ),
@@ -259,5 +278,50 @@ class _AddWorkerState extends State<AddWorker> {
         ),
       ),
     );
+  }
+
+  deleteWorker() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Are you sure want to delete ${workerNameController.text}'s data ?",
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            actions: [
+              OutlinedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: Text(
+                  "Cancel",
+                  style: GoogleFonts.poppins(),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await CloudFirestoreHelper.cloudFirestoreHelper
+                      .deleteWorker(name: workerName!);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          "${workerNameController.text}'s data deleted successfully"),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                  Get.offNamedUntil('/', (route) => false);
+                },
+                child: Text(
+                  "Delete",
+                  style: GoogleFonts.poppins(),
+                ),
+              ),
+            ],
+          );
+        });
   }
 }

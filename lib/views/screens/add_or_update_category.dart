@@ -13,14 +13,14 @@ import '../../helper/cloud_storage_helper.dart';
 import '../../global/button_syle.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddService extends StatefulWidget {
-  const AddService({Key? key}) : super(key: key);
+class EditCategory extends StatefulWidget {
+  const EditCategory({Key? key}) : super(key: key);
 
   @override
-  State<AddService> createState() => _AddServiceState();
+  State<EditCategory> createState() => _EditCategoryState();
 }
 
-class _AddServiceState extends State<AddService> {
+class _EditCategoryState extends State<EditCategory> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController categoryNameController = TextEditingController();
   final TextEditingController categoryPriceController = TextEditingController();
@@ -53,6 +53,7 @@ class _AddServiceState extends State<AddService> {
     dynamic res = ModalRoute.of(context)!.settings.arguments;
 
     if (res != null) {
+      categoryName = res.id;
       categoryNameController.text = res['name'];
       categoryPriceController.text = res['price'].toString();
       categoryDurationController.text = res['duration'];
@@ -191,71 +192,87 @@ class _AddServiceState extends State<AddService> {
                     decoration: textFieldDecoration(
                         name: "Category Description", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
-                Container(
-                  width: Get.width,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (formKey.currentState!.validate() &&
-                          serviceCategoryController.image != null) {
-                        formKey.currentState!.save();
+                Row(
+                  children: [
+                    Container(
+                      width:
+                          (res != null) ? Get.width * 0.75 : Get.width * 0.90,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (formKey.currentState!.validate() &&
+                              serviceCategoryController.image != null) {
+                            formKey.currentState!.save();
 
-                        await CloudStorageHelper.cloudStorageHelper
-                            .storeServiceImage(
-                                image: serviceCategoryController.image!,
-                                name: categoryName!);
+                            await CloudStorageHelper.cloudStorageHelper
+                                .storeServiceImage(
+                                    image: serviceCategoryController.image!,
+                                    name: categoryName!);
 
-                        Map<String, dynamic> data = {
-                          'name': categoryName!,
-                          'price': categoryPrice,
-                          'duration': categoryDuration,
-                          'discount': categoryDiscount,
-                          'desc': categoryDescription,
-                          'imageURL': Global.imageURL,
-                        };
+                            Map<String, dynamic> data = {
+                              'name': categoryName!,
+                              'price': categoryPrice,
+                              'duration': categoryDuration,
+                              'discount': categoryDiscount,
+                              'desc': categoryDescription,
+                              'imageURL': Global.imageURL,
+                            };
 
-                        (res != null)
-                            ? await CloudFirestoreHelper.cloudFirestoreHelper
-                                .updateService(
-                                    name: categoryName!.toLowerCase(),
-                                    data: data)
-                            : await CloudFirestoreHelper.cloudFirestoreHelper
-                                .addService(
-                                    name: categoryName!
-                                        .toLowerCase(), //serviceCategoryController.dropDownVal!,
-                                    data: data);
+                            (res != null)
+                                ? await CloudFirestoreHelper
+                                    .cloudFirestoreHelper
+                                    .updateService(
+                                        name: categoryName!.toLowerCase(),
+                                        data: data)
+                                : await CloudFirestoreHelper
+                                    .cloudFirestoreHelper
+                                    .addService(
+                                        name: categoryName!
+                                            .toLowerCase(), //serviceCategoryController.dropDownVal!,
+                                        data: data);
 
-                        successSnackBar(
-                            msg: "Category successfully added in database",
-                            context: context);
+                            successSnackBar(
+                                msg: "Category successfully added in database",
+                                context: context);
 
-                        categoryNameController.clear();
-                        categoryPriceController.clear();
-                        categoryDurationController.clear();
-                        categoryDiscountController.clear();
-                        categoryDescriptionController.clear();
+                            categoryNameController.clear();
+                            categoryPriceController.clear();
+                            categoryDurationController.clear();
+                            categoryDiscountController.clear();
+                            categoryDescriptionController.clear();
 
-                        categoryName = null;
-                        categoryPrice = null;
-                        categoryDuration = null;
-                        categoryDiscount = null;
-                        categoryDescription = null;
-                      } else if (serviceCategoryController.image == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Please add image"),
+                            categoryName = null;
+                            categoryPrice = null;
+                            categoryDuration = null;
+                            categoryDiscount = null;
+                            categoryDescription = null;
+                          } else if (serviceCategoryController.image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Please add image"),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
+                        },
+                        style: elevatedButtonStyle(),
+                        child: (res != null)
+                            ? const Text("Update Category")
+                            : const Text("Add Category"),
+                      ),
+                    ),
+                    (res != null)
+                        ? FloatingActionButton(
+                            onPressed: () {
+                              deleteCategory();
+                            },
                             backgroundColor: Colors.red,
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      }
-                    },
-                    style: elevatedButtonStyle(),
-                    child: (res != null)
-                        ? const Text("Update Category")
-                        : const Text("Add Category"),
-                  ),
+                            child: const Icon(Icons.delete),
+                          )
+                        : Container(),
+                  ],
                 ),
               ],
             ),
@@ -263,5 +280,50 @@ class _AddServiceState extends State<AddService> {
         ),
       ),
     );
+  }
+
+  deleteCategory() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Are you sure want to delete the ${categoryNameController.text} category?",
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            actions: [
+              OutlinedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: Text(
+                  "Cancel",
+                  style: GoogleFonts.poppins(),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await CloudFirestoreHelper.cloudFirestoreHelper
+                      .deleteCategory(name: categoryName!);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          "${categoryNameController.text} deleted successfully"),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                  Get.offNamedUntil('/', (route) => false);
+                },
+                child: Text(
+                  "Delete",
+                  style: GoogleFonts.poppins(),
+                ),
+              ),
+            ],
+          );
+        });
   }
 }

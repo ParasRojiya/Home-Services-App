@@ -54,6 +54,11 @@ class CloudFirestoreHelper {
     await workerRef.doc(name).update(data);
   }
 
+  Future<void> deleteWorker({required String name}) async {
+    connectionWithWorkerCollection();
+    await workerRef.doc(name).delete();
+  }
+
   Stream<QuerySnapshot> fetchAllWorker() {
     connectionWithWorkerCollection();
     return workerRef.snapshots();

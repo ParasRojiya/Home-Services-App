@@ -35,9 +35,17 @@ class AllCategories extends StatelessWidget {
                 itemCount: documents.length,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, i) {
-                  return categoryContainer(
-                      categoryName: documents[i].id,
-                      imageURL: documents[i]['imageURL']);
+                  return InkWell(
+                    onTap: () {
+                      (Global.isAdmin)
+                          ? Get.toNamed('/edit_category',
+                              arguments: documents[i])
+                          : null;
+                    },
+                    child: categoryContainer(
+                        categoryName: documents[i].id,
+                        imageURL: documents[i]['imageURL']),
+                  );
                 },
               );
             } else if (snapshot.hasError) {
@@ -54,7 +62,7 @@ class AllCategories extends StatelessWidget {
       floatingActionButton: (Global.isAdmin)
           ? FloatingActionButton(
               onPressed: () {
-                Get.toNamed('/add_service');
+                Get.toNamed('/edit_category');
               },
               child: const Icon(Icons.add),
             )

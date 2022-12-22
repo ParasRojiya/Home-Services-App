@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/history_page.dart';
+import 'package:home_services_app/views/screens/users_list.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -130,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                               return InkWell(
                                 onTap: () {
                                   (Global.isAdmin)
-                                      ? Get.toNamed('/add_service',
+                                      ? Get.toNamed('/edit_category',
                                           arguments: documents[i])
                                       : null;
                                 },
@@ -204,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                               return InkWell(
                                 onTap: () {
                                   (Global.isAdmin)
-                                      ? Get.toNamed('/add_worker',
+                                      ? Get.toNamed('/edit_worker',
                                           arguments: documents[i])
                                       : Get.toNamed('/worker_details',
                                           arguments: documents[i]);
@@ -267,14 +268,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> screens = [
     const HomePage(),
-    const HistoryPage(),
+    (Global.isAdmin) ? const UsersList() : const HistoryPage(),
     const AccountPage(),
   ];
 
   List<PersistentBottomNavBarItem> navBarItems() {
     return [
       bottomNavBarItem(icon: const Icon(Icons.home), title: "Home"),
-      bottomNavBarItem(icon: const Icon(Icons.history), title: "History"),
+      (Global.isAdmin)
+          ? bottomNavBarItem(icon: const Icon(Icons.list), title: "User List")
+          : bottomNavBarItem(icon: const Icon(Icons.history), title: "History"),
       bottomNavBarItem(
           icon: const Icon(Icons.account_circle), title: "Account"),
     ];
