@@ -130,7 +130,8 @@ class _HomePageState extends State<HomePage> {
                                   (Global.isAdmin)
                                       ? Get.toNamed('/edit_category',
                                           arguments: documents[i])
-                                      : null;
+                                      : Get.toNamed('/book_category',
+                                          arguments: documents[i]);
                                 },
                                 child: categoryContainer(
                                     categoryName: documents[i].id,

@@ -217,7 +217,8 @@ class _LoginPageState extends State<LoginPage> {
                         "name": Global.user!.displayName,
                         "email": Global.user!.email,
                         "role": "user",
-                        "password": "password"
+                        "password": "password",
+                        "isActive": true,
                       };
                       await CloudFirestoreHelper.cloudFirestoreHelper
                           .insertDataInUsersCollection(data: data);
