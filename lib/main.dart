@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:home_services_app/views/screens/add_or_update_category.dart';
+import 'package:home_services_app/views/screens/edit_category.dart';
 import 'package:home_services_app/views/screens/add_worker.dart';
 import 'package:home_services_app/views/screens/all_categories_page.dart';
 import 'package:home_services_app/views/screens/all_workers_page.dart';

@@ -35,7 +35,6 @@ class _AccountPageState extends State<AccountPage> {
           "My Profile",
           style: GoogleFonts.poppins(),
         ),
-        elevation: 0,
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),

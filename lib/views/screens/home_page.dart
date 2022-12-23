@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/history_page.dart';
 import 'package:home_services_app/views/screens/users_list.dart';
@@ -254,16 +251,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late PersistentTabController persistentTabController;
-  // isAdmin() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   Global.isAdmin = prefs.getBool('isAdmin')!;
-  // }
 
   @override
   void initState() {
     super.initState();
-    // isAdmin();
-    persistentTabController = PersistentTabController(initialIndex: 0);
+    PersistentTabController(initialIndex: 0);
   }
 
   List<Widget> screens = [

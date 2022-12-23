@@ -8,7 +8,6 @@ import '../../global/text_field_decoration.dart';
 import '../../controllers/service_category_controller.dart';
 import '../../helper/cloud_firestore_helper.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../helper/cloud_storage_helper.dart';
 import '../../global/button_syle.dart';
 import 'package:image_picker/image_picker.dart';

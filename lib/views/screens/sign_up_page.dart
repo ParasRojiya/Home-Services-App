@@ -68,7 +68,16 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Image.asset("assets/images/signup.png"),
+              Container(
+                height: 200,
+                width: 190,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/logo/1.png"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: nameController,
@@ -149,7 +158,6 @@ class _SignUpPageState extends State<SignUpPage> {
                               "role": "user",
                               "password": password,
                               "isActive": true,
-                              "uid": user.uid,
                             },
                           );
                         }

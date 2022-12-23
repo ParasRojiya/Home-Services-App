@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../helper/cloud_firestore_helper.dart';
 import '../../helper/firebase_auth_helper.dart';
