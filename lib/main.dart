@@ -25,6 +25,7 @@ void main() async {
 
   runApp(
     GetMaterialApp(
+      theme: ThemeData.light(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       initialRoute: (isLoggedIn) ? "/" : "/login_page",
       getPages: [

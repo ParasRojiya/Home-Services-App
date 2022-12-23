@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: isNotVisible,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(40)),
+                      borderRadius: BorderRadius.circular(20)),
                   prefixIcon: const Icon(Icons.password),
                   label: Text("Password",
                       style: GoogleFonts.poppins(
