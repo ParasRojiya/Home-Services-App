@@ -147,7 +147,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               "name": name,
                               "email": email,
                               "role": "user",
-                              "password": password
+                              "password": password,
+                              "isActive": true,
+                              "uid": user.uid,
                             },
                           );
                         }
