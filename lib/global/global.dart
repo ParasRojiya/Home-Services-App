@@ -8,4 +8,5 @@ class Global {
   static String? imageURL;
   static User? user;
   static Map<String, dynamic>? currentUser;
+  static List<dynamic> cart = [];
 }

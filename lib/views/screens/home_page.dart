@@ -269,7 +269,8 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavBarItem(icon: const Icon(Icons.home), title: "Home"),
       (Global.isAdmin)
           ? bottomNavBarItem(icon: const Icon(Icons.list), title: "User List")
-          : bottomNavBarItem(icon: const Icon(Icons.history), title: "History"),
+          : bottomNavBarItem(
+              icon: const Icon(Icons.shopping_cart), title: "Cart"),
       bottomNavBarItem(
           icon: const Icon(Icons.account_circle), title: "Account"),
     ];

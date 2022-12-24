@@ -132,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                           'email': element.data()?['email'],
                           'password': element.data()?['password'],
                           'role': element.data()?['role'],
+                          'cart': element.data()?['cart'],
                         };
 
                         if (element.data()?['role'] == 'admin') {
@@ -160,6 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                               name: "Sign In");
                         }
                       });
+                      Global.cart = Global.currentUser!['cart'];
                     }
                   } else {
                     connectionSnackBar(context: context);

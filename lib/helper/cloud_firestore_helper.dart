@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../global/global.dart';
 
 class CloudFirestoreHelper {
   CloudFirestoreHelper._();
@@ -35,6 +38,14 @@ class CloudFirestoreHelper {
   Stream<QuerySnapshot> fetchAllCategories() {
     connectionWithCategoryCollection();
     return categoryRef.snapshots();
+  }
+
+  //add to cart
+  addToCart(Map<String, dynamic> item) {
+    connectionWithCategoryCollection();
+    connectionWithUsersCollection();
+
+    userRef.doc(Global.currentUser!["email"]).update(item);
   }
 
   //WORKERS COLLECTION HELPER
@@ -74,6 +85,12 @@ class CloudFirestoreHelper {
     connectionWithUsersCollection();
     await userRef.doc(data["email"]).set(data);
   }
+
+  // Stream<QuerySnapshot> fetchCart({required String id})  {
+  //   connectionWithUsersCollection();
+  //
+  //  // return userRef.doc(id).snapshots();
+  // }
 
   Stream<QuerySnapshot<Object?>> selectUsersRecords() {
     connectionWithUsersCollection();
