@@ -74,10 +74,11 @@ class _EditWorkerState extends State<EditWorker> {
             borderRadius: BorderRadius.circular(8),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  offset: const Offset(0, 0),
-                  blurRadius: 2,
-                  spreadRadius: 4),
+                color: Colors.grey.withOpacity(0.2),
+                offset: const Offset(0, 0),
+                blurRadius: 2,
+                spreadRadius: 4,
+              ),
             ]),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

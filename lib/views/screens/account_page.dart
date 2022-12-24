@@ -6,6 +6,7 @@ import '../../helper/firebase_auth_helper.dart';
 import '../../utils/account_option_container.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../global/text_field_decoration.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -38,16 +39,17 @@ class _AccountPageState extends State<AccountPage> {
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 10),
-            CircleAvatar(
+            const CircleAvatar(
               radius: 90,
               backgroundColor: Colors.white,
               backgroundImage: NetworkImage(
-                  "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Clipart.png"),
+                "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Clipart.png",
+              ),
             ),
             const SizedBox(height: 10),
             Text(
@@ -65,18 +67,22 @@ class _AccountPageState extends State<AccountPage> {
               icon: Icons.lock,
             ),
             accountOptionContainer(
-              title: "Contact US",
-              onTap: null,
-              icon: Icons.contact_mail_sharp,
-            ),
-            accountOptionContainer(
               title: "FAQs",
               onTap: null,
               icon: Icons.flag,
             ),
             accountOptionContainer(
+              title: "About us",
+              onTap: () {
+                launchURL();
+              },
+              icon: Icons.info,
+            ),
+            accountOptionContainer(
               title: "Help",
-              onTap: null,
+              onTap: () {
+                contact();
+              },
               icon: Icons.help,
             ),
             accountOptionContainer(
@@ -91,6 +97,17 @@ class _AccountPageState extends State<AccountPage> {
         ),
       ),
     );
+  }
+
+  launchURL() async {
+    const url = 'https://flutter.io';
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      Get.snackbar("Could not launch $url", "Can't Open");
+      throw 'Could not launch $url';
+    }
   }
 
   changePassword() {
@@ -182,5 +199,67 @@ class _AccountPageState extends State<AccountPage> {
             ],
           );
         });
+  }
+
+  contact() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Contact Us'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              accountOptionContainer(
+                  title: "Call us",
+                  onTap: () async {
+                    Uri url = Uri.parse("tel:+91 8200579988}");
+
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Can't be launched..."),
+                          backgroundColor: Colors.redAccent,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  },
+                  icon: Icons.call),
+              accountOptionContainer(
+                  title: "Mail us",
+                  onTap: () async {
+                    Uri url = Uri.parse(
+                        "mailto:roronoazoro5466@gmail.com?subject=Demo&body=Hello");
+
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Can't be launched..."),
+                          backgroundColor: Colors.redAccent,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  },
+                  icon: Icons.mail),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss alert dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

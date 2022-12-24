@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/history_page.dart';
 import 'package:home_services_app/views/screens/users_list.dart';
@@ -11,7 +8,6 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../global/global.dart';
 import '../../helper/cloud_firestore_helper.dart';
 import '../../widgets/category_container.dart';
