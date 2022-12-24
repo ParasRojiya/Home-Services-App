@@ -7,6 +7,7 @@ import '../../utils/account_option_container.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../global/text_field_decoration.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../global/text_field_decoration.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -22,6 +23,13 @@ class _AccountPageState extends State<AccountPage> {
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController newConfirmPasswordController =
       TextEditingController();
+
+  final GlobalKey<FormState> editProfileFormKey = GlobalKey<FormState>();
+  final TextEditingController profileEmailController = TextEditingController();
+  final TextEditingController profileNameController = TextEditingController();
+
+  String? profileName;
+  String? profileEmail;
 
   String? currentPassword;
   String? newPassword;
@@ -58,6 +66,13 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ),
             const SizedBox(height: 10),
+            accountOptionContainer(
+              title: "Edit Profile",
+              onTap: () {
+                editProfile();
+              },
+              icon: Icons.person,
+            ),
             accountOptionContainer(
               title: "Change Password",
               onTap: () {
@@ -107,6 +122,83 @@ class _AccountPageState extends State<AccountPage> {
       Get.snackbar("Could not launch $url", "Can't Open");
       throw 'Could not launch $url';
     }
+  }
+
+  editProfile() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          profileNameController.text = Global.currentUser!['name'];
+          profileEmailController.text = Global.currentUser!['email'];
+          return AlertDialog(
+            title: Text(
+              "Edit Your Profile",
+              style: GoogleFonts.poppins(),
+            ),
+            content: Form(
+              key: editProfileFormKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: profileNameController,
+                    decoration: textFieldDecoration(
+                        icon: Icons.person, name: "User Name"),
+                    onSaved: (val) {
+                      profileName = val;
+                    },
+                    validator: (val) =>
+                        (val!.isEmpty) ? "Please add user name" : null,
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: profileEmailController,
+                    decoration: textFieldDecoration(
+                        icon: Icons.mail, name: "User Email"),
+                    onSaved: (val) {
+                      profileEmail = val;
+                    },
+                    validator: (val) =>
+                        (val!.isEmpty) ? "Please add user email" : null,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              OutlinedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: Text(
+                  "Cancel",
+                  style: GoogleFonts.poppins(),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (editProfileFormKey.currentState!.validate()) {
+                    editProfileFormKey.currentState!.save();
+
+                    Map<String, dynamic> data = {
+                      'name': profileName,
+                      'email': profileEmail,
+                    };
+
+                    await CloudFirestoreHelper.cloudFirestoreHelper
+                        .updateUsersRecords(
+                            id: Global.currentUser!['email'], data: data);
+                    await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+                    Get.offAndToNamed('/login_page');
+                  }
+                },
+                child: Text(
+                  "Edit Profile",
+                  style: GoogleFonts.poppins(),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   changePassword() {

@@ -69,6 +69,36 @@ class FireBaseAuthHelper {
     await googleSignIn.signOut();
   }
 
+  changeEmail(
+      {required String newProfileEmail, required BuildContext context}) async {
+    User user = firebaseAuth.currentUser!;
+    try {
+      await user.updateEmail(newProfileEmail).then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Email Successfully Changed\nPlease login again",
+              style: GoogleFonts.poppins(),
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error: $error",
+            style: GoogleFonts.poppins(),
+          ),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Future<void> changePassword(
       {required String newPassword, required BuildContext context}) async {
     User user = firebaseAuth.currentUser!;
