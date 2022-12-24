@@ -37,6 +37,7 @@ class FireBaseAuthHelper {
       );
 
       User? user = userCredential.user;
+
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -96,5 +97,13 @@ class FireBaseAuthHelper {
         ),
       );
     }
+  }
+
+  Future<void> deleteUser(
+      {required String email, required String password}) async {
+    UserCredential userCredential = await firebaseAuth
+        .signInWithEmailAndPassword(email: email, password: password);
+    User? user = userCredential.user;
+    await user?.delete();
   }
 }

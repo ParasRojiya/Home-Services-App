@@ -7,7 +7,7 @@ bottomNavBarItem({required Icon icon, required String title}) {
     icon: icon,
     title: title,
     textStyle: GoogleFonts.poppins(),
-    activeColorPrimary: Colors.teal,
+    //activeColorPrimary: Colors.teal,
     inactiveColorPrimary: Colors.blue,
   );
 }

@@ -59,7 +59,6 @@ dev_dependencies:
   shared_preferences:
   firebase_storage:
   image_picker:
-  share_plus: ^4.0.10
 
 
 # For information on the generic Dart part of this file, see the

@@ -5,7 +5,6 @@ import '../../global/snack_bar.dart';
 import 'package:get/get.dart';
 import '../../global/global.dart';
 import '../../global/text_field_decoration.dart';
-import '../../controllers/service_category_controller.dart';
 import '../../helper/cloud_firestore_helper.dart';
 import '../../helper/cloud_storage_helper.dart';
 import '../../global/button_syle.dart';

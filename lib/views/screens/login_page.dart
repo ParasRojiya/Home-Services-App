@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +49,16 @@ class _LoginPageState extends State<LoginPage> {
           key: formKey,
           child: ListView(
             children: [
-              Image.asset("assets/images/signin.png"),
+              Container(
+                height: 260,
+                width: 190,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/logo/1.png"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: emailController,
@@ -77,9 +86,12 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: isNotVisible,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(40)),
-                  prefixIcon: Icon(Icons.password),
-                  label: Text("Password"),
+                      borderRadius: BorderRadius.circular(20)),
+                  prefixIcon: const Icon(Icons.password),
+                  label: Text("Password",
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                      )),
                   suffixIcon: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -205,7 +217,8 @@ class _LoginPageState extends State<LoginPage> {
                         "name": Global.user!.displayName,
                         "email": Global.user!.email,
                         "role": "user",
-                        "password": "password"
+                        "password": "password",
+                        "isActive": true,
                       };
                       await CloudFirestoreHelper.cloudFirestoreHelper
                           .insertDataInUsersCollection(data: data);

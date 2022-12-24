@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:home_services_app/views/screens/add_or_update_category.dart';
+import 'package:home_services_app/views/screens/book_category.dart';
+import 'package:home_services_app/views/screens/edit_category.dart';
 import 'package:home_services_app/views/screens/add_worker.dart';
 import 'package:home_services_app/views/screens/all_categories_page.dart';
 import 'package:home_services_app/views/screens/all_workers_page.dart';
@@ -25,6 +26,7 @@ void main() async {
 
   runApp(
     GetMaterialApp(
+      theme: ThemeData.light(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       initialRoute: (isLoggedIn) ? "/" : "/login_page",
       getPages: [
@@ -39,6 +41,7 @@ void main() async {
         GetPage(name: '/edit_worker', page: () => const EditWorker()),
         GetPage(name: '/worker_details', page: () => const WorkerDetailsPage()),
         GetPage(name: '/users_list', page: () => const UsersList()),
+        GetPage(name: '/book_category', page: () => const BookCategory()),
         GetPage(
             name: '/service_details_page',
             page: () => const ServiceDetailsPage()),

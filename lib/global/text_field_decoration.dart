@@ -8,7 +8,7 @@ textFieldDecoration({required IconData icon, required String name}) {
     fillColor: Global.color.withOpacity(0.03),
     filled: true,
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(100),
+      borderRadius: BorderRadius.circular(20),
     ),
     hintStyle: GoogleFonts.poppins(
       fontWeight: FontWeight.w500,

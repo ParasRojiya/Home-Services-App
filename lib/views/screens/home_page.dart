@@ -129,7 +129,8 @@ class _HomePageState extends State<HomePage> {
                                   (Global.isAdmin)
                                       ? Get.toNamed('/edit_category',
                                           arguments: documents[i])
-                                      : null;
+                                      : Get.toNamed('/book_category',
+                                          arguments: documents[i]);
                                 },
                                 child: categoryContainer(
                                     categoryName: documents[i].id,
@@ -250,15 +251,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late PersistentTabController persistentTabController;
-  // isAdmin() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   Global.isAdmin = prefs.getBool('isAdmin')!;
-  // }
 
   @override
   void initState() {
     super.initState();
-    // isAdmin();
     persistentTabController = PersistentTabController(initialIndex: 0);
   }
 
