@@ -43,7 +43,8 @@ class UsersList extends StatelessWidget {
                       trailing: Switch(
                         value: documents[i]['isActive'],
                         onChanged: (val) async {
-                          if (Global.currentUser!['email'] == documents[i].id) {
+                          if (Global.currentUser!['email'] ==
+                              documents[i]['email']) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
