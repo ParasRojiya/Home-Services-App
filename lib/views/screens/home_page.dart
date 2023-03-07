@@ -127,10 +127,11 @@ class _HomePageState extends State<HomePage> {
                               return InkWell(
                                 onTap: () {
                                   (Global.isAdmin)
-                                      ? Get.toNamed('/edit_category',
-                                          arguments: documents[i])
-                                      : Get.toNamed('/book_category',
-                                          arguments: documents[i]);
+                                      ? Get.toNamed('/all_services_page',
+                                          arguments: documents[i]['services'])
+                                      : Get.toNamed('/all_services_page',
+                                          arguments: documents[i]['services']);
+                                  print(documents[i]['services']);
                                 },
                                 child: categoryContainer(
                                     categoryName: documents[i].id,

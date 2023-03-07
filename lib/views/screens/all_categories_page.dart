@@ -24,7 +24,7 @@ class AllCategories extends StatelessWidget {
             if (snapshot.hasData) {
               QuerySnapshot? document = snapshot.data;
               List<QueryDocumentSnapshot> documents = document!.docs;
-              List data = documents[4] as List;
+              List data = documents[5]['categories'];
 
               return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -33,7 +33,7 @@ class AllCategories extends StatelessWidget {
                   mainAxisSpacing: 12,
                   mainAxisExtent: 220,
                 ),
-                itemCount: data.length,
+                itemCount: 2,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, i) {
                   return InkWell(
