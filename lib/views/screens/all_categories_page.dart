@@ -24,7 +24,6 @@ class AllCategories extends StatelessWidget {
             if (snapshot.hasData) {
               QuerySnapshot? document = snapshot.data;
               List<QueryDocumentSnapshot> documents = document!.docs;
-              List data = documents[5]['categories'];
 
               return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -33,19 +32,19 @@ class AllCategories extends StatelessWidget {
                   mainAxisSpacing: 12,
                   mainAxisExtent: 220,
                 ),
-                itemCount: 2,
+                itemCount: documents.length,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, i) {
                   return InkWell(
                     onTap: () {
                       (Global.isAdmin)
-                          ? Get.toNamed('/edit_category',
-                              arguments: documents[i])
+                          ? Get.toNamed('/all_services_page',
+                              arguments: documents[i]['services'])
                           : null;
                     },
                     child: categoryContainer(
-                        categoryName: data[i]['name'],
-                        imageURL: data[i]['imageURL']),
+                        categoryName: documents[i]['name'],
+                        imageURL: documents[i]['imageURL']),
                   );
                 },
               );

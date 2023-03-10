@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AllServicesPage extends StatefulWidget {
   const AllServicesPage({Key? key}) : super(key: key);
@@ -22,12 +23,11 @@ class _AllServicesPageState extends State<AllServicesPage> {
       body: Container(
         height: Get.height,
         width: Get.width,
-        child: ListView.builder(
+        child:(data.isEmpty)? Center(child: Text("No Services Available",style: GoogleFonts.ubuntu(),),):ListView.builder(
           itemCount: data.length,
           itemBuilder: (context, i) {
             return Card(
               child: ListTile(
-
                 title: Text(data[i]['name']),
               ),
             );

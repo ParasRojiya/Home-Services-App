@@ -19,7 +19,7 @@ categoryContainer({required String categoryName, required String imageURL}) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
-          flex: 4,
+          flex: 5,
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
@@ -33,9 +33,10 @@ categoryContainer({required String categoryName, required String imageURL}) {
                 )),
           ),
         ),
-        const Divider(
-          color: Colors.black,
-        ),
+        // const Divider(
+        //   color: Colors.black,
+        // ),
+        const SizedBox(height: 6),
         Expanded(
             child: Text(
           categoryName.toUpperCase(),
