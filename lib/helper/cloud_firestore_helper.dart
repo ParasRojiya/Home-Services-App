@@ -18,11 +18,11 @@ class CloudFirestoreHelper {
     categoryRef = firebaseFirestore.collection('categories');
   }
 
-  Future<void> addService(
-      {required String name, required Map<String, dynamic> data}) async {
-    connectionWithCategoryCollection();
-    await categoryRef.doc(name).set(data);
-  }
+  // Future<void> addService(
+  //     {required String name, required Map<String, dynamic> data}) async {
+  //   connectionWithCategoryCollection();
+  //   await categoryRef.doc(name).set(data);
+  // }
 
   Future<void> updateService(
       {required String name, required Map<String, dynamic> data}) async {

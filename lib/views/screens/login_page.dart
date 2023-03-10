@@ -155,10 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                           Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
-                          snackBar(
-                              user: Global.user,
-                              context: context,
-                              name: "Sign In");
+                          Navigator.of(context).pushReplacementNamed("/user_home_page", arguments: Global.user);
                         }
                       });
                       Global.cart = Global.currentUser!['cart'];

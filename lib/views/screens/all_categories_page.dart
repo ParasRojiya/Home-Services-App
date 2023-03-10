@@ -39,7 +39,7 @@ class AllCategories extends StatelessWidget {
                     onTap: () {
                       (Global.isAdmin)
                           ? Get.toNamed('/all_services_page',
-                              arguments: documents[i]['services'])
+                              arguments: documents[i])
                           : null;
                     },
                     child: categoryContainer(
@@ -59,14 +59,6 @@ class AllCategories extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: (Global.isAdmin)
-          ? FloatingActionButton(
-              onPressed: () {
-                Get.toNamed('/edit_category');
-              },
-              child: const Icon(Icons.add),
-            )
-          : null,
     );
   }
 }

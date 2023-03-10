@@ -8,11 +8,11 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../global/global.dart';
-import '../../helper/cloud_firestore_helper.dart';
-import '../../widgets/category_container.dart';
-import '../../widgets/nav_bar_item.dart';
-import '../../widgets/worker_container.dart';
+import '../../../global/global.dart';
+import '../../../helper/cloud_firestore_helper.dart';
+import '../../../widgets/category_container.dart';
+import '../../../widgets/nav_bar_item.dart';
+import '../../../widgets/worker_container.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -50,9 +50,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: (Global.isAdmin)
-            ? const Text("Admin Dashboard")
-            : const Text("User Dashboard"),
+        title:  const Text("User Dashboard"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -115,19 +113,19 @@ class _HomePageState extends State<HomePage> {
                           return GridView.builder(
                             physics: const BouncingScrollPhysics(),
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               mainAxisSpacing: 14,
                               crossAxisSpacing: 14,
                               mainAxisExtent: 200,
                             ),
                             itemCount:
-                                (documents.length >= 4) ? 4 : documents.length,
+                            (documents.length >= 4) ? 4 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                 Get.toNamed('/all_services_page',
-                                          arguments: documents[i]);
+                                   Get.toNamed('/all_services_page',
+                                      arguments: documents[i]['services']);
                                   print(documents[i]['services']);
                                 },
                                 child: categoryContainer(
@@ -188,22 +186,19 @@ class _HomePageState extends State<HomePage> {
 
                           return GridView.builder(
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               mainAxisSpacing: 14,
                               crossAxisSpacing: 14,
                               mainAxisExtent: 225,
                             ),
                             itemCount:
-                                (documents.length >= 4) ? 4 : documents.length,
+                            (documents.length >= 4) ? 4 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                  (Global.isAdmin)
-                                      ? Get.toNamed('/edit_worker',
-                                          arguments: documents[i])
-                                      : Get.toNamed('/worker_details',
-                                          arguments: documents[i]);
+                                 Get.toNamed('/worker_details',
+                                      arguments: documents[i]);
                                 },
                                 child: workerContainer(
                                   ratings: "⭐⭐⭐⭐⭐",
@@ -240,14 +235,14 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class UserHomeScreen extends StatefulWidget {
+  const UserHomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<UserHomeScreen> createState() => _UserHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _UserHomeScreenState extends State<UserHomeScreen> {
   late PersistentTabController persistentTabController;
 
   @override
@@ -258,17 +253,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> screens = [
     const HomePage(),
-    (Global.isAdmin) ? const UsersList() : const HistoryPage(),
+   const HistoryPage(),
     const AccountPage(),
   ];
 
   List<PersistentBottomNavBarItem> navBarItems() {
     return [
       bottomNavBarItem(icon: const Icon(Icons.home), title: "Home"),
-      (Global.isAdmin)
-          ? bottomNavBarItem(icon: const Icon(Icons.list), title: "User List")
-          : bottomNavBarItem(
-              icon: const Icon(Icons.shopping_cart), title: "Cart"),
+       bottomNavBarItem(
+          icon: const Icon(Icons.shopping_cart), title: "Cart"),
       bottomNavBarItem(
           icon: const Icon(Icons.account_circle), title: "Account"),
     ];

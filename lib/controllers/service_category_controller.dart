@@ -14,7 +14,7 @@ class ServiceCategoryController extends GetxController {
   }
 
   addImage(ImageSource source) async {
-    pickedImage = await _picker.pickImage(source: source);
+    pickedImage = await _picker.pickImage(source: source,imageQuality: 50);
 
     image = File(pickedImage!.path);
     update();

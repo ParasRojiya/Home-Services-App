@@ -13,21 +13,23 @@ import '../../global/button_syle.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class EditCategory extends StatefulWidget {
-  const EditCategory({Key? key}) : super(key: key);
+import 'all_services_page.dart';
+
+class EditService extends StatefulWidget {
+  const EditService({Key? key}) : super(key: key);
 
   @override
-  State<EditCategory> createState() => _EditCategoryState();
+  State<EditService> createState() => _EditServiceState();
 }
 
-class _EditCategoryState extends State<EditCategory> {
+class _EditServiceState extends State<EditService> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController serviceNameController = TextEditingController();
   final TextEditingController servicePriceController = TextEditingController();
   final TextEditingController serviceDurationController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController serviceDescriptionController =
-      TextEditingController();
+  TextEditingController();
 
   String? serviceName;
   int? servicePrice;
@@ -38,7 +40,7 @@ class _EditCategoryState extends State<EditCategory> {
   XFile? pickedImage;
 
   final ServiceCategoryController serviceCategoryController =
-      Get.put(ServiceCategoryController());
+  Get.put(ServiceCategoryController());
 
   @override
   void initState() {
@@ -47,21 +49,25 @@ class _EditCategoryState extends State<EditCategory> {
 
   @override
   Widget build(BuildContext context) {
-    QueryDocumentSnapshot res =
-        ModalRoute.of(context)!.settings.arguments as QueryDocumentSnapshot;
-    String id = res.id;
-    List data = res['services'];
+    // QueryDocumentSnapshot res =
+    // ModalRoute.of(context)!.settings.arguments as QueryDocumentSnapshot;
+    // String id = res.id;
+    // List data = res['services'];
 
-    // if (res != null) {
-    //   serviceName = res.id;
-    //   serviceNameController.text = res['name'];
-    //   servicePriceController.text = res['price'].toString();
-    //   serviceDurationController.text = res['duration'];
-    //   serviceDescriptionController.text = res['desc'];
-    // }
+    Deta res = ModalRoute.of(context)!.settings.arguments as Deta;
+    List list = res.resp['services'];
+    Map<String, dynamic> rese = res.deta;
+
+
+      serviceName = rese['name'];
+      serviceNameController.text = rese['name'];
+      servicePriceController.text = rese['price'].toString();
+      serviceDurationController.text = rese['duration'];
+      serviceDescriptionController.text = rese['desc'];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add New Service"),
+        title: const Text("Edit Service"),
         centerTitle: true,
       ),
       body: Container(
@@ -88,12 +94,12 @@ class _EditCategoryState extends State<EditCategory> {
                 GetBuilder(
                   builder: (ServiceCategoryController controller) =>
                       CircleAvatar(
-                    radius: 70,
-                    backgroundImage: (controller.image != null)
-                        ? FileImage(controller.image!) as ImageProvider
-                        : null,
-                    backgroundColor: Colors.grey,
-                  ),
+                        radius: 70,
+                        backgroundImage: (controller.image != null)
+                            ? FileImage(controller.image!) as ImageProvider
+                            : NetworkImage(rese['imageURL']),
+                        backgroundColor: Colors.grey,
+                      ),
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton(
@@ -132,7 +138,7 @@ class _EditCategoryState extends State<EditCategory> {
                 TextFormField(
                     controller: serviceNameController,
                     validator: (val) =>
-                        (val!.isEmpty) ? "Please enter service name" : null,
+                    (val!.isEmpty) ? "Please enter service name" : null,
                     onSaved: (val) {
                       serviceName = val;
                     },
@@ -142,7 +148,7 @@ class _EditCategoryState extends State<EditCategory> {
                 TextFormField(
                     controller: servicePriceController,
                     validator: (val) =>
-                        (val!.isEmpty) ? "Please enter service name" : null,
+                    (val!.isEmpty) ? "Please enter service name" : null,
                     onSaved: (val) {
                       servicePrice = int.parse(val!);
                     },
@@ -152,7 +158,7 @@ class _EditCategoryState extends State<EditCategory> {
                 TextFormField(
                     controller: serviceDurationController,
                     validator: (val) =>
-                        (val!.isEmpty) ? "Please enter service duration" : null,
+                    (val!.isEmpty) ? "Please enter service duration" : null,
                     onSaved: (val) {
                       serviceDuration = val;
                     },
@@ -174,7 +180,7 @@ class _EditCategoryState extends State<EditCategory> {
                 Container(
                   width: Get.width * 0.90,
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () async {
                       print(res);
@@ -184,22 +190,21 @@ class _EditCategoryState extends State<EditCategory> {
 
                         await CloudStorageHelper.cloudStorageHelper
                             .storeServiceImage(
-                                image: serviceCategoryController.image!,
-                                name: serviceName!);
+                            image: serviceCategoryController.image!,
+                            name: serviceName!);
 
                         Map<String, dynamic> dota = {
-                          'name': serviceName!,
+                          'name': serviceName,
                           'price': servicePrice,
                           'duration': serviceDuration,
                           'desc': serviceDescription,
                           'imageURL': Global.imageURL,
                         };
 
-                        data.add(dota);
 
-                        Map<String, dynamic> teda = {
-                          'services': data,
-                        };
+
+
+                        await CloudFirestoreHelper.cloudFirestoreHelper.updateService(name: res.ids, data:);
 
 
 
@@ -217,8 +222,8 @@ class _EditCategoryState extends State<EditCategory> {
                         //         .toLowerCase(), //serviceCategoryController.dropDownVal!,
                         //     data: data);
 
-                        await CloudFirestoreHelper.cloudFirestoreHelper
-                            .updateService(name: id, data: teda);
+                        // await CloudFirestoreHelper.cloudFirestoreHelper
+                        //     .updateService(name: id, data: teda);
 
                         successSnackBar(
                             msg: "Service successfully added in database",
@@ -247,7 +252,7 @@ class _EditCategoryState extends State<EditCategory> {
                       }
                     },
                     style: elevatedButtonStyle(),
-                    child: const Text("Add Service"),
+                    child: const Text("Edit Service"),
                   ),
                 ),
               ],
