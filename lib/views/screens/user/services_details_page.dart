@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../global/global.dart';
+import '../../../global/global.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
   const ServiceDetailsPage({Key? key}) : super(key: key);

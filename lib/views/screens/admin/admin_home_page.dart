@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:get/get.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
-import 'package:home_services_app/views/screens/history_page.dart';
-import 'package:home_services_app/views/screens/users_list.dart';
+import 'package:home_services_app/views/screens/user/history_page.dart';
+import 'package:home_services_app/views/screens/admin/users_list.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../global/global.dart';
-import '../../helper/cloud_firestore_helper.dart';
-import '../../widgets/category_container.dart';
-import '../../widgets/nav_bar_item.dart';
-import '../../widgets/worker_container.dart';
+import '../../../global/global.dart';
+import '../../../helper/cloud_firestore_helper.dart';
+import '../../../widgets/category_container.dart';
+import '../../../widgets/nav_bar_item.dart';
+import '../../../widgets/worker_container.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -50,9 +50,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: (Global.isAdmin)
-            ? const Text("Admin Dashboard")
-            : const Text("User Dashboard"),
+        title:  const Text("Admin Dashboard"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -93,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                       const Spacer(),
                       TextButton(
                         onPressed: () {
-                          Get.toNamed("/all_categories");
+                          Get.toNamed("/all_categories_page");
                         },
                         style: TextButton.styleFrom(
                             textStyle: GoogleFonts.poppins()),
@@ -199,11 +197,9 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                  (Global.isAdmin)
-                                      ? Get.toNamed('/edit_worker',
-                                          arguments: documents[i])
-                                      : Get.toNamed('/worker_details',
+                                  Get.toNamed('/edit_worker',
                                           arguments: documents[i]);
+
                                 },
                                 child: workerContainer(
                                   ratings: "⭐⭐⭐⭐⭐",
@@ -240,14 +236,14 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class AdminHomeScreen extends StatefulWidget {
+  const AdminHomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<AdminHomeScreen> createState() => _AdminHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _AdminHomeScreenState extends State<AdminHomeScreen> {
   late PersistentTabController persistentTabController;
 
   @override
@@ -258,17 +254,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> screens = [
     const HomePage(),
-    (Global.isAdmin) ? const UsersList() : const HistoryPage(),
+   const UsersList(),
     const AccountPage(),
   ];
 
   List<PersistentBottomNavBarItem> navBarItems() {
     return [
       bottomNavBarItem(icon: const Icon(Icons.home), title: "Home"),
-      (Global.isAdmin)
-          ? bottomNavBarItem(icon: const Icon(Icons.list), title: "User List")
-          : bottomNavBarItem(
-              icon: const Icon(Icons.shopping_cart), title: "Cart"),
+      bottomNavBarItem(icon: const Icon(Icons.list), title: "User List"),
       bottomNavBarItem(
           icon: const Icon(Icons.account_circle), title: "Account"),
     ];

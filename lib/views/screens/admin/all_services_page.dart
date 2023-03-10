@@ -40,10 +40,9 @@ class _AllServicesPageState extends State<AllServicesPage> {
                       title: Text(data[i]['name']),
                       trailing:IconButton(onPressed: (){
 
-                        Map<String, dynamic> datas = res as Map<String, dynamic>;
-                        Deta object = Deta(resp:res, deta: data[i], ids: id);
+                        Argument args = Argument(i:i , fullData: res,ids: id, currentData: data[i]);
 
-                        Get.toNamed('/edit_service_page',arguments: object);
+                        Get.toNamed('/edit_service_page',arguments: args);
                       },icon: const Icon(Icons.edit),color: Colors.orange,),
                     ),
                   );
@@ -61,13 +60,12 @@ class _AllServicesPageState extends State<AllServicesPage> {
 }
 
 
-class Deta {
-  QueryDocumentSnapshot resp;
-  Map<String, dynamic> deta;
+class Argument {
+  int i;
+  QueryDocumentSnapshot fullData;
+  Map<String, dynamic> currentData;
   String ids;
 
-
-  Deta({required this.resp, required this.deta, required this.ids});
-
+  Argument({required this.i ,required this.fullData, required this.currentData, required this.ids});
 
 }

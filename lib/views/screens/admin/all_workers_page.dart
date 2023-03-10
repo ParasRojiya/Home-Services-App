@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:home_services_app/global/global.dart';
 import 'package:get/get.dart';
-import '../../helper/cloud_firestore_helper.dart';
-import '../../widgets/category_container.dart';
+import 'package:home_services_app/widgets/worker_container.dart';
+import '../../../helper/cloud_firestore_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AllCategories extends StatelessWidget {
-  const AllCategories({Key? key}) : super(key: key);
+class AllWorkers extends StatelessWidget {
+  const AllWorkers({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Categories"),
+        title: const Text("Workers"),
         centerTitle: true,
       ),
       body: Container(
         margin: const EdgeInsets.all(8),
         child: StreamBuilder<QuerySnapshot>(
-          stream:
-              CloudFirestoreHelper.cloudFirestoreHelper.fetchAllCategories(),
+          stream: CloudFirestoreHelper.cloudFirestoreHelper.fetchAllWorker(),
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               QuerySnapshot? document = snapshot.data;
@@ -38,13 +37,18 @@ class AllCategories extends StatelessWidget {
                   return InkWell(
                     onTap: () {
                       (Global.isAdmin)
-                          ? Get.toNamed('/all_services_page',
-                              arguments: documents[i])
-                          : null;
+                          ? Get.toNamed('/edit_worker', arguments: documents[i])
+                          : Get.toNamed('/worker_details',
+                              arguments: documents[i]);
                     },
-                    child: categoryContainer(
-                        categoryName: documents[i]['name'],
-                        imageURL: documents[i]['imageURL']),
+                    child: workerContainer(
+                      ratings: "⭐⭐⭐⭐⭐",
+                      rate: documents[i]['price'],
+                      name: documents[i]['name'],
+                      experience: documents[i]['experience'],
+                      imageURL: documents[i]['imageURL'],
+                      // imageURL: "",
+                    ),
                   );
                 },
               );
@@ -59,6 +63,14 @@ class AllCategories extends StatelessWidget {
           },
         ),
       ),
+      floatingActionButton: (Global.isAdmin)
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                Get.toNamed('/add_worker');
+              },
+              label: const Text("Add Worker"),
+            )
+          : null,
     );
   }
 }

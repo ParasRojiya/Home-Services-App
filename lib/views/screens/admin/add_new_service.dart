@@ -1,26 +1,26 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import '../../global/snack_bar.dart';
+import '../../../global/snack_bar.dart';
 import 'package:get/get.dart';
-import '../../global/global.dart';
-import '../../global/text_field_decoration.dart';
-import '../../controllers/service_category_controller.dart';
-import '../../helper/cloud_firestore_helper.dart';
+import '../../../global/global.dart';
+import '../../../global/text_field_decoration.dart';
+import '../../../controllers/service_category_controller.dart';
+import '../../../helper/cloud_firestore_helper.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../helper/cloud_storage_helper.dart';
-import '../../global/button_syle.dart';
+import '../../../helper/cloud_storage_helper.dart';
+import '../../../global/button_syle.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class EditCategory extends StatefulWidget {
-  const EditCategory({Key? key}) : super(key: key);
+class AddNewService extends StatefulWidget {
+  const AddNewService({Key? key}) : super(key: key);
 
   @override
-  State<EditCategory> createState() => _EditCategoryState();
+  State<AddNewService> createState() => _AddNewServiceState();
 }
 
-class _EditCategoryState extends State<EditCategory> {
+class _AddNewServiceState extends State<AddNewService> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController serviceNameController = TextEditingController();
   final TextEditingController servicePriceController = TextEditingController();
@@ -40,6 +40,9 @@ class _EditCategoryState extends State<EditCategory> {
   final ServiceCategoryController serviceCategoryController =
       Get.put(ServiceCategoryController());
 
+  String id = '';
+  List? data;
+
   @override
   void initState() {
     super.initState();
@@ -49,16 +52,9 @@ class _EditCategoryState extends State<EditCategory> {
   Widget build(BuildContext context) {
     QueryDocumentSnapshot res =
         ModalRoute.of(context)!.settings.arguments as QueryDocumentSnapshot;
-    String id = res.id;
-    List data = res['services'];
+     id = res.id;
+     data = res['services'];
 
-    // if (res != null) {
-    //   serviceName = res.id;
-    //   serviceNameController.text = res['name'];
-    //   servicePriceController.text = res['price'].toString();
-    //   serviceDurationController.text = res['duration'];
-    //   serviceDescriptionController.text = res['desc'];
-    // }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add New Service"),
@@ -177,74 +173,7 @@ class _EditCategoryState extends State<EditCategory> {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () async {
-                      print(res);
-                      if (formKey.currentState!.validate() &&
-                          serviceCategoryController.image != null) {
-                        formKey.currentState!.save();
-
-                        await CloudStorageHelper.cloudStorageHelper
-                            .storeServiceImage(
-                                image: serviceCategoryController.image!,
-                                name: serviceName!);
-
-                        Map<String, dynamic> dota = {
-                          'name': serviceName!,
-                          'price': servicePrice,
-                          'duration': serviceDuration,
-                          'desc': serviceDescription,
-                          'imageURL': Global.imageURL,
-                        };
-
-                        data.add(dota);
-
-                        Map<String, dynamic> teda = {
-                          'services': data,
-                        };
-
-
-
-
-                        // (res != null)
-                        //     ? await CloudFirestoreHelper
-                        //     .cloudFirestoreHelper
-                        //     .updateService(
-                        //     name: serviceName!.toLowerCase(),
-                        //     data: data)
-                        //     : await CloudFirestoreHelper
-                        //     .cloudFirestoreHelper
-                        //     .addService(
-                        //     name: serviceName!
-                        //         .toLowerCase(), //serviceCategoryController.dropDownVal!,
-                        //     data: data);
-
-                        await CloudFirestoreHelper.cloudFirestoreHelper
-                            .updateService(name: id, data: teda);
-
-                        successSnackBar(
-                            msg: "Service successfully added in database",
-                            context: context);
-
-                        serviceNameController.clear();
-                        servicePriceController.clear();
-                        serviceDurationController.clear();
-                        serviceDescriptionController.clear();
-
-                        serviceName = null;
-                        servicePrice = null;
-                        serviceDuration = null;
-                        serviceDescription = null;
-
-
-                        Get.offAndToNamed('/all_categories');
-                      } else if (serviceCategoryController.image == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Please add image"),
-                            backgroundColor: Colors.red,
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      }
+                      addService();
                     },
                     style: elevatedButtonStyle(),
                     child: const Text("Add Service"),
@@ -258,48 +187,62 @@ class _EditCategoryState extends State<EditCategory> {
     );
   }
 
-  deleteService() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(
-              "Are you sure want to delete the ${serviceNameController.text} service?",
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            actions: [
-              OutlinedButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.poppins(),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await CloudFirestoreHelper.cloudFirestoreHelper
-                      .deleteCategory(name: serviceName!);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          "${serviceNameController.text} deleted successfully"),
-                      backgroundColor: Colors.green,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                  Get.offNamedUntil('/', (route) => false);
-                },
-                child: Text(
-                  "Delete",
-                  style: GoogleFonts.poppins(),
-                ),
-              ),
-            ],
-          );
-        });
+  addService() async {
+
+    if (formKey.currentState!.validate() &&
+        serviceCategoryController.image != null) {
+      formKey.currentState!.save();
+
+      await CloudStorageHelper.cloudStorageHelper
+          .storeServiceImage(
+          image: serviceCategoryController.image!,
+          name: serviceName!);
+
+      Map<String, dynamic> dota = {
+        'name': serviceName!,
+        'price': servicePrice,
+        'duration': serviceDuration,
+        'desc': serviceDescription,
+        'imageURL': Global.imageURL,
+      };
+
+      data?.add(dota);
+
+      Map<String, dynamic> teda = {
+        'services': data,
+      };
+
+
+      await CloudFirestoreHelper.cloudFirestoreHelper
+          .updateService(name: id, data: teda);
+
+      successSnackBar(
+          msg: "Service successfully added in database",
+          context: context);
+
+      serviceNameController.clear();
+      servicePriceController.clear();
+      serviceDurationController.clear();
+      serviceDescriptionController.clear();
+
+      serviceName = null;
+      servicePrice = null;
+      serviceDuration = null;
+      serviceDescription = null;
+
+
+      Get.offAndToNamed('/all_categories');
+    } else if (serviceCategoryController.image == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please add image"),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+
+
   }
+
 }

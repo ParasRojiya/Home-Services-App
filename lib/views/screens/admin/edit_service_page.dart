@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import '../../global/snack_bar.dart';
+import '../../../global/snack_bar.dart';
 import 'package:get/get.dart';
-import '../../global/global.dart';
-import '../../global/text_field_decoration.dart';
-import '../../controllers/service_category_controller.dart';
-import '../../helper/cloud_firestore_helper.dart';
+import '../../../global/global.dart';
+import '../../../global/text_field_decoration.dart';
+import '../../../controllers/service_category_controller.dart';
+import '../../../helper/cloud_firestore_helper.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../helper/cloud_storage_helper.dart';
-import '../../global/button_syle.dart';
+import '../../../helper/cloud_storage_helper.dart';
+import '../../../global/button_syle.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -42,28 +42,29 @@ class _EditServiceState extends State<EditService> {
   final ServiceCategoryController serviceCategoryController =
   Get.put(ServiceCategoryController());
 
+  Argument? res;
+  List? list;
+
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    // QueryDocumentSnapshot res =
-    // ModalRoute.of(context)!.settings.arguments as QueryDocumentSnapshot;
-    // String id = res.id;
-    // List data = res['services'];
 
-    Deta res = ModalRoute.of(context)!.settings.arguments as Deta;
-    List list = res.resp['services'];
-    Map<String, dynamic> rese = res.deta;
+    res = ModalRoute.of(context)!.settings.arguments as Argument;
+    list = res?.fullData['services'];
+    String? id = res?.ids;
+    Map<String, dynamic>? currentData = res?.currentData;
 
 
-      serviceName = rese['name'];
-      serviceNameController.text = rese['name'];
-      servicePriceController.text = rese['price'].toString();
-      serviceDurationController.text = rese['duration'];
-      serviceDescriptionController.text = rese['desc'];
+      serviceName = currentData!['name'];
+      serviceNameController.text = currentData['name'];
+      servicePriceController.text = currentData['price'].toString();
+      serviceDurationController.text = currentData['duration'];
+      serviceDescriptionController.text = currentData['desc'];
 
     return Scaffold(
       appBar: AppBar(
@@ -97,7 +98,7 @@ class _EditServiceState extends State<EditService> {
                         radius: 70,
                         backgroundImage: (controller.image != null)
                             ? FileImage(controller.image!) as ImageProvider
-                            : NetworkImage(rese['imageURL']),
+                            : NetworkImage(currentData['imageURL']),
                         backgroundColor: Colors.grey,
                       ),
                 ),
@@ -129,7 +130,7 @@ class _EditServiceState extends State<EditService> {
                             );
                           });
                     },
-                    child: const Text("Add Image")),
+                    child: const Text("Edit Image")),
                 const Divider(
                   color: Colors.grey,
                   thickness: 1,
@@ -182,74 +183,8 @@ class _EditServiceState extends State<EditService> {
                   margin:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ElevatedButton(
-                    onPressed: () async {
-                      print(res);
-                      if (formKey.currentState!.validate() &&
-                          serviceCategoryController.image != null) {
-                        formKey.currentState!.save();
-
-                        await CloudStorageHelper.cloudStorageHelper
-                            .storeServiceImage(
-                            image: serviceCategoryController.image!,
-                            name: serviceName!);
-
-                        Map<String, dynamic> dota = {
-                          'name': serviceName,
-                          'price': servicePrice,
-                          'duration': serviceDuration,
-                          'desc': serviceDescription,
-                          'imageURL': Global.imageURL,
-                        };
-
-
-
-
-                        await CloudFirestoreHelper.cloudFirestoreHelper.updateService(name: res.ids, data:);
-
-
-
-
-                        // (res != null)
-                        //     ? await CloudFirestoreHelper
-                        //     .cloudFirestoreHelper
-                        //     .updateService(
-                        //     name: serviceName!.toLowerCase(),
-                        //     data: data)
-                        //     : await CloudFirestoreHelper
-                        //     .cloudFirestoreHelper
-                        //     .addService(
-                        //     name: serviceName!
-                        //         .toLowerCase(), //serviceCategoryController.dropDownVal!,
-                        //     data: data);
-
-                        // await CloudFirestoreHelper.cloudFirestoreHelper
-                        //     .updateService(name: id, data: teda);
-
-                        successSnackBar(
-                            msg: "Service successfully added in database",
-                            context: context);
-
-                        serviceNameController.clear();
-                        servicePriceController.clear();
-                        serviceDurationController.clear();
-                        serviceDescriptionController.clear();
-
-                        serviceName = null;
-                        servicePrice = null;
-                        serviceDuration = null;
-                        serviceDescription = null;
-
-
-                        Get.offAndToNamed('/all_categories');
-                      } else if (serviceCategoryController.image == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Please add image"),
-                            backgroundColor: Colors.red,
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      }
+                    onPressed: () {
+                      updateService();
                     },
                     style: elevatedButtonStyle(),
                     child: const Text("Edit Service"),
@@ -306,5 +241,52 @@ class _EditServiceState extends State<EditService> {
             ],
           );
         });
+  }
+
+  updateService() async {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+
+      if(serviceCategoryController.image != null) {
+        await CloudStorageHelper.cloudStorageHelper
+            .storeServiceImage(
+            image: serviceCategoryController.image!,
+            name: serviceName!);
+      }
+
+      Map<String, dynamic> editedData = {
+        'name': serviceName,
+        'price': servicePrice,
+        'duration': serviceDuration,
+        'desc': serviceDescription,
+        'imageURL': (serviceCategoryController.image != null) ?Global.imageURL: res!.currentData['imageURL'],
+      };
+
+      list!.removeAt(res!.i);
+      list!.insert(res!.i, editedData);
+
+      Map<String, dynamic> data = {
+        'services':list,
+      };
+
+      await CloudFirestoreHelper.cloudFirestoreHelper.updateService(name: res!.ids, data:data);
+
+
+      successSnackBar(
+          msg: "Service successfully added in database",
+          context: context);
+
+      serviceNameController.clear();
+      servicePriceController.clear();
+      serviceDurationController.clear();
+      serviceDescriptionController.clear();
+
+      serviceName = null;
+      servicePrice = null;
+      serviceDuration = null;
+      serviceDescription = null;
+
+      Get.offAndToNamed('/all_categories_page');
+    }
   }
 }

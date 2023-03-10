@@ -1,24 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:home_services_app/controllers/worker_controller.dart';
-import '../../global/snack_bar.dart';
+import '../../../global/snack_bar.dart';
 import 'package:get/get.dart';
-import '../../global/global.dart';
-import '../../global/text_field_decoration.dart';
-import '../../helper/cloud_firestore_helper.dart';
-import '../../helper/cloud_storage_helper.dart';
-import '../../global/button_syle.dart';
+import '../../../global/global.dart';
+import '../../../global/text_field_decoration.dart';
+import '../../../helper/cloud_firestore_helper.dart';
+import '../../../helper/cloud_storage_helper.dart';
+import '../../../global/button_syle.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class EditWorker extends StatefulWidget {
-  const EditWorker({Key? key}) : super(key: key);
+class AddWorker extends StatefulWidget {
+  const AddWorker({Key? key}) : super(key: key);
 
   @override
-  State<EditWorker> createState() => _EditWorkerState();
+  State<AddWorker> createState() => _AddWorkerState();
 }
 
-class _EditWorkerState extends State<EditWorker> {
+class _AddWorkerState extends State<AddWorker> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController workerNameController = TextEditingController();
   final TextEditingController workerEmailController = TextEditingController();

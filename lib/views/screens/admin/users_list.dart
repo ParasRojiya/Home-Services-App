@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../helper/cloud_firestore_helper.dart';
-import '../../helper/firebase_auth_helper.dart';
+import '../../../helper/cloud_firestore_helper.dart';
+import '../../../helper/firebase_auth_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../global/global.dart';
+import '../../../global/global.dart';
 
 class UsersList extends StatelessWidget {
   const UsersList({Key? key}) : super(key: key);

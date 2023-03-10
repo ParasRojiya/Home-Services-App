@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 
-import '../../global/global.dart';
+import '../../../global/global.dart';
 
 TextStyle txtStyle = GoogleFonts.poppins(
   fontSize: 16,
