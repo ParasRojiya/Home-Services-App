@@ -1,13 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/user/history_page.dart';
-import 'package:home_services_app/views/screens/admin/users_list.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../widgets/category_container.dart';
@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
         'email': element.data()?['email'],
         'password': element.data()?['password'],
         'role': element.data()?['role'],
+        'bookings': element.data()?['bookings'],
       };
     });
   }
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  const Text("User Dashboard"),
+        title: const Text("User Dashboard"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -113,18 +114,18 @@ class _HomePageState extends State<HomePage> {
                           return GridView.builder(
                             physics: const BouncingScrollPhysics(),
                             gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               mainAxisSpacing: 14,
                               crossAxisSpacing: 14,
                               mainAxisExtent: 200,
                             ),
                             itemCount:
-                            (documents.length >= 4) ? 4 : documents.length,
+                                (documents.length >= 4) ? 4 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                   Get.toNamed('/all_services_page',
+                                  Get.toNamed('/all_services_page',
                                       arguments: documents[i]);
                                   print(documents[i]['services']);
                                 },
@@ -186,18 +187,18 @@ class _HomePageState extends State<HomePage> {
 
                           return GridView.builder(
                             gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               mainAxisSpacing: 14,
                               crossAxisSpacing: 14,
                               mainAxisExtent: 225,
                             ),
                             itemCount:
-                            (documents.length >= 4) ? 4 : documents.length,
+                                (documents.length >= 4) ? 4 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                 Get.toNamed('/worker_details',
+                                  Get.toNamed('/worker_details',
                                       arguments: documents[i]);
                                 },
                                 child: workerContainer(
@@ -253,15 +254,14 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   List<Widget> screens = [
     const HomePage(),
-   const HistoryPage(),
+    const HistoryPage(),
     const AccountPage(),
   ];
 
   List<PersistentBottomNavBarItem> navBarItems() {
     return [
       bottomNavBarItem(icon: const Icon(Icons.home), title: "Home"),
-       bottomNavBarItem(
-          icon: const Icon(Icons.shopping_cart), title: "Cart"),
+      bottomNavBarItem(icon: const Icon(Icons.shopping_cart), title: "Cart"),
       bottomNavBarItem(
           icon: const Icon(Icons.account_circle), title: "Account"),
     ];

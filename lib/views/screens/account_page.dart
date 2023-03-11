@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../global/global.dart';
+import '../../global/text_field_decoration.dart';
 import '../../helper/firebase_auth_helper.dart';
 import '../../utils/account_option_container.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../global/text_field_decoration.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../../global/text_field_decoration.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -305,7 +305,7 @@ class _AccountPageState extends State<AccountPage> {
               accountOptionContainer(
                   title: "Call us",
                   onTap: () async {
-                    Uri url = Uri.parse("tel:+91 8200579988}");
+                    Uri url = Uri.parse("tel:+91 7433800063}");
 
                     if (await canLaunchUrl(url)) {
                       await launchUrl(url);

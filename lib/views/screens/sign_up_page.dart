@@ -1,14 +1,13 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 
 import '../../global/button_syle.dart';
 import '../../global/global.dart';
 import '../../global/snack_bar.dart';
-import 'package:get/get.dart';
-
 import '../../global/text_field_decoration.dart';
 import '../../helper/cloud_firestore_helper.dart';
 
@@ -158,6 +157,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               "role": "user",
                               "password": password,
                               "isActive": true,
+                              "bookings": [],
+                              "cart": [],
                             },
                           );
                         }

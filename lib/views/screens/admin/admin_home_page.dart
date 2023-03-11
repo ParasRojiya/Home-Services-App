@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
         'email': element.data()?['email'],
         'password': element.data()?['password'],
         'role': element.data()?['role'],
+        'bookings': element.data()?['bookings'],
       };
     });
   }

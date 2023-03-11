@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../global/global.dart';
 
@@ -12,6 +11,7 @@ class CloudFirestoreHelper {
   late CollectionReference userRef;
   late CollectionReference categoryRef;
   late CollectionReference workerRef;
+  late CollectionReference bookingsRef;
 
   //CATEGORIES COLLECTION HELPER
   connectionWithCategoryCollection() {
@@ -73,6 +73,17 @@ class CloudFirestoreHelper {
   Stream<QuerySnapshot> fetchAllWorker() {
     connectionWithWorkerCollection();
     return workerRef.snapshots();
+  }
+
+  //BOOKINGS COLLECTION HELPER
+  connectionWithBookingsCollection() {
+    bookingsRef = firebaseFirestore.collection('bookings');
+  }
+
+  Future<void> addServiceInBookingCollection(
+      {required Map<String, dynamic> data, required String userEmail}) async {
+    connectionWithBookingsCollection();
+    await bookingsRef.doc(userEmail).set(data);
   }
 
   //USERS COLLECTION HELPER

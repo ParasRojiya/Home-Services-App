@@ -59,7 +59,9 @@ dev_dependencies:
   shared_preferences:
   firebase_storage:
   image_picker:
-  time_range:
+  time_range_picker:
+  day_night_time_picker:
+  date_time_picker_widget:
 
 
 

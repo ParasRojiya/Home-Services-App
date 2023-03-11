@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +10,6 @@ import '../../global/global.dart';
 import '../../global/text_field_decoration.dart';
 import '../../helper/cloud_firestore_helper.dart';
 import '../../helper/firebase_auth_helper.dart';
-import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -132,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                           'email': element.data()?['email'],
                           'password': element.data()?['password'],
                           'role': element.data()?['role'],
-                          'cart': element.data()?['cart'],
+                          'bookings': element.data()?['bookings'],
                         };
 
                         if (element.data()?['role'] == 'admin') {
@@ -155,7 +154,9 @@ class _LoginPageState extends State<LoginPage> {
                           Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
-                          Navigator.of(context).pushReplacementNamed("/user_home_page", arguments: Global.user);
+                          Navigator.of(context).pushReplacementNamed(
+                              "/user_home_page",
+                              arguments: Global.user);
                         }
                       });
                       Global.cart = Global.currentUser!['cart'];
