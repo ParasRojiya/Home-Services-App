@@ -37,10 +37,8 @@ class AllCategories extends StatelessWidget {
                 itemBuilder: (context, i) {
                   return InkWell(
                     onTap: () {
-                      (Global.isAdmin)
-                          ? Get.toNamed('/all_services_page',
-                              arguments: documents[i])
-                          : null;
+                     Get.toNamed('/all_services_page',
+                              arguments: documents[i]);
                     },
                     child: categoryContainer(
                         categoryName: documents[i]['name'],

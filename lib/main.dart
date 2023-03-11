@@ -8,7 +8,7 @@ import 'package:home_services_app/views/screens/admin/add_worker.dart';
 import 'package:home_services_app/views/screens/admin/all_categories_page.dart';
 import 'package:home_services_app/views/screens/admin/all_workers_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_service_page.dart';
-import 'package:home_services_app/views/screens/user/services_details_page.dart';
+import 'package:home_services_app/views/screens/user/book_service_page.dart';
 import 'package:home_services_app/views/screens/user/worker_details_page.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
 import 'global/global.dart';
@@ -31,7 +31,11 @@ void main() async {
     GetMaterialApp(
       theme: ThemeData.light(useMaterial3: true),
       debugShowCheckedModeBanner: false,
-      initialRoute: (isLoggedIn)? (Global.isAdmin)? "/admin_home_page": "/user_home_page":"/login_page",
+      initialRoute: (isLoggedIn)
+          ? (Global.isAdmin)
+              ? "/admin_home_page"
+              : "/user_home_page"
+          : "/login_page",
       getPages: [
         GetPage(name: '/login_page', page: () => const LoginPage()),
         GetPage(name: '/sign_up_page', page: () => const SignUpPage()),
@@ -39,8 +43,10 @@ void main() async {
 
         //ADMIN SCREENS
         GetPage(name: '/admin_home_page', page: () => const AdminHomeScreen()),
-        GetPage(name: '/all_categories_page', page: () => const AllCategories()),
-        GetPage(name: '/all_services_page', page: () => const AllServicesPage()),
+        GetPage(
+            name: '/all_categories_page', page: () => const AllCategories()),
+        GetPage(
+            name: '/all_services_page', page: () => const AllServicesPage()),
         GetPage(name: '/edit_service_page', page: () => const EditService()),
         GetPage(name: '/add_service_page', page: () => const AddNewService()),
         GetPage(name: '/all_workers', page: () => const AllWorkers()),
@@ -53,8 +59,9 @@ void main() async {
         GetPage(name: '/worker_details', page: () => const WorkerDetailsPage()),
         GetPage(name: '/book_category', page: () => const BookCategory()),
         GetPage(
-            name: '/service_details_page',
-            page: () => const ServiceDetailsPage()),
+          name: '/book_service',
+          page: () => const BookService(),
+        )
       ],
     ),
   );

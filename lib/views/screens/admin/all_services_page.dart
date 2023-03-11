@@ -4,6 +4,8 @@ import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../global/global.dart';
+
 class AllServicesPage extends StatefulWidget {
   const AllServicesPage({Key? key}) : super(key: key);
 
@@ -38,23 +40,27 @@ class _AllServicesPageState extends State<AllServicesPage> {
                   return Card(
                     child: ListTile(
                       title: Text(data[i]['name']),
-                      trailing:IconButton(onPressed: (){
+                      trailing:(Global.isAdmin)?IconButton(onPressed: (){
 
                         Argument args = Argument(i:i , fullData: res,ids: id, currentData: data[i]);
 
                         Get.toNamed('/edit_service_page',arguments: args);
-                      },icon: const Icon(Icons.edit),color: Colors.orange,),
+                      },icon: const Icon(Icons.edit),color: Colors.orange,):IconButton(onPressed: (){
+                        Argument args = Argument(i:i , fullData: res,ids: id, currentData: data[i]);
+                        Get.toNamed('/book_service',arguments: args);
+                      }, icon: const Icon(Icons.arrow_forward_ios)),
                     ),
                   );
                 },
               ),
       ),
-      floatingActionButton: FloatingActionButton(
+
+      floatingActionButton:(Global.isAdmin)? FloatingActionButton(
         onPressed: () {
           Get.toNamed('/add_service_page',arguments: res);
         },
         child: const Icon(Icons.add),
-      ),
+      ):null,
     );
   }
 }

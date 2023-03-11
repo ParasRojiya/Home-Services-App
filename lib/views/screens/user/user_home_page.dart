@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                       const Spacer(),
                       TextButton(
                         onPressed: () {
-                          Get.toNamed("/all_categories");
+                          Get.toNamed("/all_categories_page");
                         },
                         style: TextButton.styleFrom(
                             textStyle: GoogleFonts.poppins()),
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                               return InkWell(
                                 onTap: () {
                                    Get.toNamed('/all_services_page',
-                                      arguments: documents[i]['services']);
+                                      arguments: documents[i]);
                                   print(documents[i]['services']);
                                 },
                                 child: categoryContainer(
