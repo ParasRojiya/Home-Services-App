@@ -7,7 +7,6 @@ import 'package:home_services_app/global/button_syle.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 
 import '../../../global/global.dart';
-import '../../../global/snack_bar.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 
 class BookService extends StatefulWidget {
@@ -31,10 +30,7 @@ class _BookServiceState extends State<BookService> {
 
   @override
   Widget build(BuildContext context) {
-    Argument res = ModalRoute
-        .of(context)!
-        .settings
-        .arguments as Argument;
+    Argument res = ModalRoute.of(context)!.settings.arguments as Argument;
     return Scaffold(
       appBar: AppBar(
         title: Text("Book Service"),
@@ -76,8 +72,7 @@ class _BookServiceState extends State<BookService> {
                   is24h: false,
                   onDateChanged: (selectedDate) {
                     date =
-                    "${selectedDate.day}-${selectedDate.month}-${selectedDate
-                        .year}";
+                        "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}";
                     print("=================================");
                     print(date);
                     print("=================================");
@@ -154,7 +149,7 @@ class _BookServiceState extends State<BookService> {
                 Container(
                   width: Get.width,
                   margin:
-                  const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () async {
                       showDialog(
@@ -205,7 +200,7 @@ class _BookServiceState extends State<BookService> {
                                       'SelectedDateTime': "$date $time",
                                     };
                                     List bookings =
-                                    Global.currentUser!['bookings'];
+                                        Global.currentUser!['bookings'];
                                     bookings.add(serviceData);
 
                                     Map<String, dynamic> data = {
@@ -215,20 +210,24 @@ class _BookServiceState extends State<BookService> {
                                     await CloudFirestoreHelper
                                         .cloudFirestoreHelper
                                         .updateUsersRecords(
-                                        id: Global.currentUser!['email'],
-                                        data: data);
+                                            id: Global.currentUser!['email'],
+                                            data: data);
 
                                     await CloudFirestoreHelper
                                         .cloudFirestoreHelper
                                         .addServiceInBookingCollection(
-                                        data: data,
-                                        userEmail:
-                                        Global.currentUser!['email']);
+                                            data: data,
+                                            userEmail:
+                                                Global.currentUser!['email']);
 
-                                    successSnackBar(
-                                        msg:
-                                        "Service successfully added in database",
-                                        context: context);
+                                    // successSnackBar(
+                                    //     msg:
+                                    //     "Service successfully added in database",
+                                    //     context: context);
+
+                                    Get.snackbar("Service Booked Successfully",
+                                        "Service");
+
                                     Get.offNamedUntil(
                                         '/user_home_page', (route) => false);
                                   },
