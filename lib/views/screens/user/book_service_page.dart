@@ -19,6 +19,7 @@ class BookService extends StatefulWidget {
 
 class _BookServiceState extends State<BookService> {
   Time _time = Time(hour: 11, minute: 30, second: 20);
+
   void onTimeChanged(Time newTime) {
     setState(() {
       _time = newTime;
@@ -30,7 +31,10 @@ class _BookServiceState extends State<BookService> {
 
   @override
   Widget build(BuildContext context) {
-    Argument res = ModalRoute.of(context)!.settings.arguments as Argument;
+    Argument res = ModalRoute
+        .of(context)!
+        .settings
+        .arguments as Argument;
     return Scaffold(
       appBar: AppBar(
         title: Text("Book Service"),
@@ -72,7 +76,8 @@ class _BookServiceState extends State<BookService> {
                   is24h: false,
                   onDateChanged: (selectedDate) {
                     date =
-                        "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}";
+                    "${selectedDate.day}-${selectedDate.month}-${selectedDate
+                        .year}";
                     print("=================================");
                     print(date);
                     print("=================================");
@@ -149,7 +154,7 @@ class _BookServiceState extends State<BookService> {
                 Container(
                   width: Get.width,
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () async {
                       showDialog(
@@ -200,7 +205,7 @@ class _BookServiceState extends State<BookService> {
                                       'SelectedDateTime': "$date $time",
                                     };
                                     List bookings =
-                                        Global.currentUser!['bookings'];
+                                    Global.currentUser!['bookings'];
                                     bookings.add(serviceData);
 
                                     Map<String, dynamic> data = {
@@ -210,35 +215,19 @@ class _BookServiceState extends State<BookService> {
                                     await CloudFirestoreHelper
                                         .cloudFirestoreHelper
                                         .updateUsersRecords(
-                                            id: Global.currentUser!['email'],
-                                            data: data);
+                                        id: Global.currentUser!['email'],
+                                        data: data);
 
                                     await CloudFirestoreHelper
                                         .cloudFirestoreHelper
                                         .addServiceInBookingCollection(
-                                            data: data,
-                                            userEmail:
-                                                Global.currentUser!['email']);
-                                    print(
-                                        "====================CURRENT USER UID===========================");
-                                    print(Global.user!.email);
-                                    print(
-                                        "===============================================");
-                                    print(
-                                        "===============================================");
-                                    print(
-                                        "=====================CURRENT USER==========================");
-                                    print(Global.currentUser);
-                                    print(
-                                        "===============================================");
-                                    print(
-                                        "=======================BOOKING SERVICE DATA========================");
-                                    print(data);
-                                    print(
-                                        "===============================================");
+                                        data: data,
+                                        userEmail:
+                                        Global.currentUser!['email']);
+
                                     successSnackBar(
                                         msg:
-                                            "Service successfully added in database",
+                                        "Service successfully added in database",
                                         context: context);
                                     Get.offNamedUntil(
                                         '/user_home_page', (route) => false);

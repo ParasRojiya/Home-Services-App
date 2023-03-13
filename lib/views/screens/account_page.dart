@@ -305,20 +305,6 @@ class _AccountPageState extends State<AccountPage> {
               accountOptionContainer(
                   title: "Call us",
                   onTap: () async {
-                    // Uri url = Uri.parse("tel:+919081313402");
-                    //
-                    // if (await canLaunchUrl(url)) {
-                    //   await launchUrl(url);
-                    // } else {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(
-                    //       content: Text("Can't be launched..."),
-                    //       backgroundColor: Colors.redAccent,
-                    //       behavior: SnackBarBehavior.floating,
-                    //     ),
-                    //   );
-                    // }
-
                     int number = 7874764505;
                     Uri url = Uri.parse("tel:+917874764505");
 

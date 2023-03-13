@@ -7,12 +7,14 @@ import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/user/history_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../widgets/category_container.dart';
 import '../../../widgets/nav_bar_item.dart';
 import '../../../widgets/worker_container.dart';
+import '../../../helper/local_notification_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -43,8 +45,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    currentUserData();
     super.initState();
+    currentUserData();
+
+    // AndroidInitializationSettings androidInitializationSettings =
+    // const AndroidInitializationSettings("mipmap/ic_launcher");
+    // IOSInitializationSettings iosInitializationSettings =
+    // const IOSInitializationSettings();
+    //
+    // InitializationSettings initializationSettings = InitializationSettings(
+    //     android: androidInitializationSettings, iOS: iosInitializationSettings);
+    //
+    // LocalNotificationHelper.flutterLocalNotificationsPlugin
+    //     .initialize(initializationSettings);
   }
 
   @override
@@ -114,14 +127,14 @@ class _HomePageState extends State<HomePage> {
                           return GridView.builder(
                             physics: const BouncingScrollPhysics(),
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               mainAxisSpacing: 14,
                               crossAxisSpacing: 14,
                               mainAxisExtent: 200,
                             ),
                             itemCount:
-                                (documents.length >= 4) ? 4 : documents.length,
+                            (documents.length >= 4) ? 4 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
@@ -187,14 +200,14 @@ class _HomePageState extends State<HomePage> {
 
                           return GridView.builder(
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               mainAxisSpacing: 14,
                               crossAxisSpacing: 14,
                               mainAxisExtent: 225,
                             ),
                             itemCount:
-                                (documents.length >= 4) ? 4 : documents.length,
+                            (documents.length >= 4) ? 4 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
