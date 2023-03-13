@@ -305,15 +305,30 @@ class _AccountPageState extends State<AccountPage> {
               accountOptionContainer(
                   title: "Call us",
                   onTap: () async {
-                    Uri url = Uri.parse("tel:+91 7433800063}");
+                    // Uri url = Uri.parse("tel:+919081313402");
+                    //
+                    // if (await canLaunchUrl(url)) {
+                    //   await launchUrl(url);
+                    // } else {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(
+                    //       content: Text("Can't be launched..."),
+                    //       backgroundColor: Colors.redAccent,
+                    //       behavior: SnackBarBehavior.floating,
+                    //     ),
+                    //   );
+                    // }
+
+                    int number = 7874764505;
+                    Uri url = Uri.parse("tel:+917874764505");
 
                     if (await canLaunchUrl(url)) {
                       await launchUrl(url);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text("Can't be launched..."),
-                          backgroundColor: Colors.redAccent,
+                          content: Text("can't be luanched..."),
+                          backgroundColor: Colors.red,
                           behavior: SnackBarBehavior.floating,
                         ),
                       );
@@ -325,7 +340,6 @@ class _AccountPageState extends State<AccountPage> {
                   onTap: () async {
                     Uri url = Uri.parse(
                         "mailto:roronoazoro5466@gmail.com?subject=Demo&body=Hello");
-
                     if (await canLaunchUrl(url)) {
                       await launchUrl(url);
                     } else {
