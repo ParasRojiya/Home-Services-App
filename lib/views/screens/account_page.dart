@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import '../../global/global.dart';
 import '../../global/text_field_decoration.dart';
 import '../../helper/firebase_auth_helper.dart';
+import '../../helper/local_notification_helper.dart';
 import '../../utils/account_option_container.dart';
 
 class AccountPage extends StatefulWidget {
@@ -34,7 +36,27 @@ class _AccountPageState extends State<AccountPage> {
   String? currentPassword;
   String? newPassword;
   String? newConfirmPassword;
+@override
+  void initState() {
+  AndroidInitializationSettings androidInitializationSettings =
+  const AndroidInitializationSettings("mipmap/ic_launcher");
+  DarwinInitializationSettings darwinInitializationSettings =
+  const DarwinInitializationSettings();
+  var initializationSettings = InitializationSettings(
+    android: androidInitializationSettings,
+    iOS: darwinInitializationSettings,
+  );
 
+  tz.initializeTimeZones();
+
+  LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: (NotificationResponse response) {
+      print(response.payload);
+    },
+  );
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,6 +126,14 @@ class _AccountPageState extends State<AccountPage> {
               onTap: () async {
                 await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
                 Get.offAndToNamed("/login_page");
+              },
+              icon: Icons.logout,
+            ),
+            accountOptionContainer(
+              title: "Notification",
+              onTap: () async {
+                await LocalNotificationHelper.localNotificationHelper
+                    .scheduledNotification();
               },
               icon: Icons.logout,
             ),
@@ -305,7 +335,6 @@ class _AccountPageState extends State<AccountPage> {
               accountOptionContainer(
                   title: "Call us",
                   onTap: () async {
-                    int number = 7874764505;
                     Uri url = Uri.parse("tel:+917874764505");
 
                     if (await canLaunchUrl(url)) {
