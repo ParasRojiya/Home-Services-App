@@ -1,7 +1,7 @@
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
-import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 
 import '../../../global/global.dart';
 
@@ -35,21 +35,20 @@ class _HistoryPageState extends State<HistoryPage> {
             } else if (snapshot.hasData) {
               QuerySnapshot? document = snapshot.data;
               List<QueryDocumentSnapshot> documents = document!.docs;
-              List cart = [];
+              List bookings = [];
               for (var users in documents) {
                 if (users.id == Global.currentUser!['email']) {
-                  cart = users['cart'];
+                  bookings = users['bookings'];
                 }
               }
-              ;
 
               return ListView.builder(
-                itemCount: cart.length,
+                itemCount: bookings.length,
                 itemBuilder: (context, i) {
                   return Card(
                     child: ListTile(
-                      title: Text("${cart[i]['name']}"),
-                      subtitle: Text("Rs. ${cart[i]['price']}"),
+                      title: Text("${bookings[i]['name']}"),
+                      subtitle: Text("Rs. ${bookings[i]['price']}"),
                     ),
                   );
                 },

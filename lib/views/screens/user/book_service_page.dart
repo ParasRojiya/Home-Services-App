@@ -7,7 +7,6 @@ import 'package:home_services_app/global/button_syle.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 
 import '../../../global/global.dart';
-import '../../../global/snack_bar.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 
 class BookService extends StatefulWidget {
@@ -19,6 +18,7 @@ class BookService extends StatefulWidget {
 
 class _BookServiceState extends State<BookService> {
   Time _time = Time(hour: 11, minute: 30, second: 20);
+
   void onTimeChanged(Time newTime) {
     setState(() {
       _time = newTime;
@@ -219,27 +219,15 @@ class _BookServiceState extends State<BookService> {
                                             data: data,
                                             userEmail:
                                                 Global.currentUser!['email']);
-                                    print(
-                                        "====================CURRENT USER UID===========================");
-                                    print(Global.user!.email);
-                                    print(
-                                        "===============================================");
-                                    print(
-                                        "===============================================");
-                                    print(
-                                        "=====================CURRENT USER==========================");
-                                    print(Global.currentUser);
-                                    print(
-                                        "===============================================");
-                                    print(
-                                        "=======================BOOKING SERVICE DATA========================");
-                                    print(data);
-                                    print(
-                                        "===============================================");
-                                    successSnackBar(
-                                        msg:
-                                            "Service successfully added in database",
-                                        context: context);
+
+                                    // successSnackBar(
+                                    //     msg:
+                                    //     "Service successfully added in database",
+                                    //     context: context);
+
+                                    Get.snackbar("Service Booked Successfully",
+                                        "Service");
+
                                     Get.offNamedUntil(
                                         '/user_home_page', (route) => false);
                                   },

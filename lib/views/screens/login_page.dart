@@ -28,6 +28,11 @@ class _LoginPageState extends State<LoginPage> {
   bool isNotVisible = true;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
