@@ -7,6 +7,7 @@ import 'package:home_services_app/global/button_syle.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 
 import '../../../global/global.dart';
+import '../../../global/snack_bar.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 
 class BookService extends StatefulWidget {
@@ -152,90 +153,128 @@ class _BookServiceState extends State<BookService> {
                       const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () async {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text("Booking Confirmation"),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "${res.currentData['name']}",
-                                    style: GoogleFonts.ubuntu(),
-                                  ),
-                                  Text(
-                                    "Price: ${res.currentData['price']}",
-                                    style: GoogleFonts.ubuntu(),
-                                  ),
-                                  Text(
-                                    "Duration: ${res.currentData['duration']}",
-                                    style: GoogleFonts.ubuntu(),
-                                  ),
-                                  Text(
-                                    "Date: $date",
-                                    style: GoogleFonts.ubuntu(),
-                                  ),
-                                  Text(
-                                    "Time: $time",
-                                    style: GoogleFonts.ubuntu(),
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                OutlinedButton(
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                  child: const Text("Cancel"),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    Map<String, dynamic> serviceData = {
-                                      'name': res.currentData['name'],
-                                      'price': res.currentData['price'],
-                                      'desc': res.currentData['desc'],
-                                      'imageURL': res.currentData['imageURL'],
-                                      'duration': res.currentData['duration'],
-                                      'SelectedDateTime': "$date $time",
-                                    };
-                                    List bookings =
-                                        Global.currentUser!['bookings'];
-                                    bookings.add(serviceData);
+                      // showDialog(
+                      //     context: context,
+                      //     builder: (context) {
+                      //       return AlertDialog(
+                      //         title: const Text("Booking Confirmation"),
+                      //         content: Column(
+                      //           mainAxisSize: MainAxisSize.min,
+                      //           children: [
+                      //             Text(
+                      //               "${res.currentData['name']}",
+                      //               style: GoogleFonts.ubuntu(),
+                      //             ),
+                      //             Text(
+                      //               "Price: ${res.currentData['price']}",
+                      //               style: GoogleFonts.ubuntu(),
+                      //             ),
+                      //             Text(
+                      //               "Duration: ${res.currentData['duration']}",
+                      //               style: GoogleFonts.ubuntu(),
+                      //             ),
+                      //             Text(
+                      //               "Date: $date",
+                      //               style: GoogleFonts.ubuntu(),
+                      //             ),
+                      //             Text(
+                      //               "Time: $time",
+                      //               style: GoogleFonts.ubuntu(),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //         actions: [
+                      //           OutlinedButton(
+                      //             onPressed: () {
+                      //               Get.back();
+                      //             },
+                      //             child: const Text("Cancel"),
+                      //           ),
+                      //           ElevatedButton(
+                      //             onPressed: () async {
+                      //
+                      //               List bookings =
+                      //                   Global.currentUser!['bookings'];
+                      //               bookings.add(serviceData);
+                      //
+                      //               Map<String, dynamic> data = {
+                      //                 'bookings': bookings,
+                      //               };
+                      //
+                      //               await CloudFirestoreHelper
+                      //                   .cloudFirestoreHelper
+                      //                   .updateUsersRecords(
+                      //                       id: Global.currentUser!['email'],
+                      //                       data: data);
+                      //
+                      //               await CloudFirestoreHelper
+                      //                   .cloudFirestoreHelper
+                      //                   .addServiceInBookingCollection(
+                      //                       data: data,
+                      //                       userEmail:
+                      //                           Global.currentUser!['email']);
+                      //
+                      //               // successSnackBar(
+                      //               //     msg:
+                      //               //     "Service successfully added in database",
+                      //               //     context: context);
+                      //
+                      //               Get.snackbar("Service Booked Successfully",
+                      //                   "Service");
+                      //
+                      //               Get.offNamedUntil(
+                      //                   '/user_home_page', (route) => false);
+                      //             },
+                      //             child: const Text("Book"),
+                      //           ),
+                      //         ],
+                      //       );
+                      //     },
+                      //
+                      //
+                      // );
 
-                                    Map<String, dynamic> data = {
-                                      'bookings': bookings,
-                                    };
+                      successSnackBar(
+                          msg: "Service successfully added in database",
+                          context: context);
 
-                                    await CloudFirestoreHelper
-                                        .cloudFirestoreHelper
-                                        .updateUsersRecords(
-                                            id: Global.currentUser!['email'],
-                                            data: data);
+                      Map<String, dynamic> serviceData = {
+                        'name': res.currentData['name'],
+                        'price': res.currentData['price'],
+                        'desc': res.currentData['desc'],
+                        'imageURL': res.currentData['imageURL'],
+                        'duration': res.currentData['duration'],
+                        'SelectedDateTime': "$date $time",
+                      };
 
-                                    await CloudFirestoreHelper
-                                        .cloudFirestoreHelper
-                                        .addServiceInBookingCollection(
-                                            data: data,
-                                            userEmail:
-                                                Global.currentUser!['email']);
+                      List bookings = Global.currentUser!['bookings'];
+                      bookings.add(serviceData);
 
-                                    // successSnackBar(
-                                    //     msg:
-                                    //     "Service successfully added in database",
-                                    //     context: context);
+                      Map<String, dynamic> data = {
+                        'bookings': bookings,
+                      };
 
-                                    Get.snackbar("Service Booked Successfully",
-                                        "Service");
+                      await CloudFirestoreHelper.cloudFirestoreHelper
+                          .updateUsersRecords(
+                              id: Global.currentUser!['email'], data: data);
 
-                                    Get.offNamedUntil(
-                                        '/user_home_page', (route) => false);
-                                  },
-                                  child: const Text("Book"),
-                                ),
-                              ],
-                            );
-                          });
+                      await CloudFirestoreHelper.cloudFirestoreHelper
+                          .addServiceInBookingCollection(
+                              data: data,
+                              userEmail: Global.currentUser!['email']);
+
+                      Map<String, dynamic> receiptData = {
+                        'Name': Global.currentUser?['name'],
+                        'Service': res.currentData['name'],
+                        'Category': res.ids,
+                        'Duration': "${res.currentData['duration']} Hr",
+                        'Date': date,
+                        'Time': time,
+                        'Price': res.currentData['price'],
+                        'Image': res.currentData['imageURL'],
+                      };
+
+                      Get.toNamed('/service_receipt', arguments: receiptData);
                     },
                     style: elevatedButtonStyle(),
                     child: const Text("Book Service"),

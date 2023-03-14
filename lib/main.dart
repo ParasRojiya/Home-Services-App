@@ -1,23 +1,25 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:home_services_app/views/screens/admin/all_services_page.dart';
-import 'package:home_services_app/views/screens/user/book_category.dart';
+import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/admin/add_new_service.dart';
 import 'package:home_services_app/views/screens/admin/add_worker.dart';
+import 'package:home_services_app/views/screens/admin/admin_home_page.dart';
 import 'package:home_services_app/views/screens/admin/all_categories_page.dart';
+import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 import 'package:home_services_app/views/screens/admin/all_workers_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_service_page.dart';
-import 'package:home_services_app/views/screens/user/book_service_page.dart';
-import 'package:home_services_app/views/screens/user/worker_details_page.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
-import 'global/global.dart';
-import 'package:home_services_app/views/screens/account_page.dart';
-import 'package:home_services_app/views/screens/user/history_page.dart';
-import 'package:home_services_app/views/screens/admin/admin_home_page.dart';
 import 'package:home_services_app/views/screens/login_page.dart';
 import 'package:home_services_app/views/screens/sign_up_page.dart';
+import 'package:home_services_app/views/screens/user/book_category.dart';
+import 'package:home_services_app/views/screens/user/book_service_page.dart';
+import 'package:home_services_app/views/screens/user/history_page.dart';
+import 'package:home_services_app/views/screens/user/service_receipt_page.dart';
+import 'package:home_services_app/views/screens/user/worker_details_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'global/global.dart';
 import 'views/screens/user/user_home_page.dart';
 
 void main() async {
@@ -58,10 +60,9 @@ void main() async {
         GetPage(name: '/history_page', page: () => const HistoryPage()),
         GetPage(name: '/worker_details', page: () => const WorkerDetailsPage()),
         GetPage(name: '/book_category', page: () => const BookCategory()),
+        GetPage(name: '/book_service', page: () => const BookService()),
         GetPage(
-          name: '/book_service',
-          page: () => const BookService(),
-        )
+            name: '/service_receipt', page: () => const ServiceReceiptPage()),
       ],
     ),
   );

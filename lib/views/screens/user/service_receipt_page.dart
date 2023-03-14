@@ -9,25 +9,36 @@ class ServiceReceiptPage extends StatefulWidget {
 }
 
 class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
-  List data = [
-    {'key': 'Name', 'value': 'Paras Rojiya'},
-    {'key': 'Service', 'value': 'General Services'},
-    {'key': 'Category', 'value': 'AC Services'},
-    {'key': 'Duration', 'value': '01:00 HR.'},
-    {'key': 'Date', 'value': '20-03-2023'},
-    {'key': 'Time', 'value': '04:00 PM'},
-  ];
+  List data = [];
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    Map<String, dynamic> res =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    data = [
+      {'key': 'Name', 'value': res['Name']},
+      {'key': 'Service', 'value': res['Service']},
+      {'key': 'Category', 'value': res['Category']},
+      {'key': 'Duration', 'value': res['Duration']},
+      {'key': 'Date', 'value': res['Date']},
+      {'key': 'Time', 'value': res['Time']},
+    ];
+
+    print(data);
+
+    // res.forEach((key, value) {
+    //   Map<String, dynamic> map = {'key': key, 'value': value};
+    //   data.add(map);
+    // });
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Service Receipt',
-          style: GoogleFonts.habibi(fontSize: 20, color: Colors.black),
+          style: GoogleFonts.ubuntu(fontSize: 20, color: Colors.black),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -69,7 +80,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                           image: AssetImage(
-                            'assets/image/barcode.png',
+                            'assets/images/barcode.png',
                           ),
                           fit: BoxFit.cover),
                     ),
@@ -81,24 +92,25 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                     indent: 10,
                     endIndent: 10,
                   ),
+                  const SizedBox(height: 12),
                   Expanded(
                     child: ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: data.length,
                       itemBuilder: (context, i) {
                         return Padding(
-                          padding: const EdgeInsets.all(5.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
                               const SizedBox(width: 10),
                               Text(
                                 '${data[i]['key']} :',
-                                style: GoogleFonts.balooBhai2(fontSize: 17),
+                                style: GoogleFonts.ubuntu(fontSize: 17),
                               ),
                               const Spacer(),
                               Text(
                                 '${data[i]['value']}',
-                                style: GoogleFonts.balooBhai2(fontSize: 17),
+                                style: GoogleFonts.ubuntu(fontSize: 17),
                               ),
                               const SizedBox(width: 10),
                             ],
@@ -123,34 +135,33 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       const SizedBox(width: 10),
                       Text(
                         'Service Price :',
-                        style: GoogleFonts.balooBhai2(fontSize: 18),
+                        style: GoogleFonts.ubuntu(fontSize: 18),
                       ),
                       const Spacer(),
                       Text(
-                        '250 RS.',
-                        style: GoogleFonts.balooBhai2(fontSize: 18),
+                        '${res['Price']} RS.',
+                        style: GoogleFonts.ubuntu(fontSize: 18),
                       ),
                       const SizedBox(width: 10),
                     ],
                   ),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       const SizedBox(width: 10),
                       Text(
                         'Promo :',
-                        style: GoogleFonts.balooBhai2(fontSize: 18),
+                        style: GoogleFonts.ubuntu(fontSize: 18),
                       ),
                       const Spacer(),
                       Text(
                         '- 120 RS.',
-                        style: GoogleFonts.balooBhai2(fontSize: 18),
+                        style: GoogleFonts.ubuntu(fontSize: 18),
                       ),
                       const SizedBox(width: 10),
                     ],
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 10),
                   const Divider(
                     color: Colors.black,
                     thickness: 1,
@@ -171,12 +182,12 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       const SizedBox(width: 10),
                       Text(
                         'Total :',
-                        style: GoogleFonts.balooBhai2(fontSize: 19),
+                        style: GoogleFonts.ubuntu(fontSize: 19),
                       ),
                       const Spacer(),
                       Text(
-                        '130 RS.',
-                        style: GoogleFonts.balooBhai2(fontSize: 19),
+                        '${res['Price']} RS.',
+                        style: GoogleFonts.ubuntu(fontSize: 19),
                       ),
                       const SizedBox(width: 10),
                     ],
@@ -197,7 +208,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                   color: Colors.indigo),
               child: Text(
                 'Download Receipt',
-                style: GoogleFonts.habibi(fontSize: 16, color: Colors.white),
+                style: GoogleFonts.ubuntu(fontSize: 16, color: Colors.white),
               ),
             )
           ],
