@@ -52,6 +52,7 @@ dev_dependencies:
   firebase_auth:
   cloud_firestore:
   connectivity_plus:
+  flutter_image_compress:
   url_launcher:
   get:
   google_fonts:

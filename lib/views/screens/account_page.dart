@@ -19,13 +19,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  final GlobalKey<FormState> changePassWordFormKey = GlobalKey<FormState>();
-  final TextEditingController currentPasswordController =
-      TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController newConfirmPasswordController =
-      TextEditingController();
-
   final GlobalKey<FormState> editProfileFormKey = GlobalKey<FormState>();
   final TextEditingController profileEmailController = TextEditingController();
   final TextEditingController profileNameController = TextEditingController();
@@ -33,30 +26,28 @@ class _AccountPageState extends State<AccountPage> {
   String? profileName;
   String? profileEmail;
 
-  String? currentPassword;
-  String? newPassword;
-  String? newConfirmPassword;
-@override
+  @override
   void initState() {
-  AndroidInitializationSettings androidInitializationSettings =
-  const AndroidInitializationSettings("mipmap/ic_launcher");
-  DarwinInitializationSettings darwinInitializationSettings =
-  const DarwinInitializationSettings();
-  var initializationSettings = InitializationSettings(
-    android: androidInitializationSettings,
-    iOS: darwinInitializationSettings,
-  );
+    AndroidInitializationSettings androidInitializationSettings =
+        const AndroidInitializationSettings("mipmap/ic_launcher");
+    DarwinInitializationSettings darwinInitializationSettings =
+        const DarwinInitializationSettings();
+    var initializationSettings = InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: darwinInitializationSettings,
+    );
 
-  tz.initializeTimeZones();
+    tz.initializeTimeZones();
 
-  LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onDidReceiveNotificationResponse: (NotificationResponse response) {
-      print(response.payload);
-    },
-  );
+    LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        print(response.payload);
+      },
+    );
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,16 +82,9 @@ class _AccountPageState extends State<AccountPage> {
             accountOptionContainer(
               title: "Edit Profile",
               onTap: () {
-                editProfile();
+                Get.toNamed("/edit_page");
               },
               icon: Icons.person,
-            ),
-            accountOptionContainer(
-              title: "Change Password",
-              onTap: () {
-                changePassword();
-              },
-              icon: Icons.lock,
             ),
             accountOptionContainer(
               title: "FAQs",
@@ -226,97 +210,6 @@ class _AccountPageState extends State<AccountPage> {
                   style: GoogleFonts.poppins(),
                 ),
               ),
-            ],
-          );
-        });
-  }
-
-  changePassword() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Change Your Password"),
-            content: Form(
-              key: changePassWordFormKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: currentPasswordController,
-                    onSaved: (val) {
-                      currentPassword = val;
-                    },
-                    validator: (val) => (val!.isEmpty)
-                        ? "Please enter your current password"
-                        : (val != Global.currentUser!['password'])
-                            ? "Wrong Current password"
-                            : null,
-                    decoration: textFieldDecoration(
-                        icon: Icons.lock, name: "Current Password"),
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: newPasswordController,
-                    onSaved: (val) {
-                      newPassword = val;
-                    },
-                    validator: (val) => (val!.isEmpty)
-                        ? "Please enter your new password"
-                        : null,
-                    decoration: textFieldDecoration(
-                        icon: Icons.lock, name: "New Password"),
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: newConfirmPasswordController,
-                    onSaved: (val) {
-                      newConfirmPassword = val;
-                    },
-                    validator: (val) => (val != newPasswordController.text)
-                        ? "confirm password does not match new password"
-                        : (val!.isEmpty)
-                            ? "Please confirm your new password"
-                            : null,
-                    decoration: textFieldDecoration(
-                        icon: Icons.lock, name: "Confirm New Password"),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              OutlinedButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  child: Text(
-                    "Cancel",
-                    style: GoogleFonts.poppins(),
-                  )),
-              ElevatedButton(
-                  onPressed: () async {
-                    if (changePassWordFormKey.currentState!.validate()) {
-                      changePassWordFormKey.currentState!.save();
-                      await FireBaseAuthHelper.fireBaseAuthHelper
-                          .changePassword(
-                              newPassword: newPassword!, context: context);
-                      Map<String, dynamic> data = {
-                        'name': Global.currentUser!['name'],
-                        'email': Global.currentUser!['email'],
-                        'password': newPassword,
-                        'role': Global.currentUser!['role'],
-                      };
-                      await CloudFirestoreHelper.cloudFirestoreHelper
-                          .updateUsersRecords(
-                              id: Global.currentUser!['email'], data: data);
-                      await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-                      Get.offAndToNamed('/login_page');
-                    }
-                  },
-                  child: Text(
-                    "Set New Password",
-                    style: GoogleFonts.poppins(),
-                  )),
             ],
           );
         });

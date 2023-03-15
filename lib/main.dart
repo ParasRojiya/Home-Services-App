@@ -10,6 +10,7 @@ import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 import 'package:home_services_app/views/screens/admin/all_workers_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_service_page.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
+import 'package:home_services_app/views/screens/edit_profile.dart';
 import 'package:home_services_app/views/screens/login_page.dart';
 import 'package:home_services_app/views/screens/sign_up_page.dart';
 import 'package:home_services_app/views/screens/user/book_category.dart';
@@ -42,6 +43,7 @@ void main() async {
         GetPage(name: '/login_page', page: () => const LoginPage()),
         GetPage(name: '/sign_up_page', page: () => const SignUpPage()),
         GetPage(name: '/account_page', page: () => const AccountPage()),
+        GetPage(name: '/edit_page', page: () => const EditProfile()),
 
         //ADMIN SCREENS
         GetPage(name: '/admin_home_page', page: () => const AdminHomeScreen()),
