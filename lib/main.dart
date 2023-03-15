@@ -61,8 +61,7 @@ void main() async {
         GetPage(name: '/worker_details', page: () => const WorkerDetailsPage()),
         GetPage(name: '/book_category', page: () => const BookCategory()),
         GetPage(name: '/book_service', page: () => const BookService()),
-        GetPage(
-            name: '/service_receipt', page: () => const ServiceReceiptPage()),
+        GetPage(name: '/service_receipt', page: () => const ServiceReceiptPage()),
       ],
     ),
   );

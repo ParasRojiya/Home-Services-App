@@ -63,6 +63,9 @@ dev_dependencies:
   time_range_picker:
   day_night_time_picker:
   date_time_picker_widget:
+  pdf:
+  path_provider:
+  printing:
 
 
 
