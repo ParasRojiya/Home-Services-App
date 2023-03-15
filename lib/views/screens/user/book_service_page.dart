@@ -1,14 +1,15 @@
 import 'package:date_time_picker_widget/date_time_picker_widget.dart';
-import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/button_syle.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import '../../../global/global.dart';
 import '../../../global/snack_bar.dart';
-import '../../../helper/cloud_firestore_helper.dart';
+import '../../../helper/local_notification_helper.dart';
 
 class BookService extends StatefulWidget {
   const BookService({Key? key}) : super(key: key);
@@ -18,16 +19,36 @@ class BookService extends StatefulWidget {
 }
 
 class _BookServiceState extends State<BookService> {
-  Time _time = Time(hour: 11, minute: 30, second: 20);
-
-  void onTimeChanged(Time newTime) {
-    setState(() {
-      _time = newTime;
-    });
-  }
-
   String? date, time;
   DateTime dt = DateTime.now();
+  int? year;
+  int? month;
+  int? day;
+  int? hour;
+  int? min;
+
+  @override
+  void initState() {
+    AndroidInitializationSettings androidInitializationSettings =
+        const AndroidInitializationSettings("mipmap/ic_launcher");
+    DarwinInitializationSettings darwinInitializationSettings =
+        const DarwinInitializationSettings();
+    var initializationSettings = InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: darwinInitializationSettings,
+    );
+
+    tz.initializeTimeZones();
+
+    LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        print(response.payload);
+      },
+    );
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +98,9 @@ class _BookServiceState extends State<BookService> {
                     print("=================================");
                     print(date);
                     print("=================================");
+                    year = selectedDate.year;
+                    month = selectedDate.month;
+                    day = selectedDate.day;
                   },
                   onTimeChanged: (selectedTime) {
                     if (selectedTime.hour == 12 && selectedTime.minute == 0) {
@@ -135,6 +159,9 @@ class _BookServiceState extends State<BookService> {
                     } else {
                       time = "${selectedTime.hour}:${selectedTime.minute} AM";
                     }
+
+                    hour = selectedTime.hour;
+                    min = selectedTime.minute;
                   },
                   timeInterval: const Duration(minutes: 30),
                 ),
@@ -254,14 +281,14 @@ class _BookServiceState extends State<BookService> {
                         'bookings': bookings,
                       };
 
-                      await CloudFirestoreHelper.cloudFirestoreHelper
-                          .updateUsersRecords(
-                              id: Global.currentUser!['email'], data: data);
-
-                      await CloudFirestoreHelper.cloudFirestoreHelper
-                          .addServiceInBookingCollection(
-                              data: data,
-                              userEmail: Global.currentUser!['email']);
+                      // await CloudFirestoreHelper.cloudFirestoreHelper
+                      //     .updateUsersRecords(
+                      //         id: Global.currentUser!['email'], data: data);
+                      //
+                      // await CloudFirestoreHelper.cloudFirestoreHelper
+                      //     .addServiceInBookingCollection(
+                      //         data: data,
+                      //         userEmail: Global.currentUser!['email']);
 
                       Map<String, dynamic> receiptData = {
                         'Name': Global.currentUser?['name'],
@@ -274,7 +301,32 @@ class _BookServiceState extends State<BookService> {
                         'Image': res.currentData['imageURL'],
                       };
 
-                      Get.toNamed('/service_receipt', arguments: receiptData);
+                      await LocalNotificationHelper.localNotificationHelper
+                          .sendSimpleNotification(
+                              title: res.currentData['name'],
+                              msg:
+                                  "${res.currentData['name']} successfully booked for Rs.${res.currentData['price']} on $time $date");
+
+                      DateTime start = DateTime(
+                          DateTime.now().year,
+                          DateTime.now().month,
+                          DateTime.now().day,
+                          DateTime.now().hour,
+                          DateTime.now().minute);
+                      DateTime end = DateTime(year!, month!, day!, hour!, min!);
+
+                      DateTimeRange dtRange =
+                          DateTimeRange(start: start, end: end);
+
+                      print(dtRange.duration);
+
+                      await LocalNotificationHelper.localNotificationHelper
+                          .scheduledNotification(
+                              title: res.currentData['name'],
+                              body: "${res.currentData['name']} has started",
+                              duration: dtRange.duration);
+
+                      // Get.toNamed('/service_receipt', arguments: receiptData);
                     },
                     style: elevatedButtonStyle(),
                     child: const Text("Book Service"),

@@ -45,14 +45,15 @@ import 'package:timezone/timezone.dart' as tz;
 class LocalNotificationHelper {
   LocalNotificationHelper._();
   static final LocalNotificationHelper localNotificationHelper =
-  LocalNotificationHelper._();
+      LocalNotificationHelper._();
 
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
-  Future<void> sendSimpleNotification() async {
+  Future<void> sendSimpleNotification(
+      {required String title, required String msg}) async {
     AndroidNotificationDetails androidNotificationDetails =
-    const AndroidNotificationDetails(
+        const AndroidNotificationDetails(
       'demoId',
       'demo',
       playSound: true,
@@ -61,15 +62,17 @@ class LocalNotificationHelper {
       icon: "mipmap/ic_launcher",
     );
     DarwinNotificationDetails darwinNotificationDetails =
-    const DarwinNotificationDetails();
+        const DarwinNotificationDetails();
     NotificationDetails notificationDetails = NotificationDetails(
         android: androidNotificationDetails, iOS: darwinNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        1, 'Simple Notification', 'Demo', notificationDetails,
-        payload: "My custom Data");
+    await flutterLocalNotificationsPlugin
+        .show(1, title, msg, notificationDetails, payload: "My custom Data");
   }
 
-  Future<void> scheduledNotification() async {
+  Future<void> scheduledNotification(
+      {required String title,
+      required String body,
+      required Duration duration}) async {
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'channel id',
       'channel name',
@@ -80,20 +83,20 @@ class LocalNotificationHelper {
       largeIcon: DrawableResourceAndroidBitmap('mipmap/ic_launcher'),
     );
 
-    var iOSPlatformChannelSpecifics = DarwinNotificationDetails();
+    var iOSPlatformChannelSpecifics = const DarwinNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
-      "Notification Title",
-      "This is the Notification Body!",
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 10)),
+      title,
+      body,
+      tz.TZDateTime.now(tz.local).add(duration),
       platformChannelSpecifics,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 
