@@ -160,7 +160,7 @@ class _BookServiceState extends State<BookService> {
                     hour = selectedTime.hour;
                     min = selectedTime.minute;
                   },
-                  timeInterval: const Duration(minutes: 1),
+                  timeInterval: const Duration(minutes: 30),
                 ),
                 const SizedBox(height: 22),
                 Padding(
@@ -323,7 +323,7 @@ class _BookServiceState extends State<BookService> {
                               body: "${res.currentData['name']} has started",
                               duration: dtRange.duration);
 
-                      // Get.toNamed('/service_receipt', arguments: receiptData);
+                      Get.toNamed('/service_receipt', arguments: receiptData);
                     },
                     style: elevatedButtonStyle(),
                     child: const Text("Book Service"),

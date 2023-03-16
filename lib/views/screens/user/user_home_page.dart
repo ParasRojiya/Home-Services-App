@@ -81,10 +81,10 @@ class _HomePageState extends State<HomePage> {
           //   },
           //   icon: const Icon(Icons.power_settings_new),
           // ),
-
           IconButton(
             onPressed: () {
-              Get.toNamed('/chat_page',arguments: Global.currentUser!['email']);
+              Get.toNamed('/chat_page',
+                  arguments: Global.currentUser!['email']);
             },
             icon: const Icon(Icons.chat),
           ),

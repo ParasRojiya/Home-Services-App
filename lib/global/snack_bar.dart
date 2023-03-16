@@ -17,7 +17,8 @@ snackBar(
         behavior: SnackBarBehavior.floating,
       ),
     );
-    Navigator.of(context).pushReplacementNamed("/admin_home_page", arguments: user);
+    Navigator.of(context)
+        .pushReplacementNamed("/admin_home_page", arguments: user);
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

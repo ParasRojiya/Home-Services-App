@@ -137,7 +137,8 @@ class _LoginPageState extends State<LoginPage> {
                           'password': element.data()?['password'],
                           'role': element.data()?['role'],
                           'bookings': element.data()?['bookings'],
-                          'imageURL': element.data()?['imageURL']
+                          'imageURL': element.data()?['imageURL'],
+                          'DOB': element.data()?['DOB']
                         };
 
                         if (element.data()?['role'] == 'admin') {
@@ -152,7 +153,9 @@ class _LoginPageState extends State<LoginPage> {
                               user: Global.user,
                               context: context,
                               name: "Sign In");
-                        } else {
+                        }
+
+                        if (element.data()?['role'] == 'user') {
                           await prefs.setBool('isAdmin', false);
                           await prefs.setBool('isLoggedIn', true);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? false;
@@ -160,11 +163,29 @@ class _LoginPageState extends State<LoginPage> {
                           Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
-                          Navigator.of(context).pushReplacementNamed(
-                              "/user_home_page",
-                              arguments: Global.user);
+
+                          print(email!);
+                          print(password!);
+                          print(Global.user);
+                          if (Global.user != null) {
+                            Navigator.of(context).pushReplacementNamed(
+                                "/user_home_page",
+                                arguments: Global.user);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Login Failed.",
+                                  style: GoogleFonts.poppins(),
+                                ),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
                         }
                       });
+
                       Global.cart = Global.currentUser!['cart'];
                     }
                   } else {

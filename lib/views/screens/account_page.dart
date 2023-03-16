@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -109,6 +110,12 @@ class _AccountPageState extends State<AccountPage> {
             accountOptionContainer(
               title: "Log Out",
               onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('isLoggedIn', false);
+                prefs.remove('isAdmin');
+                await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+                Get.offAndToNamed("/login_page");
+
                 await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
                 Get.offAndToNamed("/login_page");
               },

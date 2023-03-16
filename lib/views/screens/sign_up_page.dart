@@ -169,11 +169,15 @@ class _SignUpPageState extends State<SignUpPage> {
                                   id: email!, data: {"chats": []});
                         }
 
-                        snackBar(
-                          user: user,
-                          context: context,
-                          name: "Account Creation",
+                        SnackBar(
+                          content: Text(
+                            "Successfully registered",
+                            style: GoogleFonts.poppins(),
+                          ),
+                          backgroundColor: Colors.green,
+                          behavior: SnackBarBehavior.floating,
                         );
+
                         Get.back();
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
