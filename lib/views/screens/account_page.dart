@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../global/global.dart';
 import '../../global/text_field_decoration.dart';
 import '../../helper/firebase_auth_helper.dart';
@@ -64,11 +65,11 @@ class _AccountPageState extends State<AccountPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 10),
-            const CircleAvatar(
+            CircleAvatar(
               radius: 90,
               backgroundColor: Colors.white,
               backgroundImage: NetworkImage(
-                "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Clipart.png",
+                Global.currentUser!['imageURL'],
               ),
             ),
             const SizedBox(height: 10),
@@ -82,7 +83,7 @@ class _AccountPageState extends State<AccountPage> {
             accountOptionContainer(
               title: "Edit Profile",
               onTap: () {
-                Get.toNamed("/edit_page");
+                Get.toNamed("/edit_profile");
               },
               icon: Icons.person,
             ),
@@ -110,14 +111,6 @@ class _AccountPageState extends State<AccountPage> {
               onTap: () async {
                 await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
                 Get.offAndToNamed("/login_page");
-              },
-              icon: Icons.logout,
-            ),
-            accountOptionContainer(
-              title: "Notification",
-              onTap: () async {
-                // await LocalNotificationHelper.localNotificationHelper
-                //     .scheduledNotification();
               },
               icon: Icons.logout,
             ),

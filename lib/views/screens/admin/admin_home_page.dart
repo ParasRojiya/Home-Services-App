@@ -1,13 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
-import 'package:home_services_app/views/screens/user/history_page.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../widgets/category_container.dart';
@@ -37,6 +37,10 @@ class _HomePageState extends State<HomePage> {
         'password': element.data()?['password'],
         'role': element.data()?['role'],
         'bookings': element.data()?['bookings'],
+        'imageURL': element.data()?['imageURL'],
+        'address': element.data()?['address'],
+        'DOB': element.data()?['DOB'],
+        'contact': element.data()?['contact'],
       };
     });
   }
@@ -51,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  const Text("Admin Dashboard"),
+        title: const Text("Admin Dashboard"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -125,8 +129,8 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                 Get.toNamed('/all_services_page',
-                                          arguments: documents[i]);
+                                  Get.toNamed('/all_services_page',
+                                      arguments: documents[i]);
                                   print(documents[i]['services']);
                                 },
                                 child: categoryContainer(
@@ -199,8 +203,7 @@ class _HomePageState extends State<HomePage> {
                               return InkWell(
                                 onTap: () {
                                   Get.toNamed('/edit_worker',
-                                          arguments: documents[i]);
-
+                                      arguments: documents[i]);
                                 },
                                 child: workerContainer(
                                   ratings: "⭐⭐⭐⭐⭐",
@@ -255,7 +258,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   List<Widget> screens = [
     const HomePage(),
-   const UsersList(),
+    const UsersList(),
     const AccountPage(),
   ];
 

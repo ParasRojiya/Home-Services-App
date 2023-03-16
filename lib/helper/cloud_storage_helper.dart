@@ -1,5 +1,6 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../global/global.dart';
 
@@ -12,6 +13,7 @@ class CloudStorageHelper {
   static final Reference storageRef = FirebaseStorage.instance.ref();
   final workersRef = storageRef.child("workers");
   final serviceRef = storageRef.child("categories");
+  final usersRef = storageRef.child("users");
 
   storeWorkerImage({required File image, required String name}) async {
     await workersRef.child(name).putFile(image);
@@ -29,5 +31,10 @@ class CloudStorageHelper {
 
   deleteServiceImage({required String name}) async {
     await serviceRef.child(name).delete();
+  }
+
+  storeUserImage({required File image, required String name}) async {
+    await usersRef.child(name).putFile(image);
+    Global.imageURL = await usersRef.child(name).getDownloadURL();
   }
 }

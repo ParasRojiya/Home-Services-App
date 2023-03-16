@@ -1,15 +1,15 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:flutter/foundation.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/global/snack_bar.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../controllers/service_category_controller.dart';
+import '../../global/button_syle.dart';
 import '../../global/global.dart';
 import '../../global/text_field_decoration.dart';
 import '../../helper/cloud_firestore_helper.dart';
+import '../../helper/cloud_storage_helper.dart';
 import '../../helper/firebase_auth_helper.dart';
 
 class EditProfile extends StatefulWidget {
@@ -22,12 +22,10 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   GlobalKey<FormState> fromKey = GlobalKey<FormState>();
 
-  TextEditingController dateInput = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
-  TextEditingController nickNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+
   final GlobalKey<FormState> changePassWordFormKey = GlobalKey<FormState>();
   final TextEditingController currentPasswordController =
       TextEditingController();
@@ -35,20 +33,29 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController newConfirmPasswordController =
       TextEditingController();
 
-  String date = '';
-  File? showImage;
-  String? image;
-  Uint8List? imgData;
-  Map<String, dynamic>? userData;
+  String? date;
+
+  String? fullName;
+  String? contactNo;
+  String? address;
 
   String? currentPassword;
   String? newPassword;
   String? newConfirmPassword;
 
+  final ServiceCategoryController serviceCategoryController =
+      Get.put(ServiceCategoryController());
+
   @override
   void initState() {
-    dateInput.text = "";
     super.initState();
+
+    fullNameController.text = Global.currentUser!['name'];
+    if (Global.currentUser!['contact'] != null &&
+        Global.currentUser!['address'] != null) {
+      phoneController.text = Global.currentUser!['contact'];
+      addressController.text = Global.currentUser!['address'];
+    }
   }
 
   @override
@@ -56,108 +63,62 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.password),
-          )
-        ],
         title: Text(
           "Change Profile",
           style: GoogleFonts.poppins(),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Form(
-          key: fromKey,
-          child: ListView(
-            children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Center(
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    (showImage != null)
-                        ? CircleAvatar(
-                            maxRadius: 60,
-                            backgroundColor: Colors.blueGrey,
-                            backgroundImage: FileImage(showImage!),
-                          )
-                        : const CircleAvatar(
-                            radius: 90,
-                            backgroundColor: Colors.white,
-                            backgroundImage: NetworkImage(
-                              "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Clipart.png",
-                            ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Form(
+            key: fromKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                GetBuilder(
+                  builder: (ServiceCategoryController controller) =>
+                      CircleAvatar(
+                    radius: 90,
+                    backgroundImage: (controller.image != null)
+                        ? FileImage(controller.image!) as ImageProvider
+                        : NetworkImage(
+                            Global.currentUser!['imageURL'],
                           ),
-                    Positioned(
-                      top: 130,
-                      child: FloatingActionButton(
-                        onPressed: () async {
-                          ImagePicker picker = ImagePicker();
-
-                          XFile? xFile = await picker.pickImage(
-                              source: ImageSource.camera);
-                          imgData = await xFile?.readAsBytes();
-                          imgData = await FlutterImageCompress.compressWithList(
-                            imgData!,
-                            minHeight: 200,
-                            minWidth: 200,
-                            quality: 80,
-                          );
-                          setState(() {
-                            showImage = File(xFile!.path);
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              alignment: Alignment.center,
+                              title: const Text("Select Image Source"),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      serviceCategoryController
+                                          .addImage(ImageSource.gallery);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("Gallery")),
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      serviceCategoryController
+                                          .addImage(ImageSource.camera);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("Camera")),
+                              ],
+                            );
                           });
-                        },
-                        mini: true,
-                        backgroundColor: Colors.blueGrey,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(Icons.edit),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              Container(
-                height: 50,
-                padding: EdgeInsets.all(10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "${Global.currentUser!['email']}",
-                      style:
-                          TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                    ),
-                    Icon(
-                      Icons.email,
-                      color: Colors.grey.shade600,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              InkWell(
-                onTap: () {
-                  changePassword();
-                },
-                child: Container(
+                    },
+                    child: const Text("Add Image")),
+                const SizedBox(height: 30),
+                Container(
                   height: 50,
                   padding: EdgeInsets.all(10),
                   alignment: Alignment.center,
@@ -170,94 +131,63 @@ class _EditProfileState extends State<EditProfile> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Change Password",
+                        "${Global.currentUser!['email']}",
                         style: TextStyle(
                             color: Colors.grey.shade600, fontSize: 16),
                       ),
                       Icon(
-                        Icons.lock,
+                        Icons.email,
                         color: Colors.grey.shade600,
                       ),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  validator: (val) {
-                    return (val!.isEmpty) ? 'Enter First Name...' : null;
-                  },
-                  controller: fullNameController,
-                  style: const TextStyle(color: Colors.black, fontSize: 17),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.white24,
-                        ),
-                      ),
-                      hintText: "Full Name",
-                      suffixIcon: Icon(
-                        Icons.edit,
-                        color: Colors.grey.shade600,
-                      ),
-                      hintStyle:
-                          TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                      filled: true,
-                      fillColor: Colors.white),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  controller: nickNameController,
-                  validator: (val) {
-                    return (val!.isEmpty) ? 'Enter Nickname ...' : null;
-                  },
-                  style: const TextStyle(color: Colors.black, fontSize: 17),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.white24),
-                      ),
-                      hintText: "Nick Name",
-                      suffixIcon: Icon(
-                        Icons.edit,
-                        color: Colors.grey.shade600,
-                      ),
-                      hintStyle:
-                          TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                      filled: true,
-                      fillColor: Colors.white),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
+                const SizedBox(height: 10),
+                SizedBox(
                   height: 50,
-                  padding: EdgeInsets.all(10),
+                  child: TextFormField(
+                    validator: (val) {
+                      return (val!.isEmpty) ? 'Enter First Name...' : null;
+                    },
+                    controller: fullNameController,
+                    style: const TextStyle(color: Colors.black, fontSize: 17),
+                    decoration: textFieldDecoration(
+                        name: "Full Name", icon: Icons.edit),
+                    onSaved: (val) {
+                      fullName = val;
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 50,
+                  child: TextFormField(
+                    keyboardType: TextInputType.phone,
+                    validator: (val) {
+                      return (val!.isEmpty) ? 'Enter Phone Number' : null;
+                    },
+                    controller: phoneController,
+                    style: const TextStyle(color: Colors.black, fontSize: 17),
+                    decoration: textFieldDecoration(
+                        icon: Icons.phone, name: "Contact No."),
+                    onSaved: (val) {
+                      contactNo = val;
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  height: 52,
+                  padding: const EdgeInsets.all(10),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white.withOpacity(0.03),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        (date=='')?'Date of Birth':date,
-                        style: TextStyle(
-                            color: Colors.grey.shade600, fontSize: 16),
-                      ),
                       IconButton(
                         onPressed: () async {
                           DateTime? pickedDate = await showDatePicker(
@@ -267,7 +197,8 @@ class _EditProfileState extends State<EditProfile> {
                               lastDate: DateTime(2100));
 
                           if (pickedDate != null) {
-                            String formattedDate = '${pickedDate.day}/${pickedDate.month}/${pickedDate.year}';
+                            String formattedDate =
+                                '${pickedDate.day} - ${pickedDate.month} - ${pickedDate.year}';
 
                             setState(() {
                               date = formattedDate;
@@ -276,186 +207,80 @@ class _EditProfileState extends State<EditProfile> {
                         },
                         icon: const Icon(Icons.calendar_month),
                       ),
+                      Text(
+                        (Global.currentUser!['DOB'] == null)
+                            ? (date == null)
+                                ? 'Date of Birth'
+                                : date
+                            : Global.currentUser!['DOB'],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
                     ],
                   ),
                 ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  keyboardType: TextInputType.phone,
-                  validator: (val) {
-                    return (val!.isEmpty) ? 'Enter Phone Number' : null;
-                  },
-                  controller: phoneController,
-                  style: const TextStyle(color: Colors.black, fontSize: 17),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.white24),
-                      ),
-                      hintText: "Phone Number",
-                      suffixIcon: Icon(
-                        Icons.edit,
-                        color: Colors.grey.shade600,
-                      ),
-                      hintStyle:
-                          TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                      filled: true,
-                      fillColor: Colors.white),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 100,
+                  child: TextFormField(
+                      validator: (val) {
+                        return (val!.isEmpty) ? 'Enter Address' : null;
+                      },
+                      controller: addressController,
+                      maxLines: 5,
+                      keyboardType: TextInputType.multiline,
+                      style: const TextStyle(color: Colors.black, fontSize: 17),
+                      decoration: textFieldDecoration(
+                          icon: Icons.edit, name: "Address"),
+                      onSaved: (val) {
+                        address = val;
+                      }),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  validator: (val) {
-                    return (val!.isEmpty) ? 'Enter Address' : null;
+                const SizedBox(height: 10),
+                InkWell(
+                  onTap: () {
+                    changePassword();
                   },
-                  controller: addressController,
-                  style: const TextStyle(color: Colors.black, fontSize: 17),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.white24),
-                      ),
-                      hintText: "Address",
-                      suffixIcon: Icon(
-                        Icons.edit,
-                        color: Colors.grey.shade600,
-                      ),
-                      hintStyle:
-                          TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                      filled: true,
-                      fillColor: Colors.white),
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  if (fromKey.currentState!.validate()) {
-                    image = base64.encode(imgData!);
-
-                    setState(() {
-                      userData = {
-                        'image': image,
-                        'fullName': fullNameController.text,
-                        'nickname': nickNameController.text,
-                        'dob': dateInput.text,
-                        'mobile': phoneController.text,
-                        'email': emailController.text,
-                        'address': addressController.text,
-                      };
-                    });
-
-                    // DocumentReference docRef = await FireStoreHelper
-                    //     .fireStoreHelper
-                    //     .insertUserData(data: userData as Map<String, dynamic>);
-
-                    showDialog(
-                        context: context,
-                        builder: (context) => Dialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Container(
-                                height: 300,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade900,
-                                  borderRadius: BorderRadius.circular(40),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.check_circle,
-                                      color: Colors.deepPurpleAccent,
-                                      size: 120,
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    const Text(
-                                      "Created Successfully",
-                                      style: TextStyle(
-                                          fontSize: 22, color: Colors.white),
-                                    ),
-                                    const SizedBox(
-                                      height: 50,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          userData = {
-                                            'image': showImage,
-                                            'fullName': fullNameController.text,
-                                            'nickname': nickNameController.text,
-                                            'dob': dateInput.text,
-                                            'mobile': phoneController.text,
-                                            'email': emailController.text,
-                                            'address': addressController.text,
-                                          };
-                                        });
-                                        Navigator.of(context)
-                                            .pushReplacementNamed('/',
-                                                arguments: userData);
-                                        setState(() {
-                                          showImage = null;
-                                        });
-                                        fullNameController.clear();
-                                        nickNameController.clear();
-                                        dateInput.clear();
-                                        phoneController.clear();
-                                        emailController.clear();
-                                        addressController.clear();
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          "OK",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.white),
-                                        ),
-                                        height: 45,
-                                        width: 120,
-                                        decoration: BoxDecoration(
-                                          color: Colors.deepPurpleAccent,
-                                          borderRadius:
-                                              BorderRadius.circular(70),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ));
-                  }
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(horizontal: 40),
-                  height: 55,
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey,
-                    borderRadius: BorderRadius.circular(40),
-                  ),
-                  child: Text(
-                    "Continue",
-                    style: GoogleFonts.balooBhai2(
-                        fontSize: 18, color: Colors.white),
+                  child: Container(
+                    height: 50,
+                    padding: EdgeInsets.all(10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Change Password",
+                          style: TextStyle(
+                              color: Colors.grey.shade600, fontSize: 16),
+                        ),
+                        Icon(
+                          Icons.lock,
+                          color: Colors.grey.shade600,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 30),
+                Container(
+                  width: Get.width * 0.90,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      updateProfile();
+                    },
+                    style: elevatedButtonStyle(),
+                    child: const Text("Edit Profile"),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -551,5 +376,42 @@ class _EditProfileState extends State<EditProfile> {
             ],
           );
         });
+  }
+
+  updateProfile() async {
+    if (fromKey.currentState!.validate()) {
+      fromKey.currentState!.save();
+
+      if (serviceCategoryController.image != null) {
+        await CloudStorageHelper.cloudStorageHelper.storeServiceImage(
+            image: serviceCategoryController.image!, name: fullName!);
+      }
+
+      Map<String, dynamic> data = {
+        'name': fullName,
+        'contact': contactNo,
+        'address': address,
+        'DOB': date,
+        'imageURL': (serviceCategoryController.image != null)
+            ? Global.imageURL
+            : Global.currentUser!['imageURL'],
+      };
+
+      await CloudFirestoreHelper.cloudFirestoreHelper
+          .updateUsersRecords(id: Global.currentUser!['email'], data: data);
+
+      successSnackBar(
+          msg: "Profile record successfully updated", context: context);
+
+      fullNameController.clear();
+      phoneController.clear();
+      addressController.clear();
+
+      fullName = null;
+      contactNo = null;
+      address = null;
+
+      Get.offAndToNamed('/user_home_page');
+    }
   }
 }

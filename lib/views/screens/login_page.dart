@@ -137,6 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                           'password': element.data()?['password'],
                           'role': element.data()?['role'],
                           'bookings': element.data()?['bookings'],
+                          'imageURL': element.data()?['imageURL']
                         };
 
                         if (element.data()?['role'] == 'admin') {

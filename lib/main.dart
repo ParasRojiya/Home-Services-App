@@ -43,7 +43,7 @@ void main() async {
         GetPage(name: '/login_page', page: () => const LoginPage()),
         GetPage(name: '/sign_up_page', page: () => const SignUpPage()),
         GetPage(name: '/account_page', page: () => const AccountPage()),
-        GetPage(name: '/edit_page', page: () => const EditProfile()),
+        GetPage(name: '/edit_profile', page: () => const EditProfile()),
 
         //ADMIN SCREENS
         GetPage(name: '/admin_home_page', page: () => const AdminHomeScreen()),
@@ -63,7 +63,8 @@ void main() async {
         GetPage(name: '/worker_details', page: () => const WorkerDetailsPage()),
         GetPage(name: '/book_category', page: () => const BookCategory()),
         GetPage(name: '/book_service', page: () => const BookService()),
-        GetPage(name: '/service_receipt', page: () => const ServiceReceiptPage()),
+        GetPage(
+            name: '/service_receipt', page: () => const ServiceReceiptPage()),
       ],
     ),
   );

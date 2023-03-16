@@ -29,6 +29,8 @@ class _BookServiceState extends State<BookService> {
 
   @override
   void initState() {
+    print(Global.currentUser);
+
     AndroidInitializationSettings androidInitializationSettings =
         const AndroidInitializationSettings("mipmap/ic_launcher");
     DarwinInitializationSettings darwinInitializationSettings =
@@ -42,9 +44,7 @@ class _BookServiceState extends State<BookService> {
 
     LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        print(response.payload);
-      },
+      onDidReceiveNotificationResponse: (NotificationResponse response) {},
     );
 
     super.initState();
@@ -95,9 +95,6 @@ class _BookServiceState extends State<BookService> {
                   onDateChanged: (selectedDate) {
                     date =
                         "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}";
-                    print("=================================");
-                    print(date);
-                    print("=================================");
                     year = selectedDate.year;
                     month = selectedDate.month;
                     day = selectedDate.day;
@@ -163,7 +160,7 @@ class _BookServiceState extends State<BookService> {
                     hour = selectedTime.hour;
                     min = selectedTime.minute;
                   },
-                  timeInterval: const Duration(minutes: 30),
+                  timeInterval: const Duration(minutes: 1),
                 ),
                 const SizedBox(height: 22),
                 Padding(
