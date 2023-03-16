@@ -71,15 +71,22 @@ class _HomePageState extends State<HomePage> {
         title: const Text("User Dashboard"),
         centerTitle: true,
         actions: [
+          // IconButton(
+          //   onPressed: () async {
+          //     SharedPreferences prefs = await SharedPreferences.getInstance();
+          //     await prefs.setBool('isLoggedIn', false);
+          //     prefs.remove('isAdmin');
+          //     await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+          //     Get.offAndToNamed("/login_page");
+          //   },
+          //   icon: const Icon(Icons.power_settings_new),
+          // ),
+
           IconButton(
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setBool('isLoggedIn', false);
-              prefs.remove('isAdmin');
-              await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-              Get.offAndToNamed("/login_page");
+            onPressed: () {
+              Get.toNamed('/chat_page',arguments: Global.currentUser!['email']);
             },
-            icon: const Icon(Icons.power_settings_new),
+            icon: const Icon(Icons.chat),
           ),
         ],
       ),

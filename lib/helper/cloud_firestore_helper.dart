@@ -12,6 +12,7 @@ class CloudFirestoreHelper {
   late CollectionReference categoryRef;
   late CollectionReference workerRef;
   late CollectionReference bookingsRef;
+  late CollectionReference chatRef;
 
   //CATEGORIES COLLECTION HELPER
   connectionWithCategoryCollection() {
@@ -120,5 +121,21 @@ class CloudFirestoreHelper {
     connectionWithUsersCollection();
 
     await userRef.doc(id).delete();
+  }
+
+  //CHAT COLLECTION
+  connectionWithChatCollection() async {
+    chatRef = firebaseFirestore.collection('chats');
+  }
+
+  selectChatRecords() {
+    connectionWithChatCollection();
+    return chatRef.snapshots();
+  }
+
+  insertChatRecords(
+      {required String id, required Map<String, dynamic> data}) async {
+    connectionWithChatCollection();
+    await chatRef.doc(id).set(data);
   }
 }

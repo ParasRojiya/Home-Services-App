@@ -157,11 +157,18 @@ class _SignUpPageState extends State<SignUpPage> {
                               "role": "user",
                               "password": password,
                               "isActive": true,
+                              "imageURL":
+                                  "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Clipart.png",
                               "bookings": [],
                               "cart": [],
                             },
                           );
+
+                          await CloudFirestoreHelper.cloudFirestoreHelper
+                              .insertChatRecords(
+                                  id: email!, data: {"chats": []});
                         }
+
                         snackBar(
                           user: user,
                           context: context,

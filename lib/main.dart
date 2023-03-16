@@ -8,8 +8,10 @@ import 'package:home_services_app/views/screens/admin/admin_home_page.dart';
 import 'package:home_services_app/views/screens/admin/all_categories_page.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 import 'package:home_services_app/views/screens/admin/all_workers_page.dart';
+import 'package:home_services_app/views/screens/admin/chats_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_service_page.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
+import 'package:home_services_app/views/screens/chat_page.dart';
 import 'package:home_services_app/views/screens/edit_profile.dart';
 import 'package:home_services_app/views/screens/login_page.dart';
 import 'package:home_services_app/views/screens/sign_up_page.dart';
@@ -44,6 +46,7 @@ void main() async {
         GetPage(name: '/sign_up_page', page: () => const SignUpPage()),
         GetPage(name: '/account_page', page: () => const AccountPage()),
         GetPage(name: '/edit_profile', page: () => const EditProfile()),
+        GetPage(name: '/chat_page', page: () => const ChatPage()),
 
         //ADMIN SCREENS
         GetPage(name: '/admin_home_page', page: () => const AdminHomeScreen()),
@@ -56,6 +59,7 @@ void main() async {
         GetPage(name: '/all_workers', page: () => const AllWorkers()),
         GetPage(name: '/all_worker', page: () => const AddWorker()),
         GetPage(name: '/users_list', page: () => const UsersList()),
+        GetPage(name: '/chats_page', page: () => const ChatsPage()),
 
         //USER SCREENS
         GetPage(name: '/user_home_page', page: () => const UserHomeScreen()),

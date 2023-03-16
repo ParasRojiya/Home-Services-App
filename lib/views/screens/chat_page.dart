@@ -1,24 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_apk/helper/FireStoreHelper.dart';
-import 'package:firebase_apk/helper/firebase_auth_helper.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 
-import '../modal.dart';
+import '../../global/global.dart';
 
-class Homepage extends StatefulWidget {
-  const Homepage({Key? key}) : super(key: key);
+class ChatPage extends StatefulWidget {
+  const ChatPage({Key? key}) : super(key: key);
 
   @override
-  State<Homepage> createState() => _HomepageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _ChatPageState extends State<ChatPage> {
   TextEditingController msg = TextEditingController();
+  List chat = [];
 
   @override
   Widget build(BuildContext context) {
+    var res = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -28,118 +28,136 @@ class _HomepageState extends State<Homepage> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
-        actions: [
-          IconButton(
-            onPressed: () {
-              FirebaseAuthHelper.firebaseAuthHelper.logOutUser();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, 'login_page', (route) => false);
-            },
-            icon: const Icon(
-              Icons.logout,
-              size: 20,
-              color: Colors.black,
-            ),
-          ),
-        ],
       ),
       backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder(
-              stream: FireStoreHelper.fireStoreHelper.fetchMessage(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
+              stream:
+                  CloudFirestoreHelper.cloudFirestoreHelper.selectChatRecords(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return const Text("something is wrong");
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+                } else if (snapshot.hasData) {
+                  QuerySnapshot? document = snapshot.data;
+                  List<QueryDocumentSnapshot> documents = document!.docs;
+                  QueryDocumentSnapshot? chatList;
+                  String email =
+                      (res == null) ? Global.currentUser!['email'] : res;
+                  documents.forEach((element) {
+                    if (element.id == email) {
+                      chatList = element;
+                    }
+                  });
+                  chat = chatList!['chats'];
+                  print("========================");
+                  print(chat);
+                  print("========================");
 
-                return ListView.builder(
-                  padding:
-                      const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
-                  itemCount: snapshot.data!.docs.length,
-                  physics: const BouncingScrollPhysics(),
-                  reverse: true,
-                  shrinkWrap: false,
-                  primary: false,
-                  itemBuilder: (_, index) {
-                    index = snapshot.data!.docs.length - 1 - index;
-                    QueryDocumentSnapshot data = snapshot.data!.docs[index];
-                    Timestamp time = data['time'];
-                    DateTime date = time.toDate();
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4),
-                      child: Column(
-                        crossAxisAlignment: Modal.email == data['email']
-                            ? CrossAxisAlignment.end
-                            : CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 250,
-                            child: ListTile(
-                              tileColor: (Modal.email == data['email'])
-                                  ? Colors.indigo.shade300
-                                  : Colors.grey.shade300,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              title: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                  data['email'],
-                                  style: GoogleFonts.balooBhai2(
-                                    fontSize: 15,
-                                    color: (Modal.email == data['email'])
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
-                                ),
-                              ),
-                              subtitle: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                  return ListView.builder(
+                    padding:
+                        const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                    itemCount: chat.length,
+                    physics: const BouncingScrollPhysics(),
+                    reverse: true,
+                    shrinkWrap: false,
+                    primary: false,
+                    itemBuilder: (context, i) {
+                      i = chat.length - 1 - i;
+                      Map<String, dynamic> data = chat[i];
+                      // int index = snapshot.data!.docs.length - 1 - i;
+                      // Map<String, dynamic> data =
+                      //     snapshot.data!.docs[i]['chats'][index];
+                      Timestamp time = data['time'];
+                      DateTime date = time.toDate();
+
+                      return (chat.isEmpty)
+                          ? Text('send message to start conversion...')
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 4, bottom: 4),
+                              child: Column(
+                                crossAxisAlignment:
+                                    Global.currentUser!['email'] ==
+                                            data['email']
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    width: 160,
-                                    child: Text(
-                                      data['message'],
-                                      softWrap: true,
-                                      style: GoogleFonts.balooBhai2(
-                                        fontSize: 18,
-                                        height: 1,
-                                        color: (Modal.email == data['email'])
-                                            ? Colors.white
-                                            : Colors.black,
+                                  SizedBox(
+                                    width: 250,
+                                    child: ListTile(
+                                      tileColor:
+                                          (Global.currentUser!['email'] ==
+                                                  data['email'])
+                                              ? Colors.indigo.shade300
+                                              : Colors.grey.shade300,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      title: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Text(
+                                          data['email'],
+                                          style: GoogleFonts.balooBhai2(
+                                            fontSize: 15,
+                                            color:
+                                                (Global.currentUser!['email'] ==
+                                                        data['email'])
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                      subtitle: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0),
+                                            width: 160,
+                                            child: Text(
+                                              data['message'],
+                                              softWrap: true,
+                                              style: GoogleFonts.balooBhai2(
+                                                fontSize: 18,
+                                                height: 1,
+                                                color: (Global.currentUser![
+                                                            'email'] ==
+                                                        data['email'])
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            ' ${date.hour.toString()} : ${date.minute.toString()}',
+                                            style: GoogleFonts.balooBhai2(
+                                              fontSize: 16,
+                                              height: 1,
+                                              color: (Global.currentUser![
+                                                          'email'] ==
+                                                      data['email'])
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  Text(
-                                    ' ${date.hour.toString()} : ${date.minute.toString()}',
-                                    style: GoogleFonts.balooBhai2(
-                                      fontSize: 16,
-                                      height: 1,
-                                      color: (Modal.email == data['email'])
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                  )
                                 ],
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                            );
+                    },
+                  );
+                }
+
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
               },
             ),
@@ -185,15 +203,23 @@ class _HomepageState extends State<Homepage> {
                   child: IconButton(
                     onPressed: () async {
                       if (msg.text.isNotEmpty) {
-                        Map<String, dynamic> data = {
+                        Map<String, dynamic> message = {
                           'message': msg.text.trim(),
                           'time': DateTime.now(),
-                          'email': Modal.email,
+                          'email': Global.currentUser!['email'],
                         };
 
-                        DocumentReference docRef = await FireStoreHelper
-                            .fireStoreHelper
-                            .message(data: data);
+                        chat.add(message);
+
+                        Map<String, dynamic> data = {
+                          'chats': chat,
+                        };
+                        await CloudFirestoreHelper.cloudFirestoreHelper
+                            .insertChatRecords(
+                                id: (res == null)
+                                    ? Global.currentUser!['email']
+                                    : res,
+                                data: data);
 
                         msg.clear();
                       }
