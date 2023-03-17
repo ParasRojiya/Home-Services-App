@@ -96,9 +96,23 @@ class _AccountPageState extends State<AccountPage> {
             accountOptionContainer(
               title: "About us",
               onTap: () {
-                launchURL();
+                _launchUrl();
               },
               icon: Icons.info,
+            ),
+            accountOptionContainer(
+              title: "Privacy And Policy",
+              onTap: () {
+                Get.toNamed('/privacy_policy_page');
+              },
+              icon: Icons.policy,
+            ),
+            accountOptionContainer(
+              title: "Terms & Condition",
+              onTap: () {
+                Get.toNamed('/terms_condition_page');
+              },
+              icon: Icons.file_copy,
             ),
             accountOptionContainer(
               title: "Help",
@@ -113,6 +127,7 @@ class _AccountPageState extends State<AccountPage> {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 await prefs.setBool('isLoggedIn', false);
                 prefs.remove('isAdmin');
+
                 await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
                 Get.offAndToNamed("/login_page");
 
@@ -127,16 +142,13 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  launchURL() async {
-    const url = 'https://flutter.io';
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      Get.snackbar("Could not launch $url", "Can't Open");
-      throw 'Could not launch $url';
+
+  Future<void> _launchUrl() async {
+    final Uri _url = Uri.parse('https://flutter.dev');
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
     }
-  }
+}
 
   editProfile() {
     showDialog(
@@ -241,6 +253,7 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                       );
                     }
+
                   },
                   icon: Icons.call),
               accountOptionContainer(

@@ -12,6 +12,8 @@ import 'package:home_services_app/views/screens/admin/chats_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_service_page.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
 import 'package:home_services_app/views/screens/chat_page.dart';
+import 'package:home_services_app/views/screens/document/privacy_policy.dart';
+import 'package:home_services_app/views/screens/document/terms_condition_page.dart';
 import 'package:home_services_app/views/screens/edit_profile.dart';
 import 'package:home_services_app/views/screens/login_page.dart';
 import 'package:home_services_app/views/screens/sign_up_page.dart';
@@ -47,6 +49,8 @@ void main() async {
         GetPage(name: '/account_page', page: () => const AccountPage()),
         GetPage(name: '/edit_profile', page: () => const EditProfile()),
         GetPage(name: '/chat_page', page: () => const ChatPage()),
+        GetPage(name: '/privacy_policy_page', page: () => const PrivacyPage()),
+        GetPage(name: '/terms_condition_page', page: () => const TermsAndConditionPage()),
 
         //ADMIN SCREENS
         GetPage(name: '/admin_home_page', page: () => const AdminHomeScreen()),
