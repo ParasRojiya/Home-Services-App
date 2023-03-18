@@ -19,6 +19,7 @@ import 'package:home_services_app/views/screens/document/terms_condition_page.da
 import 'package:home_services_app/views/screens/edit_profile.dart';
 import 'package:home_services_app/views/screens/login_page.dart';
 import 'package:home_services_app/views/screens/sign_up_page.dart';
+import 'package:home_services_app/views/screens/user/add_card.dart';
 import 'package:home_services_app/views/screens/user/book_category.dart';
 import 'package:home_services_app/views/screens/user/book_service_page.dart';
 import 'package:home_services_app/views/screens/user/history_page.dart';
@@ -62,7 +63,9 @@ void main() async {
         GetPage(name: '/edit_profile', page: () => const EditProfile()),
         GetPage(name: '/chat_page', page: () => const ChatPage()),
         GetPage(name: '/privacy_policy_page', page: () => const PrivacyPage()),
-        GetPage(name: '/terms_condition_page', page: () => const TermsAndConditionPage()),
+        GetPage(
+            name: '/terms_condition_page',
+            page: () => const TermsAndConditionPage()),
         GetPage(name: '/faqs', page: () => const FAQs()),
 
         //ADMIN SCREENS
@@ -84,6 +87,7 @@ void main() async {
         GetPage(name: '/worker_details', page: () => const WorkerDetailsPage()),
         GetPage(name: '/book_category', page: () => const BookCategory()),
         GetPage(name: '/book_service', page: () => const BookService()),
+        GetPage(name: '/add_card', page: () => const AddCardPage()),
         GetPage(
             name: '/service_receipt', page: () => const ServiceReceiptPage()),
       ],

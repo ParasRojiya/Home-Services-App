@@ -22,7 +22,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Inbox',
+          'Customer Support',
           style: GoogleFonts.habibi(fontSize: 18, color: Colors.black),
         ),
         centerTitle: true,
