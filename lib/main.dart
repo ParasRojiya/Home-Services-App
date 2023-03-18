@@ -12,6 +12,7 @@ import 'package:home_services_app/views/screens/admin/chats_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_service_page.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
 import 'package:home_services_app/views/screens/chat_page.dart';
+import 'package:home_services_app/views/screens/document/FAQs.dart';
 import 'package:home_services_app/views/screens/document/privacy_policy.dart';
 import 'package:home_services_app/views/screens/document/terms_condition_page.dart';
 import 'package:home_services_app/views/screens/edit_profile.dart';
@@ -51,6 +52,7 @@ void main() async {
         GetPage(name: '/chat_page', page: () => const ChatPage()),
         GetPage(name: '/privacy_policy_page', page: () => const PrivacyPage()),
         GetPage(name: '/terms_condition_page', page: () => const TermsAndConditionPage()),
+        GetPage(name: '/faqs', page: () => const FAQs()),
 
         //ADMIN SCREENS
         GetPage(name: '/admin_home_page', page: () => const AdminHomeScreen()),

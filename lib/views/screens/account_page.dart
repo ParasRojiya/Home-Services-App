@@ -90,8 +90,11 @@ class _AccountPageState extends State<AccountPage> {
             ),
             accountOptionContainer(
               title: "FAQs",
-              onTap: null,
+              onTap: (){
+                Get.toNamed('/faqs');
+              },
               icon: Icons.flag,
+
             ),
             accountOptionContainer(
               title: "About us",
