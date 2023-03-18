@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -27,6 +28,7 @@ class _AccountPageState extends State<AccountPage> {
 
   String? profileName;
   String? profileEmail;
+  bool isDark = false;
 
   @override
   void initState() {
@@ -59,6 +61,17 @@ class _AccountPageState extends State<AccountPage> {
           "My Profile",
           style: GoogleFonts.poppins(),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              _launchUrl();
+            },
+            icon: const Icon(
+              CupertinoIcons.info,
+              size: 22,
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -86,58 +99,180 @@ class _AccountPageState extends State<AccountPage> {
               onTap: () {
                 Get.toNamed("/edit_profile");
               },
-              icon: Icons.person,
+              icon:  CupertinoIcons.person,
+            ),
+            accountOptionContainer(
+              title: "Wallet",
+              onTap: () {
+                Get.toNamed("/add_card");
+              },
+              icon: CupertinoIcons.creditcard,
             ),
             accountOptionContainer(
               title: "FAQs",
               onTap: (){
                 Get.toNamed('/faqs');
               },
-              icon: Icons.flag,
+              icon:  CupertinoIcons.flag,
 
             ),
-            accountOptionContainer(
-              title: "About us",
-              onTap: () {
-                _launchUrl();
-              },
-              icon: Icons.info,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              padding: const EdgeInsets.all(6),
+              child: Row(
+                children: [
+                  const Icon(CupertinoIcons.eye,
+                      color: Colors.black87, size: 22),
+                  const SizedBox(width: 15),
+                  Text(
+                    'Dark Theme',
+                    style: GoogleFonts.poppins(),
+                  ),
+                  const Spacer(),
+                  Switch(value: isDark, onChanged: (_) {})
+                ],
+              ),
             ),
             accountOptionContainer(
               title: "Privacy And Policy",
               onTap: () {
                 Get.toNamed('/privacy_policy_page');
               },
-              icon: Icons.policy,
+              icon:CupertinoIcons.shield_lefthalf_fill,
             ),
             accountOptionContainer(
               title: "Terms & Condition",
               onTap: () {
                 Get.toNamed('/terms_condition_page');
               },
-              icon: Icons.file_copy,
+              icon: CupertinoIcons.doc_on_clipboard,
             ),
             accountOptionContainer(
               title: "Help",
               onTap: () {
                 contact();
               },
-              icon: Icons.help,
+              icon:  CupertinoIcons.question_circle,
             ),
             accountOptionContainer(
               title: "Log Out",
               onTap: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.setBool('isLoggedIn', false);
-                prefs.remove('isAdmin');
+                showModalBottomSheet(
+                  context: context,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30)),
+                  ),
+                  builder: (context) {
+                    return Container(
+                      height: 180,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(30),
+                            topLeft: Radius.circular(30),
+                          ),
+                          color: Colors.grey.shade100),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 5),
+                          Container(
+                            height: 3,
+                            width: 60,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Logout',
+                            style: GoogleFonts.balooBhai2(
+                                fontSize: 22,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          Divider(
+                            indent: 10,
+                            endIndent: 10,
+                            color: Colors.grey.shade300,
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            'Are you sure you want to logout?',
+                            style: GoogleFonts.balooBhai2(
+                                fontSize: 16,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(height: 25),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  height: 55,
+                                  width: 160,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Cancel',
+                                    style: GoogleFonts.habibi(
+                                        fontSize: 17, color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                                  await prefs.setBool('isLoggedIn', false);
+                                  prefs.remove('isAdmin');
 
-                await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-                Get.offAndToNamed("/login_page");
+                                  await FireBaseAuthHelper.fireBaseAuthHelper
+                                      .signOut();
+                                  Get.offAndToNamed("/login_page");
+                                },
+                                child: Container(
+                                  height: 55,
+                                  width: 160,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    color: Colors.indigo.shade400,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Logout',
+                                    style: GoogleFonts.habibi(
+                                        fontSize: 17, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
 
-                await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-                Get.offAndToNamed("/login_page");
+
+
+
+
               },
-              icon: Icons.logout,
+              icon: CupertinoIcons.power,
             ),
           ],
         ),
