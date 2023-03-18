@@ -67,6 +67,8 @@ dev_dependencies:
   pdf:
   path_provider:
   printing:
+  firebase_messaging:
+  http:
 
 
 

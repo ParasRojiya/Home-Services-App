@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
@@ -7,11 +9,12 @@ import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/user/history_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
+import '../../../helper/fcm_helper.dart';
+import '../../../helper/local_notification_helper.dart';
 import '../../../widgets/category_container.dart';
 import '../../../widgets/nav_bar_item.dart';
 import '../../../widgets/worker_container.dart';
@@ -43,6 +46,7 @@ class _HomePageState extends State<HomePage> {
         'address': element.data()?['address'],
         'DOB': element.data()?['DOB'],
         'contact': element.data()?['contact'],
+        'token': element.data()?['token']
       };
     });
   }
@@ -52,16 +56,30 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     currentUserData();
 
-    // AndroidInitializationSettings androidInitializationSettings =
-    // const AndroidInitializationSettings("mipmap/ic_launcher");
-    // IOSInitializationSettings iosInitializationSettings =
-    // const IOSInitializationSettings();
-    //
-    // InitializationSettings initializationSettings = InitializationSettings(
-    //     android: androidInitializationSettings, iOS: iosInitializationSettings);
-    //
-    // LocalNotificationHelper.flutterLocalNotificationsPlugin
-    //     .initialize(initializationSettings);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+
+    AndroidInitializationSettings androidInitializationSettings =
+        const AndroidInitializationSettings("mipmap/ic_launcher");
+    DarwinInitializationSettings darwinInitializationSettings =
+        const DarwinInitializationSettings();
+    var initializationSettings = InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: darwinInitializationSettings,
+    );
+
+    tz.initializeTimeZones();
+
+    LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {},
+    );
   }
 
   @override
@@ -71,16 +89,17 @@ class _HomePageState extends State<HomePage> {
         title: const Text("User Dashboard"),
         centerTitle: true,
         actions: [
-          // IconButton(
-          //   onPressed: () async {
-          //     SharedPreferences prefs = await SharedPreferences.getInstance();
-          //     await prefs.setBool('isLoggedIn', false);
-          //     prefs.remove('isAdmin');
-          //     await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-          //     Get.offAndToNamed("/login_page");
-          //   },
-          //   icon: const Icon(Icons.power_settings_new),
-          // ),
+          IconButton(
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('isLoggedIn', false);
+              prefs.remove('isAdmin');
+              await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+              Get.offAndToNamed("/login_page");
+              await FCMHelper.fcmHelper.getToken();
+            },
+            icon: const Icon(Icons.power_settings_new),
+          ),
           IconButton(
             onPressed: () {
               Get.toNamed('/chat_page',
@@ -198,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   Container(
-                    height: 470,
+                    height: 420,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: CloudFirestoreHelper.cloudFirestoreHelper
                           .fetchAllWorker(),
@@ -209,6 +228,7 @@ class _HomePageState extends State<HomePage> {
                               document!.docs;
 
                           return GridView.builder(
+                            physics: const BouncingScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
@@ -225,10 +245,8 @@ class _HomePageState extends State<HomePage> {
                                       arguments: documents[i]);
                                 },
                                 child: workerContainer(
-                                  ratings: "⭐⭐⭐⭐⭐",
-                                  rate: documents[i]['price'],
+                                  hourlyCharge: documents[i]['hourlyCharge'],
                                   name: documents[i]['name'],
-                                  experience: documents[i]['experience'],
                                   imageURL: documents[i]['imageURL'],
                                 ),
                               );
@@ -292,20 +310,120 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return PersistentTabView(
-      context,
-      screens: screens,
-      controller: persistentTabController,
-      items: navBarItems(),
-      hideNavigationBarWhenKeyboardShows: true,
-      stateManagement: true,
-      itemAnimationProperties: const ItemAnimationProperties(
-        duration: Duration(milliseconds: 300),
+    return WillPopScope(
+      onWillPop: exitPopup,
+      child: PersistentTabView(
+        context,
+        screens: screens,
+        controller: persistentTabController,
+        items: navBarItems(),
+        hideNavigationBarWhenKeyboardShows: true,
+        stateManagement: true,
+        itemAnimationProperties: const ItemAnimationProperties(
+          duration: Duration(milliseconds: 300),
+        ),
+        screenTransitionAnimation: const ScreenTransitionAnimation(
+          animateTabTransition: true,
+          duration: Duration(milliseconds: 300),
+        ),
       ),
-      screenTransitionAnimation: const ScreenTransitionAnimation(
-        animateTabTransition: true,
-        duration: Duration(milliseconds: 300),
+    );
+  }
+
+  Future<bool> exitPopup() async {
+    return await showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30), topRight: Radius.circular(30)),
       ),
+      builder: (context) {
+        return Container(
+          height: 200,
+          width: double.infinity,
+          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(30),
+                topLeft: Radius.circular(30),
+              ),
+              color: Colors.grey.shade100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 5),
+              Container(
+                height: 3,
+                width: 60,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Exit',
+                style: GoogleFonts.balooBhai2(
+                    fontSize: 22,
+                    color: Colors.red,
+                    fontWeight: FontWeight.w500),
+              ),
+              Divider(
+                indent: 10,
+                endIndent: 10,
+                color: Colors.grey.shade300,
+              ),
+              const SizedBox(height: 3),
+              Text(
+                'Are you sure you want to exit?',
+                style: GoogleFonts.balooBhai2(
+                    fontSize: 18,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(false),
+                    child: Container(
+                      height: 55,
+                      width: 160,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Colors.grey.shade400,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Cancel',
+                        style: GoogleFonts.habibi(
+                            fontSize: 17, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(true),
+                    child: Container(
+                      height: 55,
+                      width: 160,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Colors.indigo.shade400,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Exit',
+                        style: GoogleFonts.habibi(
+                            fontSize: 17, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+            ],
+          ),
+        );
+      },
     );
   }
 }

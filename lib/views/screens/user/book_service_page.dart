@@ -1,11 +1,9 @@
 import 'package:date_time_picker_widget/date_time_picker_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/button_syle.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
-import 'package:timezone/data/latest.dart' as tz;
 
 import '../../../global/global.dart';
 import '../../../global/snack_bar.dart';
@@ -31,21 +29,21 @@ class _BookServiceState extends State<BookService> {
   void initState() {
     print(Global.currentUser);
 
-    AndroidInitializationSettings androidInitializationSettings =
-        const AndroidInitializationSettings("mipmap/ic_launcher");
-    DarwinInitializationSettings darwinInitializationSettings =
-        const DarwinInitializationSettings();
-    var initializationSettings = InitializationSettings(
-      android: androidInitializationSettings,
-      iOS: darwinInitializationSettings,
-    );
-
-    tz.initializeTimeZones();
-
-    LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {},
-    );
+    // AndroidInitializationSettings androidInitializationSettings =
+    //     const AndroidInitializationSettings("mipmap/ic_launcher");
+    // DarwinInitializationSettings darwinInitializationSettings =
+    //     const DarwinInitializationSettings();
+    // var initializationSettings = InitializationSettings(
+    //   android: androidInitializationSettings,
+    //   iOS: darwinInitializationSettings,
+    // );
+    //
+    // tz.initializeTimeZones();
+    //
+    // LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
+    //   initializationSettings,
+    //   onDidReceiveNotificationResponse: (NotificationResponse response) {},
+    // );
 
     super.initState();
   }

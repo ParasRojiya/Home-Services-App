@@ -138,7 +138,8 @@ class _LoginPageState extends State<LoginPage> {
                           'role': element.data()?['role'],
                           'bookings': element.data()?['bookings'],
                           'imageURL': element.data()?['imageURL'],
-                          'DOB': element.data()?['DOB']
+                          'DOB': element.data()?['DOB'],
+                          'token': element.data()?['token']
                         };
 
                         if (element.data()?['role'] == 'admin') {
@@ -153,6 +154,8 @@ class _LoginPageState extends State<LoginPage> {
                               user: Global.user,
                               context: context,
                               name: "Sign In");
+
+                          Get.offAndToNamed('/admin_home_page');
                         }
 
                         if (element.data()?['role'] == 'user') {
@@ -164,24 +167,15 @@ class _LoginPageState extends State<LoginPage> {
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
 
-                          print(email!);
-                          print(password!);
-                          print(Global.user);
                           if (Global.user != null) {
+                            snackBar(
+                                user: Global.user,
+                                context: context,
+                                name: "Sign In");
+
                             Navigator.of(context).pushReplacementNamed(
                                 "/user_home_page",
                                 arguments: Global.user);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  "Login Failed.",
-                                  style: GoogleFonts.poppins(),
-                                ),
-                                backgroundColor: Colors.red,
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
                           }
                         }
                       });

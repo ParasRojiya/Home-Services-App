@@ -17,7 +17,7 @@ textFieldDecoration({required IconData icon, required String name}) {
     label: Text(
       name,
       style: GoogleFonts.poppins(
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
       ),
     ),
     hintText: "Enter Your $name here...",

@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
@@ -28,12 +29,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'global/global.dart';
 import 'views/screens/user/user_home_page.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   Global.isAdmin = prefs.getBool('isAdmin') ?? false;
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(
     GetMaterialApp(
@@ -63,7 +74,7 @@ void main() async {
         GetPage(name: '/edit_service_page', page: () => const EditService()),
         GetPage(name: '/add_service_page', page: () => const AddNewService()),
         GetPage(name: '/all_workers', page: () => const AllWorkers()),
-        GetPage(name: '/all_worker', page: () => const AddWorker()),
+        GetPage(name: '/add_worker', page: () => const AddWorker()),
         GetPage(name: '/users_list', page: () => const UsersList()),
         GetPage(name: '/chats_page', page: () => const ChatsPage()),
 

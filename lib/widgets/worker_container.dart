@@ -3,9 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 Widget workerContainer({
   required String name,
-  required String experience,
-  required int rate,
-  required String ratings,
+  required int hourlyCharge,
   required String imageURL,
 }) {
   return Container(
@@ -39,7 +37,7 @@ Widget workerContainer({
           ),
         ),
         Expanded(
-          flex: 5,
+          flex: 2,
           child: Container(
             width: double.infinity,
             decoration: const BoxDecoration(
@@ -60,21 +58,7 @@ Widget workerContainer({
                   ),
                 ),
                 Text(
-                  "${experience} Exp.",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ),
-                Text(
-                  ratings,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ),
-                Text(
-                  "₹$rate/hr ",
+                  "₹$hourlyCharge/hr ",
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Colors.white.withOpacity(0.8),

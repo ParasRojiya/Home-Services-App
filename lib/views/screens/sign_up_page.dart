@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/helper/fcm_helper.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 
 import '../../global/button_syle.dart';
@@ -161,6 +162,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                   "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Clipart.png",
                               "bookings": [],
                               "cart": [],
+                              "DOB": null,
+                              "contact": null,
+                              "address": null,
+                              "token":await FCMHelper.fcmHelper.getToken(),
                             },
                           );
 

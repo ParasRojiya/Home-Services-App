@@ -1,15 +1,17 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:home_services_app/controllers/worker_controller.dart';
-import '../../../global/snack_bar.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/controllers/worker_controller.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../global/button_syle.dart';
 import '../../../global/global.dart';
+import '../../../global/snack_bar.dart';
 import '../../../global/text_field_decoration.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../helper/cloud_storage_helper.dart';
-import '../../../global/button_syle.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AddWorker extends StatefulWidget {
   const AddWorker({Key? key}) : super(key: key);
@@ -26,14 +28,24 @@ class _AddWorkerState extends State<AddWorker> {
       TextEditingController();
   final TextEditingController workerHourlyPriceController =
       TextEditingController();
-  final TextEditingController workerExperienceController =
-      TextEditingController();
 
   String? workerName;
   String? workerEmail;
   int? workerMobileNumber;
   int? workerHourlyPrice;
-  String? workerExperience;
+  String? gender;
+
+  String category = "AC Services";
+  List dropDownValues = [
+    "AC Services",
+    "Cleaning",
+    "Electronics",
+    "Furniture",
+    "Kitchen Appliances",
+    "Painting",
+    "Plumbing",
+    "Shifting",
+  ];
 
   File? image;
   XFile? pickedImage;
@@ -55,7 +67,6 @@ class _AddWorkerState extends State<AddWorker> {
       workerEmailController.text = res['email'];
       workerMobileNumberController.text = res['number'].toString();
       workerHourlyPriceController.text = res['price'].toString();
-      workerExperienceController.text = res['experience'];
     }
     return Scaffold(
       appBar: AppBar(
@@ -160,12 +171,79 @@ class _AddWorkerState extends State<AddWorker> {
                     controller: workerMobileNumberController,
                     validator: (val) => (val!.isEmpty)
                         ? "Please enter worker mobile number"
-                        : null,
+                        : (val!.length != 10)
+                            ? "Mobile number length must by 10 numbers"
+                            : null,
                     onSaved: (val) {
                       workerMobileNumber = int.parse(val!);
                     },
                     decoration: textFieldDecoration(
                         name: "Mobile Number", icon: Icons.eighteen_mp)),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const SizedBox(width: 4),
+                    Text(
+                      "Gender: ",
+                      style: GoogleFonts.ubuntu(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Radio(
+                        value: "Male",
+                        groupValue: gender,
+                        onChanged: (val) {
+                          setState(() {
+                            gender = val;
+                          });
+                        }),
+                    Text(
+                      "Male",
+                      style: GoogleFonts.ubuntu(),
+                    ),
+                    const SizedBox(width: 12),
+                    Radio(
+                        value: "Female",
+                        groupValue: gender,
+                        onChanged: (val) {
+                          setState(() {
+                            gender = val;
+                          });
+                        }),
+                    Text(
+                      "Female",
+                      style: GoogleFonts.ubuntu(),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const SizedBox(width: 4),
+                    Text(
+                      "Category: ",
+                      style: GoogleFonts.ubuntu(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    DropdownButton(
+                        value: category,
+                        items: dropDownValues.map((e) {
+                          return DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            category = val as String;
+                          });
+                        })
+                  ],
+                ),
                 const SizedBox(height: 12),
                 TextFormField(
                     controller: workerHourlyPriceController,
@@ -177,17 +255,6 @@ class _AddWorkerState extends State<AddWorker> {
                     },
                     decoration: textFieldDecoration(
                         name: "Hourly Price", icon: Icons.eighteen_mp)),
-                const SizedBox(height: 12),
-                TextFormField(
-                    controller: workerExperienceController,
-                    validator: (val) => (val!.isEmpty)
-                        ? "Please enter worker experience"
-                        : null,
-                    onSaved: (val) {
-                      workerExperience = val!;
-                    },
-                    decoration: textFieldDecoration(
-                        name: "Worker Experience", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -211,22 +278,23 @@ class _AddWorkerState extends State<AddWorker> {
                               'name': workerName!,
                               'email': workerEmail,
                               'number': workerMobileNumber,
-                              'price': workerHourlyPrice,
-                              'experience': workerExperience,
+                              'hourlyCharge': workerHourlyPrice,
                               'imageURL': Global.imageURL,
+                              'gender': gender,
+                              'category': category,
+                              'ratings': [],
+                              'reviews': [],
                             };
 
                             (res != null)
                                 ? await CloudFirestoreHelper
                                     .cloudFirestoreHelper
-                                    .updateWorker(
-                                        name: workerName!.toLowerCase(),
-                                        data: data)
+                                    .updateWorker(name: workerName!, data: data)
                                 : await CloudFirestoreHelper
                                     .cloudFirestoreHelper
                                     .addWorker(
-                                        name: workerName!
-                                            .toLowerCase(), //serviceCategoryController.dropDownVal!,
+                                        name:
+                                            workerName!, //serviceCategoryController.dropDownVal!,
                                         data: data);
 
                             successSnackBar(
@@ -237,13 +305,12 @@ class _AddWorkerState extends State<AddWorker> {
                             workerEmailController.clear();
                             workerMobileNumberController.clear();
                             workerHourlyPriceController.clear();
-                            workerExperienceController.clear();
 
                             workerName = null;
                             workerEmail = null;
                             workerMobileNumber = null;
                             workerHourlyPrice = null;
-                            workerExperience = null;
+
                             Get.back();
                           } else if (workerController.image == null) {
                             ScaffoldMessenger.of(context).showSnackBar(

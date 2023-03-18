@@ -52,9 +52,11 @@ class _EditProfileState extends State<EditProfile> {
 
     fullNameController.text = Global.currentUser!['name'];
     if (Global.currentUser!['contact'] != null &&
-        Global.currentUser!['address'] != null) {
+        Global.currentUser!['address'] != null &&
+        Global.currentUser!['DOB'] != null) {
       phoneController.text = Global.currentUser!['contact'];
       addressController.text = Global.currentUser!['address'];
+      date = Global.currentUser!['DOB'];
     }
   }
 
@@ -143,6 +145,36 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                InkWell(
+                  onTap: () {
+                    changePassword();
+                  },
+                  child: Container(
+                    height: 50,
+                    padding: EdgeInsets.all(10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Change Password",
+                          style: TextStyle(
+                              color: Colors.grey.shade600, fontSize: 16),
+                        ),
+                        Icon(
+                          Icons.lock,
+                          color: Colors.grey.shade600,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 50,
                   child: TextFormField(
@@ -177,7 +209,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 10),
                 Container(
-                  height: 52,
+                  height: 60,
                   padding: const EdgeInsets.all(10),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -231,40 +263,10 @@ class _EditProfileState extends State<EditProfile> {
                       keyboardType: TextInputType.multiline,
                       style: const TextStyle(color: Colors.black, fontSize: 17),
                       decoration: textFieldDecoration(
-                          icon: Icons.edit, name: "Address"),
+                          icon: Icons.home, name: "Address"),
                       onSaved: (val) {
                         address = val;
                       }),
-                ),
-                const SizedBox(height: 10),
-                InkWell(
-                  onTap: () {
-                    changePassword();
-                  },
-                  child: Container(
-                    height: 50,
-                    padding: EdgeInsets.all(10),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Change Password",
-                          style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 16),
-                        ),
-                        Icon(
-                          Icons.lock,
-                          color: Colors.grey.shade600,
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 30),
                 Container(
@@ -383,7 +385,7 @@ class _EditProfileState extends State<EditProfile> {
       fromKey.currentState!.save();
 
       if (serviceCategoryController.image != null) {
-        await CloudStorageHelper.cloudStorageHelper.storeServiceImage(
+        await CloudStorageHelper.cloudStorageHelper.storeUserImage(
             image: serviceCategoryController.image!, name: fullName!);
       }
 

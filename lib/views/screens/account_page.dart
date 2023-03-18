@@ -99,7 +99,7 @@ class _AccountPageState extends State<AccountPage> {
               onTap: () {
                 Get.toNamed("/edit_profile");
               },
-              icon:  CupertinoIcons.person,
+              icon: CupertinoIcons.person,
             ),
             accountOptionContainer(
               title: "Wallet",
@@ -110,11 +110,10 @@ class _AccountPageState extends State<AccountPage> {
             ),
             accountOptionContainer(
               title: "FAQs",
-              onTap: (){
+              onTap: () {
                 Get.toNamed('/faqs');
               },
-              icon:  CupertinoIcons.flag,
-
+              icon: CupertinoIcons.flag,
             ),
             Container(
               decoration: BoxDecoration(
@@ -142,7 +141,7 @@ class _AccountPageState extends State<AccountPage> {
               onTap: () {
                 Get.toNamed('/privacy_policy_page');
               },
-              icon:CupertinoIcons.shield_lefthalf_fill,
+              icon: CupertinoIcons.shield_lefthalf_fill,
             ),
             accountOptionContainer(
               title: "Terms & Condition",
@@ -156,7 +155,7 @@ class _AccountPageState extends State<AccountPage> {
               onTap: () {
                 contact();
               },
-              icon:  CupertinoIcons.question_circle,
+              icon: CupertinoIcons.question_circle,
             ),
             accountOptionContainer(
               title: "Log Out",
@@ -236,7 +235,7 @@ class _AccountPageState extends State<AccountPage> {
                               GestureDetector(
                                 onTap: () async {
                                   SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
+                                      await SharedPreferences.getInstance();
                                   await prefs.setBool('isLoggedIn', false);
                                   prefs.remove('isAdmin');
 
@@ -266,11 +265,6 @@ class _AccountPageState extends State<AccountPage> {
                     );
                   },
                 );
-
-
-
-
-
               },
               icon: CupertinoIcons.power,
             ),
@@ -280,13 +274,12 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-
   Future<void> _launchUrl() async {
     final Uri _url = Uri.parse('https://flutter.dev');
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
     }
-}
+  }
 
   editProfile() {
     showDialog(
@@ -391,7 +384,6 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                       );
                     }
-
                   },
                   icon: Icons.call),
               accountOptionContainer(

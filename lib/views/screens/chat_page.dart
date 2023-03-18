@@ -66,9 +66,6 @@ class _ChatPageState extends State<ChatPage> {
                     itemBuilder: (context, i) {
                       i = chat.length - 1 - i;
                       Map<String, dynamic> data = chat[i];
-                      // int index = snapshot.data!.docs.length - 1 - i;
-                      // Map<String, dynamic> data =
-                      //     snapshot.data!.docs[i]['chats'][index];
                       Timestamp time = data['time'];
                       DateTime date = time.toDate();
 

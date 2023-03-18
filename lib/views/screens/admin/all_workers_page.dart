@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:home_services_app/global/global.dart';
-import 'package:get/get.dart';
-import 'package:home_services_app/widgets/worker_container.dart';
-import '../../../helper/cloud_firestore_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:home_services_app/global/global.dart';
+import 'package:home_services_app/widgets/worker_container.dart';
+
+import '../../../helper/cloud_firestore_helper.dart';
 
 class AllWorkers extends StatelessWidget {
   const AllWorkers({Key? key}) : super(key: key);
@@ -42,10 +43,8 @@ class AllWorkers extends StatelessWidget {
                               arguments: documents[i]);
                     },
                     child: workerContainer(
-                      ratings: "⭐⭐⭐⭐⭐",
-                      rate: documents[i]['price'],
+                      hourlyCharge: documents[i]['hourlyCharge'],
                       name: documents[i]['name'],
-                      experience: documents[i]['experience'],
                       imageURL: documents[i]['imageURL'],
                       // imageURL: "",
                     ),

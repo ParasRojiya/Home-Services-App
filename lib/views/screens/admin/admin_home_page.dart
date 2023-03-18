@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
         'address': element.data()?['address'],
         'DOB': element.data()?['DOB'],
         'contact': element.data()?['contact'],
+        'token': element.data()?['token']
       };
     });
   }
@@ -185,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   Container(
-                    height: 470,
+                    height: 420,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: CloudFirestoreHelper.cloudFirestoreHelper
                           .fetchAllWorker(),
@@ -196,6 +197,7 @@ class _HomePageState extends State<HomePage> {
                               document!.docs;
 
                           return GridView.builder(
+                            physics: const BouncingScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
@@ -212,10 +214,8 @@ class _HomePageState extends State<HomePage> {
                                       arguments: documents[i]);
                                 },
                                 child: workerContainer(
-                                  ratings: "⭐⭐⭐⭐⭐",
-                                  rate: documents[i]['price'],
+                                  hourlyCharge: documents[i]['hourlyCharge'],
                                   name: documents[i]['name'],
-                                  experience: documents[i]['experience'],
                                   imageURL: documents[i]['imageURL'],
                                 ),
                               );
