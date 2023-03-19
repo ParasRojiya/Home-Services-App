@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
@@ -13,6 +16,25 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  int index = 0;
+
+  List pending = [];
+  List ongoing = [];
+  List completed = [];
+
+  DateTime dateTime = DateTime.now();
+
+  bool isProcessDone = false;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    (isProcessDone == true) ? false : true;
+    pending.clear();
+    completed.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,16 +64,109 @@ class _HistoryPageState extends State<HistoryPage> {
                 }
               }
 
-              return ListView.builder(
-                itemCount: bookings.length,
-                itemBuilder: (context, i) {
-                  return Card(
-                    child: ListTile(
-                      title: Text("${bookings[i]['name']}"),
-                      subtitle: Text("Rs. ${bookings[i]['price']}"),
+              if (isProcessDone == false) {
+                for (Map book in bookings) {
+                  String fetchDateTime = book['SelectedDateTime'];
+                  String bookDate = fetchDateTime.split(' ').first;
+                  String bookTime = fetchDateTime.split(' ').elementAt(1);
+                  String period = fetchDateTime.split(' ').last;
+
+                  int date = int.parse(bookDate.split('-').first);
+                  int month = int.parse(bookDate.split('-').elementAt(1));
+
+                  double time =
+                      getTimeOFService(bookTime: bookTime, period: period);
+
+                  if (month == dateTime.month &&
+                      date == dateTime.day &&
+                      time < dateTime.hour) {
+                    completed.add(book);
+                  } else {
+                    pending.add(book);
+                  }
+                }
+              }
+
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            index = 0;
+                            isProcessDone = true;
+                          });
+                        },
+                        child: Text('pending'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            index = 1;
+                            isProcessDone = true;
+                          });
+                        },
+                        child: Text('ongoing'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            index = 2;
+                            isProcessDone = true;
+                          });
+                        },
+                        child: Text('complete'),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: IndexedStack(
+                      index: index,
+                      children: [
+                        ListView.builder(
+                          itemCount: pending.length,
+                          itemBuilder: (context, i) {
+                            return Card(
+                              child: ListTile(
+                                title: Text("${pending[i]['name']}"),
+                                subtitle: Text("Rs. ${pending[i]['price']}"),
+                                trailing:
+                                    Text('${pending[i]['SelectedDateTime']}'),
+                              ),
+                            );
+                          },
+                        ),
+                        ListView.builder(
+                          itemCount: ongoing.length,
+                          itemBuilder: (context, i) {
+                            return Card(
+                              child: ListTile(
+                                title: Text("${ongoing[i]['name']}"),
+                                subtitle: Text("Rs. ${ongoing[i]['price']}"),
+                                trailing:
+                                    Text('${ongoing[i]['SelectedDateTime']}'),
+                              ),
+                            );
+                          },
+                        ),
+                        ListView.builder(
+                          itemCount: completed.length,
+                          itemBuilder: (context, i) {
+                            return Card(
+                              child: ListTile(
+                                title: Text("${completed[i]['name']}"),
+                                subtitle: Text("Rs. ${completed[i]['price']}"),
+                                trailing:
+                                    Text('${completed[i]['SelectedDateTime']}'),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ],
               );
             }
 
@@ -62,5 +177,64 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       ),
     );
+  }
+
+  getTimeOFService({required String bookTime, required String period}) {
+    double time = 0;
+
+    if (bookTime == '7:00' && period == 'AM') {
+      time = 7;
+    } else if (bookTime == '7:30' && period == 'AM') {
+      time = 7.30;
+    } else if (bookTime == '8:00' && period == 'AM') {
+      time = 8;
+    } else if (bookTime == '8:30' && period == 'AM') {
+      time = 8.30;
+    } else if (bookTime == '9:00' && period == 'AM') {
+      time = 9;
+    } else if (bookTime == '9:30' && period == 'AM') {
+      time = 9.30;
+    } else if (bookTime == '10:00' && period == 'AM') {
+      time = 10;
+    } else if (bookTime == '10:30' && period == 'AM') {
+      time = 10.30;
+    } else if (bookTime == '11:00' && period == 'AM') {
+      time = 11;
+    } else if (bookTime == '11:30' && period == 'AM') {
+      time = 11.30;
+    } else if (bookTime == '12:00' && period == 'PM') {
+      time = 12;
+    } else if (bookTime == '12:30' && period == 'PM') {
+      time = 12.30;
+    } else if (bookTime == '1:00' && period == 'PM') {
+      time = 13;
+    } else if (bookTime == '1:30' && period == 'PM') {
+      time = 13.30;
+    } else if (bookTime == '2:00' && period == 'PM') {
+      time = 14;
+    } else if (bookTime == '2:30' && period == 'PM') {
+      time = 14.30;
+    } else if (bookTime == '3:00' && period == 'PM') {
+      time = 15;
+    } else if (bookTime == '3:30' && period == 'PM') {
+      time = 15.30;
+    } else if (bookTime == '4:00' && period == 'PM') {
+      time = 16;
+    } else if (bookTime == '4:30' && period == 'PM') {
+      time = 16.30;
+    } else if (bookTime == '5:00' && period == 'PM') {
+      time = 17;
+    } else if (bookTime == '5:30' && period == 'PM') {
+      time = 17.30;
+    } else if (bookTime == '6:00' && period == 'PM') {
+      time = 18;
+    } else if (bookTime == '6:30' && period == 'PM') {
+      time = 18.30;
+    } else if (bookTime == '7:00' && period == 'PM') {
+      time = 19;
+    } else if (bookTime == '7:30' && period == 'PM') {
+      time = 19.30;
+    }
+    return time;
   }
 }

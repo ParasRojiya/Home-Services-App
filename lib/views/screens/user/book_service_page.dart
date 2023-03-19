@@ -7,6 +7,7 @@ import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 
 import '../../../global/global.dart';
 import '../../../global/snack_bar.dart';
+import '../../../helper/cloud_firestore_helper.dart';
 import '../../../helper/local_notification_helper.dart';
 
 class BookService extends StatefulWidget {
@@ -276,14 +277,14 @@ class _BookServiceState extends State<BookService> {
                         'bookings': bookings,
                       };
 
-                      // await CloudFirestoreHelper.cloudFirestoreHelper
-                      //     .updateUsersRecords(
-                      //         id: Global.currentUser!['email'], data: data);
-                      //
-                      // await CloudFirestoreHelper.cloudFirestoreHelper
-                      //     .addServiceInBookingCollection(
-                      //         data: data,
-                      //         userEmail: Global.currentUser!['email']);
+                      await CloudFirestoreHelper.cloudFirestoreHelper
+                          .updateUsersRecords(
+                              id: Global.currentUser!['email'], data: data);
+
+                      await CloudFirestoreHelper.cloudFirestoreHelper
+                          .addServiceInBookingCollection(
+                              data: data,
+                              userEmail: Global.currentUser!['email']);
 
                       Map<String, dynamic> receiptData = {
                         'Name': Global.currentUser?['name'],
