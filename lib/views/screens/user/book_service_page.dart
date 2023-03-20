@@ -79,7 +79,7 @@ class _BookServiceState extends State<BookService> {
                 const SizedBox(height: 12),
                 Text(res.currentData['desc']),
                 const SizedBox(height: 12),
-                Text(res.currentData['duration']),
+                Text("${res.currentData['duration']}"),
               ],
             ),
             Column(
