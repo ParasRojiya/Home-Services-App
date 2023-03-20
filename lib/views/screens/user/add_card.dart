@@ -47,7 +47,7 @@ class _AddCardPageState extends State<AddCardPage> {
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(20),
                   image: const DecorationImage(
-                    image: AssetImage('assets/image/credit-card.png'),
+                    image: AssetImage('assets/images/credit-card.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -200,7 +200,6 @@ class _AddCardPageState extends State<AddCardPage> {
                             '${expiryMonthController.text}/${expiryYearController.text}',
                         'cvv': cvvController.text,
                       };
-                      print(card);
                     }
                   },
                   child: Container(
