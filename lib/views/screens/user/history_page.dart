@@ -27,15 +27,6 @@ class _HistoryPageState extends State<HistoryPage> {
   bool isProcessDone = false;
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    (isProcessDone == true) ? false : true;
-    pending.clear();
-    completed.clear();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -64,26 +55,45 @@ class _HistoryPageState extends State<HistoryPage> {
                 }
               }
 
-              if (isProcessDone == false) {
-                for (Map book in bookings) {
-                  String fetchDateTime = book['SelectedDateTime'];
-                  String bookDate = fetchDateTime.split(' ').first;
-                  String bookTime = fetchDateTime.split(' ').elementAt(1);
-                  String period = fetchDateTime.split(' ').last;
+              pending.clear();
+              completed.clear();
+              ongoing.clear();
 
-                  int date = int.parse(bookDate.split('-').first);
-                  int month = int.parse(bookDate.split('-').elementAt(1));
+              for (Map book in bookings) {
+                String fetchDateTime = book['SelectedDateTime'];
+                String bookDate = fetchDateTime.split(' ').first;
+                String bookTime = fetchDateTime.split(' ').elementAt(1);
+                String period = fetchDateTime.split(' ').last;
 
-                  double time =
-                      getTimeOFService(bookTime: bookTime, period: period);
+                int date = int.parse(bookDate.split('-').first);
+                int month = int.parse(bookDate.split('-').elementAt(1));
 
-                  if (month == dateTime.month &&
-                      date == dateTime.day &&
-                      time < dateTime.hour) {
+                double time =
+                    getTimeOFService(bookTime: bookTime, period: period);
+
+                double checkOnGoingTime = time + 1;
+
+                if (month == dateTime.month &&
+                    date == dateTime.day &&
+                    dateTime.hour >= time &&
+                    dateTime.hour <= checkOnGoingTime) {
+                  ongoing.add(book);
+                } else if (month < dateTime.month) {
+                  completed.add(book);
+                } else if (month == dateTime.month) {
+                  if (date < dateTime.day) {
                     completed.add(book);
+                  } else if (date == dateTime.day) {
+                    if (time < dateTime.hour) {
+                      completed.add(book);
+                    } else {
+                      pending.add(book);
+                    }
                   } else {
                     pending.add(book);
                   }
+                } else {
+                  pending.add(book);
                 }
               }
 
@@ -95,7 +105,6 @@ class _HistoryPageState extends State<HistoryPage> {
                         onPressed: () {
                           setState(() {
                             index = 0;
-                            isProcessDone = true;
                           });
                         },
                         child: Text('pending'),
@@ -104,7 +113,6 @@ class _HistoryPageState extends State<HistoryPage> {
                         onPressed: () {
                           setState(() {
                             index = 1;
-                            isProcessDone = true;
                           });
                         },
                         child: Text('ongoing'),
@@ -113,7 +121,6 @@ class _HistoryPageState extends State<HistoryPage> {
                         onPressed: () {
                           setState(() {
                             index = 2;
-                            isProcessDone = true;
                           });
                         },
                         child: Text('complete'),
