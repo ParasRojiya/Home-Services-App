@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:home_services_app/controllers/worker_controller.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../controllers/worker_controller.dart';
 import '../../../global/button_syle.dart';
 import '../../../global/global.dart';
 import '../../../global/snack_bar.dart';
@@ -13,14 +13,14 @@ import '../../../global/text_field_decoration.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../helper/cloud_storage_helper.dart';
 
-class AddWorker extends StatefulWidget {
-  const AddWorker({Key? key}) : super(key: key);
+class EditWorker extends StatefulWidget {
+  const EditWorker({Key? key}) : super(key: key);
 
   @override
-  State<AddWorker> createState() => _AddWorkerState();
+  State<EditWorker> createState() => _EditWorkerState();
 }
 
-class _AddWorkerState extends State<AddWorker> {
+class _EditWorkerState extends State<EditWorker> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController workerNameController = TextEditingController();
   final TextEditingController workerEmailController = TextEditingController();
@@ -34,6 +34,9 @@ class _AddWorkerState extends State<AddWorker> {
   int? workerMobileNumber;
   int? workerHourlyPrice;
   String? gender;
+
+  bool genderUpdated = false;
+  bool categoryUpdated = false;
 
   String category = "AC Services";
   List dropDownValues = [
@@ -53,26 +56,25 @@ class _AddWorkerState extends State<AddWorker> {
   final WorkerController workerController = Get.put(WorkerController());
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     dynamic res = ModalRoute.of(context)!.settings.arguments;
 
-    if (res != null) {
-      workerName = res.id;
-      workerNameController.text = res['name'];
-      workerEmailController.text = res['email'];
-      workerMobileNumberController.text = res['number'].toString();
-      workerHourlyPriceController.text = res['price'].toString();
+    workerName = res['name'];
+    workerNameController.text = res['name'];
+    workerEmailController.text = res['email'];
+    workerMobileNumberController.text = res['number'].toString();
+    workerHourlyPriceController.text = res['hourlyCharge'].toString();
+
+    if (categoryUpdated == false) {
+      category = res['category'];
     }
+    if (genderUpdated == false) {
+      gender = res['gender'];
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: (res != null)
-            ? const Text("Update Worker")
-            : const Text("Add New Worker"),
+        title: const Text("Update Worker"),
         centerTitle: true,
       ),
       body: Container(
@@ -100,52 +102,74 @@ class _AddWorkerState extends State<AddWorker> {
                 GetBuilder(
                   builder: (WorkerController controller) => CircleAvatar(
                     radius: 70,
-                    backgroundImage: (res != null)
-                        ? NetworkImage(res['imageURL'])
-                        : (controller.image != null)
-                            ? FileImage(controller.image!) as ImageProvider
-                            : null,
+                    backgroundImage: (controller.image != null)
+                        ? FileImage(controller.image!) as ImageProvider
+                        : NetworkImage(res['imageURL']),
                     backgroundColor: Colors.grey,
                   ),
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              alignment: Alignment.center,
-                              title: const Text("Select Image Source"),
-                              actions: [
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      workerController
-                                          .addImage(ImageSource.gallery);
-                                      Navigator.of(context).pop();
-                                      res = null;
-                                    },
-                                    child: const Text("Gallery")),
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      workerController
-                                          .addImage(ImageSource.camera);
-                                      Navigator.of(context).pop();
-                                      res = null;
-                                    },
-                                    child: const Text("Camera")),
-                              ],
-                            );
-                          });
-                    },
-                    child: (res != null)
-                        ? const Text("Update Image")
-                        : const Text("Add Image")),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            alignment: Alignment.center,
+                            title: const Text("Select Image Source"),
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    workerController
+                                        .addImage(ImageSource.gallery);
+                                    Navigator.of(context).pop();
+                                    res = null;
+                                  },
+                                  child: const Text("Gallery")),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    workerController
+                                        .addImage(ImageSource.camera);
+                                    Navigator.of(context).pop();
+                                    res = null;
+                                  },
+                                  child: const Text("Camera")),
+                            ],
+                          );
+                        });
+                  },
+                  child: const Text("Update Image"),
+                ),
                 const Divider(
                   color: Colors.grey,
                   thickness: 1,
                 ),
                 const SizedBox(height: 14),
+                Container(
+                  height: 50,
+                  padding: EdgeInsets.all(10),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${res['email']}",
+                        style: TextStyle(
+                            color: Colors.grey.shade600, fontSize: 16),
+                      ),
+                      Icon(
+                        Icons.email,
+                        color: Colors.grey.shade600,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
                 TextFormField(
                     controller: workerNameController,
                     validator: (val) =>
@@ -157,21 +181,10 @@ class _AddWorkerState extends State<AddWorker> {
                         name: "Worker Name", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
                 TextFormField(
-                    controller: workerEmailController,
-                    validator: (val) =>
-                        (val!.isEmpty) ? "Please enter worker Email" : null,
-                    onSaved: (val) {
-                      workerEmail = val!;
-                    },
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: textFieldDecoration(
-                        name: "Worker Email", icon: Icons.eighteen_mp)),
-                const SizedBox(height: 12),
-                TextFormField(
                     controller: workerMobileNumberController,
                     validator: (val) => (val!.isEmpty)
                         ? "Please enter worker mobile number"
-                        : (val!.length != 10)
+                        : (val.length != 10)
                             ? "Mobile number length must by 10 numbers"
                             : null,
                     onSaved: (val) {
@@ -197,6 +210,7 @@ class _AddWorkerState extends State<AddWorker> {
                         onChanged: (val) {
                           setState(() {
                             gender = val;
+                            genderUpdated = true;
                           });
                         }),
                     Text(
@@ -210,6 +224,7 @@ class _AddWorkerState extends State<AddWorker> {
                         onChanged: (val) {
                           setState(() {
                             gender = val;
+                            genderUpdated = true;
                           });
                         }),
                     Text(
@@ -240,6 +255,7 @@ class _AddWorkerState extends State<AddWorker> {
                         onChanged: (val) {
                           setState(() {
                             category = val as String;
+                            categoryUpdated = true;
                           });
                         })
                   ],
@@ -264,35 +280,33 @@ class _AddWorkerState extends State<AddWorker> {
                           horizontal: 12, vertical: 8),
                       child: ElevatedButton(
                         onPressed: () async {
-                          if (formKey.currentState!.validate() &&
-                              workerController.image != null) {
+                          if (formKey.currentState!.validate()) {
                             formKey.currentState!.save();
 
-                            await CloudStorageHelper.cloudStorageHelper
-                                .storeWorkerImage(
-                                    image: workerController.image!,
-                                    name: workerName!);
+                            if (workerController.image != null) {
+                              await CloudStorageHelper.cloudStorageHelper
+                                  .storeWorkerImage(
+                                      image: workerController.image!,
+                                      name: workerName!);
+                            }
 
                             Map<String, dynamic> data = {
                               'name': workerName!,
-                              'email': workerEmail,
+                              'email': res['email'],
                               'number': workerMobileNumber,
                               'hourlyCharge': workerHourlyPrice,
-                              'imageURL': Global.imageURL,
+                              'imageURL': (workerController.image != null)
+                                  ? Global.imageURL
+                                  : res['imageURL'],
                               'gender': gender,
                               'category': category,
-                              'ratings': [],
-                              'reviews': [],
                             };
 
                             await CloudFirestoreHelper.cloudFirestoreHelper
-                                .addWorker(
-                                    name:
-                                        workerEmail!, //serviceCategoryController.dropDownVal!,
-                                    data: data);
+                                .updateWorker(name: res['email']!, data: data);
 
                             successSnackBar(
-                                msg: "Worker successfully added in database",
+                                msg: "Worker successfully updated in database",
                                 context: context);
 
                             workerNameController.clear();
@@ -306,18 +320,10 @@ class _AddWorkerState extends State<AddWorker> {
                             workerHourlyPrice = null;
 
                             Get.back();
-                          } else if (workerController.image == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Please add image"),
-                                backgroundColor: Colors.red,
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
                           }
                         },
                         style: elevatedButtonStyle(),
-                        child: const Text("Add Worker"),
+                        child: const Text("Update Worker"),
                       ),
                     ),
                   ],
@@ -328,50 +334,5 @@ class _AddWorkerState extends State<AddWorker> {
         ),
       ),
     );
-  }
-
-  deleteWorker() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(
-              "Are you sure want to delete ${workerNameController.text}'s data ?",
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            actions: [
-              OutlinedButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.poppins(),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await CloudFirestoreHelper.cloudFirestoreHelper
-                      .deleteWorker(name: workerName!);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          "${workerNameController.text}'s data deleted successfully"),
-                      backgroundColor: Colors.green,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                  Get.offNamedUntil('/', (route) => false);
-                },
-                child: Text(
-                  "Delete",
-                  style: GoogleFonts.poppins(),
-                ),
-              ),
-            ],
-          );
-        });
   }
 }

@@ -11,6 +11,7 @@ import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 import 'package:home_services_app/views/screens/admin/all_workers_page.dart';
 import 'package:home_services_app/views/screens/admin/chats_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_service_page.dart';
+import 'package:home_services_app/views/screens/admin/edit_worker.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
 import 'package:home_services_app/views/screens/chat_page.dart';
 import 'package:home_services_app/views/screens/document/FAQs.dart';
@@ -80,6 +81,7 @@ void main() async {
         GetPage(name: '/add_worker', page: () => const AddWorker()),
         GetPage(name: '/users_list', page: () => const UsersList()),
         GetPage(name: '/chats_page', page: () => const ChatsPage()),
+        GetPage(name: '/edit_worker', page: () => const EditWorker()),
 
         //USER SCREENS
         GetPage(name: '/user_home_page', page: () => const UserHomeScreen()),
