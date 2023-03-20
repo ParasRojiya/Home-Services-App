@@ -1,17 +1,18 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import '../../../global/snack_bar.dart';
-import 'package:get/get.dart';
-import '../../../global/global.dart';
-import '../../../global/text_field_decoration.dart';
-import '../../../controllers/service_category_controller.dart';
-import '../../../helper/cloud_firestore_helper.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../helper/cloud_storage_helper.dart';
-import '../../../global/button_syle.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../controllers/service_category_controller.dart';
+import '../../../global/button_syle.dart';
+import '../../../global/global.dart';
+import '../../../global/snack_bar.dart';
+import '../../../global/text_field_decoration.dart';
+import '../../../helper/cloud_firestore_helper.dart';
+import '../../../helper/cloud_storage_helper.dart';
 
 class AddNewService extends StatefulWidget {
   const AddNewService({Key? key}) : super(key: key);
@@ -43,6 +44,8 @@ class _AddNewServiceState extends State<AddNewService> {
   String id = '';
   List? data;
 
+  int? duration;
+
   @override
   void initState() {
     super.initState();
@@ -52,8 +55,8 @@ class _AddNewServiceState extends State<AddNewService> {
   Widget build(BuildContext context) {
     QueryDocumentSnapshot res =
         ModalRoute.of(context)!.settings.arguments as QueryDocumentSnapshot;
-     id = res.id;
-     data = res['services'];
+    id = res.id;
+    data = res['services'];
 
     return Scaffold(
       appBar: AppBar(
@@ -145,15 +148,44 @@ class _AddNewServiceState extends State<AddNewService> {
                     decoration: textFieldDecoration(
                         name: "Service Price", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
-                TextFormField(
-                    controller: serviceDurationController,
-                    validator: (val) =>
-                        (val!.isEmpty) ? "Please enter service duration" : null,
-                    onSaved: (val) {
-                      serviceDuration = val;
-                    },
-                    decoration: textFieldDecoration(
-                        name: "Service Duration", icon: Icons.eighteen_mp)),
+                Row(
+                  children: [
+                    const SizedBox(width: 4),
+                    Text(
+                      "Duration: ",
+                      style: GoogleFonts.ubuntu(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Radio(
+                        value: 30,
+                        groupValue: duration,
+                        onChanged: (val) {
+                          setState(() {
+                            duration = val;
+                          });
+                        }),
+                    Text(
+                      "30 Min",
+                      style: GoogleFonts.ubuntu(),
+                    ),
+                    const SizedBox(width: 12),
+                    Radio(
+                        value: 60,
+                        groupValue: duration,
+                        onChanged: (val) {
+                          setState(() {
+                            duration = val;
+                          });
+                        }),
+                    Text(
+                      "1 Hr",
+                      style: GoogleFonts.ubuntu(),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 TextFormField(
                     controller: serviceDescriptionController,
@@ -188,20 +220,17 @@ class _AddNewServiceState extends State<AddNewService> {
   }
 
   addService() async {
-
     if (formKey.currentState!.validate() &&
         serviceCategoryController.image != null) {
       formKey.currentState!.save();
 
-      await CloudStorageHelper.cloudStorageHelper
-          .storeServiceImage(
-          image: serviceCategoryController.image!,
-          name: serviceName!);
+      await CloudStorageHelper.cloudStorageHelper.storeServiceImage(
+          image: serviceCategoryController.image!, name: serviceName!);
 
       Map<String, dynamic> dota = {
         'name': serviceName!,
         'price': servicePrice,
-        'duration': serviceDuration,
+        'duration': duration,
         'desc': serviceDescription,
         'imageURL': Global.imageURL,
       };
@@ -212,13 +241,11 @@ class _AddNewServiceState extends State<AddNewService> {
         'services': data,
       };
 
-
       await CloudFirestoreHelper.cloudFirestoreHelper
           .updateService(name: id, data: teda);
 
       successSnackBar(
-          msg: "Service successfully added in database",
-          context: context);
+          msg: "Service successfully added in database", context: context);
 
       serviceNameController.clear();
       servicePriceController.clear();
@@ -230,7 +257,6 @@ class _AddNewServiceState extends State<AddNewService> {
       serviceDuration = null;
       serviceDescription = null;
 
-
       Get.offAndToNamed('/all_categories');
     } else if (serviceCategoryController.image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -241,8 +267,5 @@ class _AddNewServiceState extends State<AddNewService> {
         ),
       );
     }
-
-
   }
-
 }

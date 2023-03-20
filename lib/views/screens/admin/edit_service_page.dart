@@ -1,18 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import '../../../global/snack_bar.dart';
 import 'package:get/get.dart';
-import '../../../global/global.dart';
-import '../../../global/text_field_decoration.dart';
-import '../../../controllers/service_category_controller.dart';
-import '../../../helper/cloud_firestore_helper.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../helper/cloud_storage_helper.dart';
-import '../../../global/button_syle.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../controllers/service_category_controller.dart';
+import '../../../global/button_syle.dart';
+import '../../../global/global.dart';
+import '../../../global/snack_bar.dart';
+import '../../../global/text_field_decoration.dart';
+import '../../../helper/cloud_firestore_helper.dart';
+import '../../../helper/cloud_storage_helper.dart';
 import 'all_services_page.dart';
 
 class EditService extends StatefulWidget {
@@ -27,9 +26,9 @@ class _EditServiceState extends State<EditService> {
   final TextEditingController serviceNameController = TextEditingController();
   final TextEditingController servicePriceController = TextEditingController();
   final TextEditingController serviceDurationController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController serviceDescriptionController =
-  TextEditingController();
+      TextEditingController();
 
   String? serviceName;
   int? servicePrice;
@@ -40,32 +39,34 @@ class _EditServiceState extends State<EditService> {
   XFile? pickedImage;
 
   final ServiceCategoryController serviceCategoryController =
-  Get.put(ServiceCategoryController());
+      Get.put(ServiceCategoryController());
 
   Argument? res;
   List? list;
 
+  int? duration;
+  bool durationUpdated = false;
+
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     res = ModalRoute.of(context)!.settings.arguments as Argument;
     list = res?.fullData['services'];
     String? id = res?.ids;
     Map<String, dynamic>? currentData = res?.currentData;
 
+    serviceName = currentData!['name'];
+    serviceNameController.text = currentData['name'];
+    servicePriceController.text = currentData['price'].toString();
+    serviceDescriptionController.text = currentData['desc'];
 
-      serviceName = currentData!['name'];
-      serviceNameController.text = currentData['name'];
-      servicePriceController.text = currentData['price'].toString();
-      serviceDurationController.text = currentData['duration'];
-      serviceDescriptionController.text = currentData['desc'];
-
+    if (durationUpdated == false) {
+      duration = currentData['duration'];
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Service"),
@@ -95,12 +96,12 @@ class _EditServiceState extends State<EditService> {
                 GetBuilder(
                   builder: (ServiceCategoryController controller) =>
                       CircleAvatar(
-                        radius: 70,
-                        backgroundImage: (controller.image != null)
-                            ? FileImage(controller.image!) as ImageProvider
-                            : NetworkImage(currentData['imageURL']),
-                        backgroundColor: Colors.grey,
-                      ),
+                    radius: 70,
+                    backgroundImage: (controller.image != null)
+                        ? FileImage(controller.image!) as ImageProvider
+                        : NetworkImage(currentData['imageURL']),
+                    backgroundColor: Colors.grey,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton(
@@ -139,7 +140,7 @@ class _EditServiceState extends State<EditService> {
                 TextFormField(
                     controller: serviceNameController,
                     validator: (val) =>
-                    (val!.isEmpty) ? "Please enter service name" : null,
+                        (val!.isEmpty) ? "Please enter service name" : null,
                     onSaved: (val) {
                       serviceName = val;
                     },
@@ -149,22 +150,53 @@ class _EditServiceState extends State<EditService> {
                 TextFormField(
                     controller: servicePriceController,
                     validator: (val) =>
-                    (val!.isEmpty) ? "Please enter service name" : null,
+                        (val!.isEmpty) ? "Please enter service name" : null,
                     onSaved: (val) {
                       servicePrice = int.parse(val!);
                     },
                     decoration: textFieldDecoration(
                         name: "Service Price", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
-                TextFormField(
-                    controller: serviceDurationController,
-                    validator: (val) =>
-                    (val!.isEmpty) ? "Please enter service duration" : null,
-                    onSaved: (val) {
-                      serviceDuration = val;
-                    },
-                    decoration: textFieldDecoration(
-                        name: "Service Duration", icon: Icons.eighteen_mp)),
+                Row(
+                  children: [
+                    const SizedBox(width: 4),
+                    Text(
+                      "Duration: ",
+                      style: GoogleFonts.ubuntu(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Radio(
+                        value: 30,
+                        groupValue: duration,
+                        onChanged: (val) {
+                          setState(() {
+                            duration = val;
+                            durationUpdated = true;
+                          });
+                        }),
+                    Text(
+                      "30 Min",
+                      style: GoogleFonts.ubuntu(),
+                    ),
+                    const SizedBox(width: 12),
+                    Radio(
+                        value: 60,
+                        groupValue: duration,
+                        onChanged: (val) {
+                          setState(() {
+                            duration = val;
+                            durationUpdated = true;
+                          });
+                        }),
+                    Text(
+                      "1 Hr",
+                      style: GoogleFonts.ubuntu(),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 TextFormField(
                     controller: serviceDescriptionController,
@@ -181,7 +213,7 @@ class _EditServiceState extends State<EditService> {
                 Container(
                   width: Get.width * 0.90,
                   margin:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () {
                       updateService();
@@ -247,34 +279,33 @@ class _EditServiceState extends State<EditService> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
 
-      if(serviceCategoryController.image != null) {
-        await CloudStorageHelper.cloudStorageHelper
-            .storeServiceImage(
-            image: serviceCategoryController.image!,
-            name: serviceName!);
+      if (serviceCategoryController.image != null) {
+        await CloudStorageHelper.cloudStorageHelper.storeServiceImage(
+            image: serviceCategoryController.image!, name: serviceName!);
       }
 
       Map<String, dynamic> editedData = {
         'name': serviceName,
         'price': servicePrice,
-        'duration': serviceDuration,
+        'duration': duration,
         'desc': serviceDescription,
-        'imageURL': (serviceCategoryController.image != null) ?Global.imageURL: res!.currentData['imageURL'],
+        'imageURL': (serviceCategoryController.image != null)
+            ? Global.imageURL
+            : res!.currentData['imageURL'],
       };
 
       list!.removeAt(res!.i);
       list!.insert(res!.i, editedData);
 
       Map<String, dynamic> data = {
-        'services':list,
+        'services': list,
       };
 
-      await CloudFirestoreHelper.cloudFirestoreHelper.updateService(name: res!.ids, data:data);
-
+      await CloudFirestoreHelper.cloudFirestoreHelper
+          .updateService(name: res!.ids, data: data);
 
       successSnackBar(
-          msg: "Service successfully added in database",
-          context: context);
+          msg: "Service successfully added in database", context: context);
 
       serviceNameController.clear();
       servicePriceController.clear();

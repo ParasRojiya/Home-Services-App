@@ -139,7 +139,8 @@ class _LoginPageState extends State<LoginPage> {
                           'bookings': element.data()?['bookings'],
                           'imageURL': element.data()?['imageURL'],
                           'DOB': element.data()?['DOB'],
-                          'token': element.data()?['token']
+                          'token': element.data()?['token'],
+                          'wallet': element.data()?['wallet'],
                         };
 
                         if (element.data()?['role'] == 'admin') {
@@ -173,9 +174,8 @@ class _LoginPageState extends State<LoginPage> {
                                 context: context,
                                 name: "Sign In");
 
-                            Navigator.of(context).pushReplacementNamed(
-                                "/user_home_page",
-                                arguments: Global.user);
+                            // Navigator.of(context).pushNamedAndRemoveUntil('/user_home_page', (route) => false,arguments: Global.user);
+                            Get.offAndToNamed('/user_home_page');
                           }
                         }
                       });

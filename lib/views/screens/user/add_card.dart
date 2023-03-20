@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/helper/cloud_firestore_helper.dart';
+
+import '../../../global/global.dart';
+import '../../../global/snack_bar.dart';
 
 class AddCardPage extends StatefulWidget {
   const AddCardPage({Key? key}) : super(key: key);
@@ -17,10 +22,27 @@ class _AddCardPageState extends State<AddCardPage> {
   TextEditingController expiryYearController = TextEditingController();
   TextEditingController cvvController = TextEditingController();
 
+  String? cardHolderName;
+  String? cardNumber;
+  String? expiryMonth;
+  String? expiryYear;
+  String? cvvNumber;
+
   String expiryDate = 'DD/MM/YYYY';
 
   @override
   Widget build(BuildContext context) {
+    dynamic res = ModalRoute.of(context)!.settings.arguments;
+
+    if (res != null) {
+      holderNameController.text = res['cardHolderName'];
+      cardNumberController.text = res['cardNumber'];
+      expiryMonthController.text =
+          res['expiryDate'].toString().split('/').first;
+      expiryYearController.text = res['expiryDate'].toString().split('/').last;
+      cvvController.text = res['cvvNumber'];
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -59,24 +81,20 @@ class _AddCardPageState extends State<AddCardPage> {
               ),
               const SizedBox(height: 5),
               SizedBox(
-                height: 55,
+                height: 70,
                 child: TextFormField(
                   controller: holderNameController,
                   validator: (val) {
                     return (val!.isEmpty) ? 'Enter Card Holder Name ...' : null;
                   },
+                  onSaved: (val) {
+                    cardHolderName = val;
+                  },
                   style:
-                      GoogleFonts.balooBhai2(color: Colors.black, fontSize: 17),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    contentPadding: const EdgeInsets.all(10),
-                    hintText: "Enter Card Holder Name",
-                    hintStyle: GoogleFonts.balooBhai2(
-                        color: Colors.grey.shade600, fontSize: 16),
-                  ),
+                      GoogleFonts.balooBhai2(color: Colors.black, fontSize: 18),
+                  decoration: decorationStyle(
+                      hintText: "Enter card holder name",
+                      label: "Card holder name"),
                 ),
               ),
               const SizedBox(height: 5),
@@ -86,27 +104,27 @@ class _AddCardPageState extends State<AddCardPage> {
               ),
               const SizedBox(height: 5),
               SizedBox(
-                height: 55,
+                height: 70,
                 child: TextFormField(
                   controller: cardNumberController,
+                  keyboardType: TextInputType.number,
+                  onSaved: (val) {
+                    cardNumber = val;
+                  },
                   validator: (val) {
-                    return (val!.isEmpty) ? 'Enter Card Number ...' : null;
+                    return (val!.isEmpty)
+                        ? 'Enter Card Number ...'
+                        : (val.length != 16)
+                            ? "card number must be of 16 digits"
+                            : null;
                   },
                   style:
-                      GoogleFonts.balooBhai2(color: Colors.black, fontSize: 17),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    contentPadding: const EdgeInsets.all(10),
-                    hintText: "Enter Card Number",
-                    hintStyle: GoogleFonts.balooBhai2(
-                        color: Colors.grey.shade600, fontSize: 16),
-                  ),
+                      GoogleFonts.balooBhai2(color: Colors.black, fontSize: 18),
+                  decoration: decorationStyle(
+                      hintText: "Enter card number", label: "Card Number"),
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 12),
               Text(
                 'Expiry Date :',
                 style: GoogleFonts.balooBhai2(fontSize: 18),
@@ -115,48 +133,41 @@ class _AddCardPageState extends State<AddCardPage> {
               Row(
                 children: [
                   SizedBox(
-                    height: 55,
-                    width: 100,
+                    height: 70,
+                    width: 120,
                     child: TextFormField(
                       controller: expiryMonthController,
+                      onSaved: (val) {
+                        expiryMonth = val;
+                      },
+                      keyboardType: TextInputType.number,
                       validator: (val) {
                         return (val!.isEmpty) ? 'Enter Month ...' : null;
                       },
                       style: GoogleFonts.balooBhai2(
-                          color: Colors.black, fontSize: 17),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.black),
-                        ),
-                        contentPadding: const EdgeInsets.all(10),
-                        hintText: "Month",
-                        hintStyle: GoogleFonts.balooBhai2(
-                            color: Colors.grey.shade600, fontSize: 16),
-                      ),
+                          color: Colors.black, fontSize: 18),
+                      decoration: decorationStyle(
+                          hintText: "Enter expiry month",
+                          label: "Expiry Month"),
                     ),
                   ),
                   const SizedBox(width: 15),
                   SizedBox(
-                    height: 55,
-                    width: 100,
+                    height: 70,
+                    width: 120,
                     child: TextFormField(
                       controller: expiryYearController,
+                      onSaved: (val) {
+                        expiryYear = val;
+                      },
+                      keyboardType: TextInputType.number,
                       validator: (val) {
                         return (val!.isEmpty) ? 'Enter Year ...' : null;
                       },
                       style: GoogleFonts.balooBhai2(
-                          color: Colors.black, fontSize: 17),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.black),
-                        ),
-                        contentPadding: const EdgeInsets.all(10),
-                        hintText: "Year",
-                        hintStyle: GoogleFonts.balooBhai2(
-                            color: Colors.grey.shade600, fontSize: 16),
-                      ),
+                          color: Colors.black, fontSize: 18),
+                      decoration: decorationStyle(
+                          hintText: "Enter expiry year", label: "Expiry Year"),
                     ),
                   ),
                 ],
@@ -166,40 +177,52 @@ class _AddCardPageState extends State<AddCardPage> {
                 'CVV :',
                 style: GoogleFonts.balooBhai2(fontSize: 18),
               ),
-              const SizedBox(height: 3),
+              const SizedBox(height: 5),
               SizedBox(
-                height: 55,
+                height: 70,
                 child: TextFormField(
                   controller: cvvController,
+                  onSaved: (val) {
+                    cvvNumber = val;
+                  },
+                  keyboardType: TextInputType.number,
                   validator: (val) {
                     return (val!.isEmpty) ? 'Enter Card CVV ...' : null;
                   },
                   style:
-                      GoogleFonts.balooBhai2(color: Colors.black, fontSize: 17),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    contentPadding: const EdgeInsets.all(10),
-                    hintText: "Enter Card Number",
-                    hintStyle: GoogleFonts.balooBhai2(
-                        color: Colors.grey.shade600, fontSize: 16),
-                  ),
+                      GoogleFonts.balooBhai2(color: Colors.black, fontSize: 18),
+                  decoration: decorationStyle(
+                      hintText: "Enter CVV Number", label: "CVV Number"),
                 ),
               ),
               const SizedBox(height: 25),
               Center(
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     if (formKey.currentState!.validate()) {
-                      Map card = {
-                        'name': holderNameController.text,
-                        'number': cardNumberController.text,
-                        'expiry':
-                            '${expiryMonthController.text}/${expiryYearController.text}',
-                        'cvv': cvvController.text,
+                      formKey.currentState!.save();
+
+                      Map<String, dynamic> card = {
+                        'cardHolderName': cardHolderName,
+                        'cardNumber': cardNumber,
+                        'expiryDate': '$expiryMonth/$expiryYear',
+                        'cvvNumber': cvvNumber,
                       };
+
+                      Map<String, dynamic> data = {
+                        'wallet': card,
+                      };
+
+                      await CloudFirestoreHelper.cloudFirestoreHelper
+                          .updateUsersRecords(
+                              id: Global.currentUser!['email'], data: data);
+
+                      Get.back();
+                      successSnackBar(
+                          msg: (res != null)
+                              ? "Wallet details updated successfully"
+                              : "Wallet details added Successfully",
+                          context: context);
                     }
                   },
                   child: Container(
@@ -222,6 +245,20 @@ class _AddCardPageState extends State<AddCardPage> {
           ),
         ),
       ),
+    );
+  }
+
+  decorationStyle({required String hintText, required String label}) {
+    return InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Colors.black),
+      ),
+      // contentPadding: const EdgeInsets.all(4),
+      hintText: hintText,
+      label: Text(label),
+      hintStyle:
+          GoogleFonts.balooBhai2(color: Colors.grey.shade600, fontSize: 16),
     );
   }
 }

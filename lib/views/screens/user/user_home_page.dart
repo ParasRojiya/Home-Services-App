@@ -46,7 +46,8 @@ class _HomePageState extends State<HomePage> {
         'address': element.data()?['address'],
         'DOB': element.data()?['DOB'],
         'contact': element.data()?['contact'],
-        'token': element.data()?['token']
+        'token': element.data()?['token'],
+        'wallet': element.data()?['wallet'],
       };
     });
   }

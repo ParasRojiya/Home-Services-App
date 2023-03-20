@@ -104,7 +104,12 @@ class _AccountPageState extends State<AccountPage> {
             accountOptionContainer(
               title: "Wallet",
               onTap: () {
-                Get.toNamed("/add_card");
+                if (Global.currentUser!['wallet'] != null) {
+                  Get.toNamed("/add_card",
+                      arguments: Global.currentUser!['wallet']);
+                } else {
+                  Get.toNamed("/add_card");
+                }
               },
               icon: CupertinoIcons.creditcard,
             ),
