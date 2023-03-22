@@ -1,8 +1,8 @@
+import 'package:bubble/bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
-
 import '../../global/global.dart';
 
 class ChatPage extends StatefulWidget {
@@ -57,7 +57,7 @@ class _ChatPageState extends State<ChatPage> {
 
                   return ListView.builder(
                     padding:
-                        const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                        const EdgeInsets.only(top: 4.0, left: 4.0, right: 4.0),
                     itemCount: chat.length,
                     physics: const BouncingScrollPhysics(),
                     reverse: true,
@@ -80,72 +80,49 @@ class _ChatPageState extends State<ChatPage> {
                                         ? CrossAxisAlignment.end
                                         : CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(
-                                    width: 250,
-                                    child: ListTile(
-                                      tileColor:
-                                          (Global.currentUser!['email'] ==
-                                                  data['email'])
-                                              ? Colors.indigo.shade300
-                                              : Colors.grey.shade300,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      title: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Text(
-                                          data['email'],
-                                          style: GoogleFonts.balooBhai2(
-                                            fontSize: 15,
-                                            color:
-                                                (Global.currentUser!['email'] ==
-                                                        data['email'])
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                      subtitle: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            width: 160,
-                                            child: Text(
-                                              data['message'],
-                                              softWrap: true,
-                                              style: GoogleFonts.balooBhai2(
-                                                fontSize: 18,
-                                                height: 1,
-                                                color: (Global.currentUser![
-                                                            'email'] ==
-                                                        data['email'])
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            ' ${date.hour.toString()} : ${date.minute.toString()}',
+                                  Bubble(
+                                    margin: const BubbleEdges.only(top: 10),
+                                    elevation: 5,
+                                    nip: BubbleNip.rightTop,
+                                    color: (Global.currentUser!['email'] ==
+                                            data['email'])
+                                        ? const Color(0xFF1B97F3)
+                                        : Colors.grey.shade300,
+                                    child: Stack(
+                                      alignment: Alignment.bottomRight,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(bottom: 11),
+                                          child: Text(
+                                            data['message'],
+                                            softWrap: true,
                                             style: GoogleFonts.balooBhai2(
-                                              fontSize: 16,
-                                              height: 1,
+                                              fontSize: 18,
                                               color: (Global.currentUser![
                                                           'email'] ==
                                                       data['email'])
                                                   ? Colors.white
                                                   : Colors.black,
                                             ),
-                                          )
-                                        ],
-                                      ),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${date.hour.toString()}:${date.minute.toString()}',
+                                          style: GoogleFonts.balooBhai2(
+                                            fontSize: 12,
+                                            height: 1,
+                                            color:
+                                                (Global.currentUser!['email'] ==
+                                                        data['email'])
+                                                    ? Colors.grey.shade300
+                                                    : Colors.black,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
+
+
                                 ],
                               ),
                             );
