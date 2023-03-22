@@ -1,9 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/snack_bar.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../controllers/service_category_controller.dart';
 import '../../global/button_syle.dart';
 import '../../global/global.dart';
@@ -64,10 +64,16 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(CupertinoIcons.arrow_left),
+        ),
         centerTitle: true,
         title: Text(
           "Change Profile",
-          style: GoogleFonts.poppins(),
+          style: GoogleFonts.habibi(fontSize: 18),
         ),
       ),
       body: SingleChildScrollView(
@@ -127,51 +133,23 @@ class _EditProfileState extends State<EditProfile> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
+                    color: Global.color.withOpacity(0.03),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "${Global.currentUser!['email']}",
-                        style: TextStyle(
-                            color: Colors.grey.shade600, fontSize: 16),
-                      ),
+                      const SizedBox(width: 5),
                       Icon(
-                        Icons.email,
+                        CupertinoIcons.mail,
                         color: Colors.grey.shade600,
                       ),
+                      const SizedBox(width: 10),
+                      Text(
+                        "${Global.currentUser!['email']}",
+                        style: GoogleFonts.habibi(
+                            color: Colors.grey.shade600, fontSize: 17),
+                      ),
+                      const Spacer(),
                     ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                InkWell(
-                  onTap: () {
-                    changePassword();
-                  },
-                  child: Container(
-                    height: 50,
-                    padding: EdgeInsets.all(10),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Change Password",
-                          style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 16),
-                        ),
-                        Icon(
-                          Icons.lock,
-                          color: Colors.grey.shade600,
-                        ),
-                      ],
-                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -182,9 +160,10 @@ class _EditProfileState extends State<EditProfile> {
                       return (val!.isEmpty) ? 'Enter First Name...' : null;
                     },
                     controller: fullNameController,
-                    style: const TextStyle(color: Colors.black, fontSize: 17),
+                    style:
+                        GoogleFonts.habibi(color: Colors.black, fontSize: 16),
                     decoration: textFieldDecoration(
-                        name: "Full Name", icon: Icons.edit),
+                        name: "Full Name", icon: CupertinoIcons.person),
                     onSaved: (val) {
                       fullName = val;
                     },
@@ -199,7 +178,8 @@ class _EditProfileState extends State<EditProfile> {
                       return (val!.isEmpty) ? 'Enter Phone Number' : null;
                     },
                     controller: phoneController,
-                    style: const TextStyle(color: Colors.black, fontSize: 17),
+                    style: GoogleFonts.balooBhai2(
+                        color: Colors.black, fontSize: 18),
                     decoration: textFieldDecoration(
                         icon: Icons.phone, name: "Contact No."),
                     onSaved: (val) {
@@ -209,13 +189,13 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 10),
                 Container(
-                  height: 60,
-                  padding: const EdgeInsets.all(10),
+                  height: 50,
+                  padding: const EdgeInsets.all(3),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.white.withOpacity(0.03),
+                    borderRadius: BorderRadius.circular(10),
+                    color: Global.color.withOpacity(0.03),
                   ),
                   child: Row(
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,7 +217,7 @@ class _EditProfileState extends State<EditProfile> {
                             });
                           }
                         },
-                        icon: const Icon(Icons.calendar_month),
+                        icon: const Icon(CupertinoIcons.calendar),
                       ),
                       Text(
                         (Global.currentUser!['DOB'] == null)
@@ -245,8 +225,8 @@ class _EditProfileState extends State<EditProfile> {
                                 ? 'Date of Birth'
                                 : date
                             : Global.currentUser!['DOB'],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
+                        style: GoogleFonts.balooBhai2(
+                            fontSize: 18, fontWeight: FontWeight.w400),
                       ),
                     ],
                   ),
@@ -261,12 +241,52 @@ class _EditProfileState extends State<EditProfile> {
                       controller: addressController,
                       maxLines: 5,
                       keyboardType: TextInputType.multiline,
-                      style: const TextStyle(color: Colors.black, fontSize: 17),
+                      style: GoogleFonts.habibi(
+                          color: Colors.grey.shade600, fontSize: 17),
                       decoration: textFieldDecoration(
                           icon: Icons.home, name: "Address"),
                       onSaved: (val) {
                         address = val;
                       }),
+                ),
+                const SizedBox(height: 10),
+                InkWell(
+                  onTap: () {
+                    changePassword();
+                  },
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.all(5),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Global.color.withOpacity(0.03),
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        Icon(
+                          CupertinoIcons.lock,
+                          color: Colors.grey.shade600,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Change Password",
+                          style: TextStyle(
+                              color: Colors.grey.shade600, fontSize: 16),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 30),
                 Container(

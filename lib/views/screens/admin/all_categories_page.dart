@@ -37,10 +37,11 @@ class AllCategories extends StatelessWidget {
                 itemBuilder: (context, i) {
                   return InkWell(
                     onTap: () {
-                     Get.toNamed('/all_services_page',
-                              arguments: documents[i]);
+                      Get.toNamed('/all_services_page',
+                          arguments: documents[i]);
                     },
                     child: categoryContainer(
+                        color: Colors.blue.withOpacity(0.1),
                         categoryName: documents[i]['name'],
                         imageURL: documents[i]['imageURL']),
                   );

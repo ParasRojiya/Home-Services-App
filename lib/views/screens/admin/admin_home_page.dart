@@ -142,6 +142,7 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: categoryContainer(
                                     categoryName: documents[i].id,
+                                    color: Colors.blue.withOpacity(0.1),
                                     imageURL: documents[i]['imageURL']),
                               );
                             },
@@ -214,10 +215,11 @@ class _HomePageState extends State<HomePage> {
                                       arguments: documents[i]);
                                 },
                                 child: workerContainer(
-                                  hourlyCharge: documents[i]['hourlyCharge'],
-                                  name: documents[i]['name'],
-                                  imageURL: documents[i]['imageURL'],
-                                ),
+                                    hourlyCharge: documents[i]['hourlyCharge'],
+                                    name: documents[i]['name'],
+                                    number: documents[i]['number'],
+                                    imageURL: documents[i]['imageURL'],
+                                    service: documents[i]['category']),
                               );
                             },
                           );

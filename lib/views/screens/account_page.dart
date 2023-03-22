@@ -32,10 +32,14 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   void initState() {
+    print('\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\');
+    print(Global.currentUser!['name']);
+    print('\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\');
+
     AndroidInitializationSettings androidInitializationSettings =
-        const AndroidInitializationSettings("mipmap/ic_launcher");
+    const AndroidInitializationSettings("mipmap/ic_launcher");
     DarwinInitializationSettings darwinInitializationSettings =
-        const DarwinInitializationSettings();
+    const DarwinInitializationSettings();
     var initializationSettings = InitializationSettings(
       android: androidInitializationSettings,
       iOS: darwinInitializationSettings,
@@ -240,7 +244,7 @@ class _AccountPageState extends State<AccountPage> {
                               GestureDetector(
                                 onTap: () async {
                                   SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
+                                  await SharedPreferences.getInstance();
                                   await prefs.setBool('isLoggedIn', false);
                                   prefs.remove('isAdmin');
 
@@ -310,7 +314,7 @@ class _AccountPageState extends State<AccountPage> {
                       profileName = val;
                     },
                     validator: (val) =>
-                        (val!.isEmpty) ? "Please add user name" : null,
+                    (val!.isEmpty) ? "Please add user name" : null,
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
@@ -321,7 +325,7 @@ class _AccountPageState extends State<AccountPage> {
                       profileEmail = val;
                     },
                     validator: (val) =>
-                        (val!.isEmpty) ? "Please add user email" : null,
+                    (val!.isEmpty) ? "Please add user email" : null,
                   ),
                 ],
               ),
@@ -348,7 +352,7 @@ class _AccountPageState extends State<AccountPage> {
 
                     await CloudFirestoreHelper.cloudFirestoreHelper
                         .updateUsersRecords(
-                            id: Global.currentUser!['email'], data: data);
+                        id: Global.currentUser!['email'], data: data);
                     await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
                     Get.offAndToNamed('/login_page');
                   }

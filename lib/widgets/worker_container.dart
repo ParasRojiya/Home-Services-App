@@ -1,73 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Widget workerContainer({
   required String name,
   required int hourlyCharge,
   required String imageURL,
+  required String service,
+  required int number,
 }) {
   return Container(
+    margin: const EdgeInsets.symmetric(vertical: 3),
+    height: 120,
+    width: Get.width,
     decoration: BoxDecoration(
-      color: Colors.black12,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.2),
-          blurRadius: 4,
-          spreadRadius: 2,
-          offset: const Offset(0, 0),
-        ),
-      ],
+      color: Colors.indigo.withOpacity(0.07),
+      borderRadius: BorderRadius.circular(15),
     ),
-    child: Column(
+    child: Row(
       children: [
-        Expanded(
-          flex: 5,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-              image: DecorationImage(
-                image: NetworkImage(
-                  imageURL,
-                ),
-                fit: BoxFit.cover,
-              ),
+        const SizedBox(width: 8),
+        Container(
+          height: 105,
+          width: 115,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            image: DecorationImage(
+              image: NetworkImage(imageURL),
+              fit: BoxFit.cover,
             ),
           ),
         ),
-        Expanded(
-          flex: 2,
-          child: Container(
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10)),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            Text(
+              service,
+              style: GoogleFonts.poppins(fontSize: 13),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  name,
-                  style: GoogleFonts.poppins(
-                    fontSize: 21,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  "₹$hourlyCharge/hr ",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ),
-              ],
+            const SizedBox(height: 5),
+            Text(
+              name,
+              style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.indigo),
             ),
-          ),
-        ),
+            const SizedBox(height: 4),
+            Text(
+              '+91 $number',
+              style: GoogleFonts.poppins(fontSize: 13),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              '4.3 ⭐   |    12 Review',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
+          ],
+        )
       ],
     ),
   );

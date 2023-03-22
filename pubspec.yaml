@@ -69,6 +69,7 @@ dev_dependencies:
   printing:
   firebase_messaging:
   http:
+  carousel_slider:
 
 
 
@@ -90,6 +91,11 @@ flutter:
   assets:
     - assets/logo/
     - assets/images/
+    - assets/images/b-1.jpeg
+    - assets/images/b-2.jpeg
+    - assets/images/b-3.jpeg
+    - assets/images/b-4.jpeg
+    - assets/images/b-5.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

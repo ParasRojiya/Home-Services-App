@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,7 +15,6 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
-import '../../../helper/fcm_helper.dart';
 import '../../../helper/local_notification_helper.dart';
 import '../../../widgets/category_container.dart';
 import '../../../widgets/nav_bar_item.dart';
@@ -27,100 +28,118 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  currentUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Global.user = FireBaseAuthHelper.firebaseAuth.currentUser;
+  List color = [
+    Colors.blue.withOpacity(0.1),
+    Colors.green.withOpacity(0.1),
+    Colors.indigo.withOpacity(0.1),
+    Colors.orange.withOpacity(0.1),
+    Colors.red.withOpacity(0.1),
+    Colors.brown.withOpacity(0.1),
+    Colors.teal.withOpacity(0.1),
+    Colors.amber.withOpacity(0.1),
+  ];
 
-    await CloudFirestoreHelper.firebaseFirestore
-        .collection('users')
-        .doc(prefs.getString('currentUser'))
-        .snapshots()
-        .forEach((element) async {
-      Global.currentUser = {
-        'name': element.data()?['name'],
-        'email': element.data()?['email'],
-        'password': element.data()?['password'],
-        'role': element.data()?['role'],
-        'bookings': element.data()?['bookings'],
-        'imageURL': element.data()?['imageURL'],
-        'address': element.data()?['address'],
-        'DOB': element.data()?['DOB'],
-        'contact': element.data()?['contact'],
-        'token': element.data()?['token'],
-        'wallet': element.data()?['wallet'],
-      };
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    currentUserData();
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-    });
-
-    AndroidInitializationSettings androidInitializationSettings =
-        const AndroidInitializationSettings("mipmap/ic_launcher");
-    DarwinInitializationSettings darwinInitializationSettings =
-        const DarwinInitializationSettings();
-    var initializationSettings = InitializationSettings(
-      android: androidInitializationSettings,
-      iOS: darwinInitializationSettings,
-    );
-
-    tz.initializeTimeZones();
-
-    LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {},
-    );
-  }
+  List banner = ['b-1.jpeg', 'b-2.jpeg', 'b-3.jpeg', 'b-4.jpeg', 'b-5.jpeg'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("User Dashboard"),
-        centerTitle: true,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Welcome 👋',
+              style:
+                  GoogleFonts.habibi(fontSize: 15, color: Colors.grey.shade500),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              (Global.currentUser != null)
+                  ? '${Global.currentUser!['name']}'
+                  : 'User',
+              style: GoogleFonts.habibi(fontSize: 18, color: Colors.black),
+            )
+          ],
+        ),
         actions: [
-          IconButton(
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setBool('isLoggedIn', false);
-              prefs.remove('isAdmin');
-              await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-              Get.offAndToNamed("/login_page");
-              await FCMHelper.fcmHelper.getToken();
-            },
-            icon: const Icon(Icons.power_settings_new),
-          ),
+          // IconButton(
+          //   onPressed: () async {
+          //     SharedPreferences prefs = await SharedPreferences.getInstance();
+          //     await prefs.setBool('isLoggedIn', false);
+          //     prefs.remove('isAdmin');
+          //     await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+          //     Get.offAndToNamed("/login_page");
+          //     await FCMHelper.fcmHelper.getToken();
+          //   },
+          //   icon: const Icon(Icons.power_settings_new),
+          // ),
           IconButton(
             onPressed: () {
               Get.toNamed('/chat_page',
                   arguments: Global.currentUser!['email']);
             },
-            icon: const Icon(Icons.chat),
+            icon: const Icon(CupertinoIcons.captions_bubble),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(CupertinoIcons.bookmark),
           ),
         ],
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
               Container(
-                color: Colors.teal,
-                height: 180,
-                alignment: Alignment.center,
-                child: const Text("Special Offers in Carousel Slider"),
+                height: 55,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 10),
+                    const Icon(CupertinoIcons.search),
+                    const SizedBox(width: 10),
+                    Text(
+                      'search',
+                      style: GoogleFonts.habibi(
+                          fontSize: 17, color: Colors.black54),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 4),
+                  autoPlayCurve: Curves.easeInOutExpo,
+                  viewportFraction: 1,
+                  height: 180.0,
+                ),
+                items: banner.map((i) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                        alignment: Alignment.center,
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade500,
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/$i'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
               ),
               Column(
                 children: [
@@ -129,8 +148,8 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "Categories",
                         style: GoogleFonts.poppins(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const Spacer(),
@@ -140,12 +159,17 @@ class _HomePageState extends State<HomePage> {
                         },
                         style: TextButton.styleFrom(
                             textStyle: GoogleFonts.poppins()),
-                        child: const Text("View all"),
+                        child: const Text(
+                          "View all",
+                          style: TextStyle(
+                            fontSize: 13,
+                          ),
+                        ),
                       )
                     ],
                   ),
-                  Container(
-                    height: 420,
+                  SizedBox(
+                    height: 230,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: CloudFirestoreHelper.cloudFirestoreHelper
                           .fetchAllCategories(),
@@ -159,13 +183,13 @@ class _HomePageState extends State<HomePage> {
                             physics: const BouncingScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 14,
-                              crossAxisSpacing: 14,
-                              mainAxisExtent: 200,
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisExtent: 110,
                             ),
                             itemCount:
-                                (documents.length >= 4) ? 4 : documents.length,
+                                (documents.length >= 6) ? 6 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
@@ -174,6 +198,7 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: categoryContainer(
                                     categoryName: documents[i].id,
+                                    color: color[i],
                                     imageURL: documents[i]['imageURL']),
                               );
                             },
@@ -202,8 +227,8 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "Workers",
                         style: GoogleFonts.poppins(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const Spacer(),
@@ -213,12 +238,15 @@ class _HomePageState extends State<HomePage> {
                         },
                         style: TextButton.styleFrom(
                             textStyle: GoogleFonts.poppins()),
-                        child: const Text("View all"),
+                        child: const Text(
+                          "View all",
+                          style: TextStyle(fontSize: 13),
+                        ),
                       )
                     ],
                   ),
-                  Container(
-                    height: 420,
+                  SizedBox(
+                    height: 380,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: CloudFirestoreHelper.cloudFirestoreHelper
                           .fetchAllWorker(),
@@ -228,17 +256,10 @@ class _HomePageState extends State<HomePage> {
                           List<QueryDocumentSnapshot> documents =
                               document!.docs;
 
-                          return GridView.builder(
+                          return ListView.builder(
                             physics: const BouncingScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 14,
-                              crossAxisSpacing: 14,
-                              mainAxisExtent: 225,
-                            ),
                             itemCount:
-                                (documents.length >= 4) ? 4 : documents.length,
+                                (documents.length >= 3) ? 3 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
@@ -246,10 +267,11 @@ class _HomePageState extends State<HomePage> {
                                       arguments: documents[i]);
                                 },
                                 child: workerContainer(
-                                  hourlyCharge: documents[i]['hourlyCharge'],
-                                  name: documents[i]['name'],
-                                  imageURL: documents[i]['imageURL'],
-                                ),
+                                    hourlyCharge: documents[i]['hourlyCharge'],
+                                    name: documents[i]['name'],
+                                    imageURL: documents[i]['imageURL'],
+                                    number: documents[i]['number'],
+                                    service: documents[i]['category']),
                               );
                             },
                           );
@@ -286,12 +308,63 @@ class UserHomeScreen extends StatefulWidget {
 }
 
 class _UserHomeScreenState extends State<UserHomeScreen> {
+  currentUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Global.user = FireBaseAuthHelper.firebaseAuth.currentUser;
+
+    CloudFirestoreHelper.firebaseFirestore
+        .collection('users')
+        .doc(prefs.getString('currentUser'))
+        .snapshots()
+        .forEach((element) {
+      Global.currentUser = {
+        'name': element.data()?['name'],
+        'email': element.data()?['email'],
+        'password': element.data()?['password'],
+        'role': element.data()?['role'],
+        'bookings': element.data()?['bookings'],
+        'imageURL': element.data()?['imageURL'],
+        'address': element.data()?['address'],
+        'DOB': element.data()?['DOB'],
+        'contact': element.data()?['contact'],
+        'token': element.data()?['token'],
+        'wallet': element.data()?['wallet'],
+      };
+    });
+  }
+
   late PersistentTabController persistentTabController;
 
   @override
   void initState() {
     super.initState();
+
     persistentTabController = PersistentTabController(initialIndex: 0);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+
+    AndroidInitializationSettings androidInitializationSettings =
+        const AndroidInitializationSettings("mipmap/ic_launcher");
+    DarwinInitializationSettings darwinInitializationSettings =
+        const DarwinInitializationSettings();
+    var initializationSettings = InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: darwinInitializationSettings,
+    );
+
+    tz.initializeTimeZones();
+
+    LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {},
+    );
   }
 
   List<Widget> screens = [
@@ -302,15 +375,24 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   List<PersistentBottomNavBarItem> navBarItems() {
     return [
-      bottomNavBarItem(icon: const Icon(Icons.home), title: "Home"),
-      bottomNavBarItem(icon: const Icon(Icons.shopping_cart), title: "Cart"),
+      bottomNavBarItem(icon: const Icon(CupertinoIcons.home), title: "Home"),
       bottomNavBarItem(
-          icon: const Icon(Icons.account_circle), title: "Account"),
+          icon: const Icon(CupertinoIcons.calendar), title: "Booking"),
+      bottomNavBarItem(
+          icon: const Icon(CupertinoIcons.person), title: "Profile"),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      currentUserData();
+    });
+
+    print('=============================================');
+    print(Global.currentUser);
+    print('=============================================');
+
     return WillPopScope(
       onWillPop: exitPopup,
       child: PersistentTabView(
@@ -321,10 +403,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         hideNavigationBarWhenKeyboardShows: true,
         stateManagement: true,
         itemAnimationProperties: const ItemAnimationProperties(
-          duration: Duration(milliseconds: 300),
-        ),
+            duration: Duration(milliseconds: 300), curve: Curves.easeOutQuart),
         screenTransitionAnimation: const ScreenTransitionAnimation(
           animateTabTransition: true,
+          curve: Curves.easeInCirc,
           duration: Duration(milliseconds: 300),
         ),
       ),

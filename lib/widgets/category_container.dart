@@ -1,50 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-categoryContainer({required String categoryName, required String imageURL}) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      boxShadow: <BoxShadow>[
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.2),
-          spreadRadius: 2,
-          blurRadius: 4,
-          offset: const Offset(0, 0),
-        ),
-      ],
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 5,
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12)),
-                image: DecorationImage(
-                  image: NetworkImage(
-                    imageURL,
-                  ),
-                  fit: BoxFit.cover,
-                )),
-          ),
-        ),
-        // const Divider(
-        //   color: Colors.black,
-        // ),
-        const SizedBox(height: 6),
-        Expanded(
-            child: Text(
-          categoryName.toUpperCase(),
+categoryContainer(
+    {required String categoryName,
+    required String imageURL,
+    required Color color}) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Container(
+        height: 65,
+        width: 65,
+        padding: const EdgeInsets.all(15),
+        decoration:
+            BoxDecoration(shape: BoxShape.circle, color: color, boxShadow: [
+          BoxShadow(
+            color: color,
+            blurRadius: 6,
+            spreadRadius: 3,
+          )
+        ]),
+        child: Image.network(imageURL),
+      ),
+      const SizedBox(height: 10),
+      Center(
+        child: Text(
+          categoryName,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
           style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w500,
+            fontSize: 13,
+            fontWeight: FontWeight.w300,
           ),
-        )),
-      ],
-    ),
+        ),
+      ),
+    ],
   );
 }
