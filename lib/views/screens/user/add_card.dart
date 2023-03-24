@@ -1,3 +1,4 @@
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,16 +62,35 @@ class _AddCardPageState extends State<AddCardPage> {
           key: formKey,
           child: ListView(
             children: [
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                height: 200,
-                width: 300,
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(20),
-                  image: const DecorationImage(
-                    image: AssetImage('assets/images/credit-card.png'),
-                    fit: BoxFit.cover,
+              FlipCard(
+                fill: Fill
+                    .fillBack,
+                autoFlipDuration: Duration(microseconds: 200),
+                direction: FlipDirection.HORIZONTAL, // default
+                front: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  height: 200,
+                  width: 300,
+                  decoration: BoxDecoration(
+
+                    borderRadius: BorderRadius.circular(20),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/b.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                back: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  height: 200,
+                  width: 300,
+                  decoration: BoxDecoration(
+
+                    borderRadius: BorderRadius.circular(20),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/f.jpg'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
