@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
+
 import '../../global/global.dart';
 
 class ChatPage extends StatefulWidget {
@@ -70,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
                       DateTime date = time.toDate();
 
                       return (chat.isEmpty)
-                          ? Text('send message to start conversion...')
+                          ? Text('Send message to start conversation...')
                           : Padding(
                               padding: const EdgeInsets.only(top: 4, bottom: 4),
                               child: Column(
@@ -121,8 +122,6 @@ class _ChatPageState extends State<ChatPage> {
                                       ],
                                     ),
                                   ),
-
-
                                 ],
                               ),
                             );

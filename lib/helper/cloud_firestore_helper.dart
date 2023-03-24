@@ -84,7 +84,7 @@ class CloudFirestoreHelper {
   Future<void> addServiceInBookingCollection(
       {required Map<String, dynamic> data, required String userEmail}) async {
     connectionWithBookingsCollection();
-    await bookingsRef.doc(userEmail).set(data);
+    await bookingsRef.doc(userEmail).update(data);
   }
 
   //USERS COLLECTION HELPER

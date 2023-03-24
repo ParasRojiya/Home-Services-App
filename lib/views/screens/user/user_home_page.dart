@@ -1,8 +1,8 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -336,6 +336,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   void initState() {
     super.initState();
+    currentUserData();
 
     persistentTabController = PersistentTabController(initialIndex: 0);
 
@@ -386,10 +387,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     setState(() {
       currentUserData();
     });
-
-    print('=============================================');
-    print(Global.currentUser);
-    print('=============================================');
 
     return WillPopScope(
       onWillPop: exitPopup,

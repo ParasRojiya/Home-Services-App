@@ -41,10 +41,16 @@ class _AddWorkerState extends State<AddWorker> {
     "Cleaning",
     "Electronics",
     "Furniture",
-    "Kitchen Appliances",
+    "Gardening",
+    "Home Appliances",
     "Painting",
+    "Pest Control",
     "Plumbing",
+    "Renovation",
     "Shifting",
+    "Solar Consultant",
+    "Vehicles",
+    "More",
   ];
 
   File? image;
@@ -283,6 +289,7 @@ class _AddWorkerState extends State<AddWorker> {
                               'category': category,
                               'ratings': [],
                               'reviews': [],
+                              'bookings': [],
                             };
 
                             await CloudFirestoreHelper.cloudFirestoreHelper
@@ -305,7 +312,7 @@ class _AddWorkerState extends State<AddWorker> {
                             workerMobileNumber = null;
                             workerHourlyPrice = null;
 
-                            Get.back();
+                            Get.offAndToNamed("all_workers");
                           } else if (workerController.image == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

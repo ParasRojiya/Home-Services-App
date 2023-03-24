@@ -3,11 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:home_services_app/helper/cloud_firestore_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../global/global.dart';
-import '../../../helper/firebase_auth_helper.dart';
 
 class AllServicesPage extends StatefulWidget {
   const AllServicesPage({Key? key}) : super(key: key);
@@ -17,28 +14,8 @@ class AllServicesPage extends StatefulWidget {
 }
 
 class _AllServicesPageState extends State<AllServicesPage> {
-  currentUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Global.user = FireBaseAuthHelper.firebaseAuth.currentUser;
-
-    await CloudFirestoreHelper.firebaseFirestore
-        .collection('users')
-        .doc(prefs.getString('currentUser'))
-        .snapshots()
-        .forEach((element) async {
-      Global.currentUser = {
-        'name': element.data()?['name'],
-        'email': element.data()?['email'],
-        'password': element.data()?['password'],
-        'role': element.data()?['role'],
-        'bookings': element.data()?['bookings'],
-      };
-    });
-  }
-
   @override
   void initState() {
-    currentUserData();
     super.initState();
   }
 

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/snack_bar.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../controllers/service_category_controller.dart';
 import '../../global/button_syle.dart';
 import '../../global/global.dart';
@@ -153,6 +154,45 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                InkWell(
+                  onTap: () {
+                    changePassword();
+                  },
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.all(5),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Global.color.withOpacity(0.03),
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        Icon(
+                          CupertinoIcons.lock,
+                          color: Colors.grey.shade600,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "Change Password",
+                          style: TextStyle(
+                              color: Colors.grey.shade600, fontSize: 16),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 50,
                   child: TextFormField(
@@ -248,45 +288,6 @@ class _EditProfileState extends State<EditProfile> {
                       onSaved: (val) {
                         address = val;
                       }),
-                ),
-                const SizedBox(height: 10),
-                InkWell(
-                  onTap: () {
-                    changePassword();
-                  },
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.all(5),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Global.color.withOpacity(0.03),
-                    ),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 10),
-                        Icon(
-                          CupertinoIcons.lock,
-                          color: Colors.grey.shade600,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          "Change Password",
-                          style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 16),
-                        ),
-                        const Spacer(),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          size: 18,
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 30),
                 Container(
