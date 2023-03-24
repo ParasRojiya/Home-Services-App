@@ -1,9 +1,27 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:home_services_app/global/global.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../widgets/category_container.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+List color = [
+  Colors.blue.withOpacity(0.1),
+  Colors.green.withOpacity(0.1),
+  Colors.indigo.withOpacity(0.1),
+  Colors.orangeAccent.withOpacity(0.1),
+  Colors.teal.withOpacity(0.1),
+  Colors.grey.withOpacity(0.1),
+  Colors.brown.withOpacity(0.1),
+  Colors.amber.withOpacity(0.1),
+  Colors.pink.withOpacity(0.1),
+  Colors.cyan.withOpacity(0.1),
+  Colors.purple.withOpacity(0.1),
+  Colors.blueAccent.withOpacity(0.1),
+  Colors.redAccent.withOpacity(0.1),
+  Colors.blueGrey.withOpacity(0.1),
+];
 
 class AllCategories extends StatelessWidget {
   const AllCategories({Key? key}) : super(key: key);
@@ -12,7 +30,16 @@ class AllCategories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Categories"),
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: const Icon(CupertinoIcons.arrow_left),
+        ),
+        title: Text(
+          "Categories",
+          style: GoogleFonts.habibi(),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -27,10 +54,10 @@ class AllCategories extends StatelessWidget {
 
               return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  mainAxisExtent: 220,
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 5,
+                  mainAxisExtent: 110,
                 ),
                 itemCount: documents.length,
                 physics: const BouncingScrollPhysics(),
@@ -41,7 +68,7 @@ class AllCategories extends StatelessWidget {
                           arguments: documents[i]);
                     },
                     child: categoryContainer(
-                        color: Colors.blue.withOpacity(0.1),
+                        color: color[i],
                         categoryName: documents[i]['name'],
                         imageURL: documents[i]['imageURL']),
                   );

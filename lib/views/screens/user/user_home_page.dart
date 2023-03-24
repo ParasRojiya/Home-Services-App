@@ -32,11 +32,9 @@ class _HomePageState extends State<HomePage> {
     Colors.blue.withOpacity(0.1),
     Colors.green.withOpacity(0.1),
     Colors.indigo.withOpacity(0.1),
-    Colors.orange.withOpacity(0.1),
-    Colors.red.withOpacity(0.1),
-    Colors.brown.withOpacity(0.1),
+    Colors.orangeAccent.withOpacity(0.1),
     Colors.teal.withOpacity(0.1),
-    Colors.amber.withOpacity(0.1),
+    Colors.grey.withOpacity(0.1),
   ];
 
   List banner = ['b-1.jpeg', 'b-2.jpeg', 'b-3.jpeg', 'b-4.jpeg', 'b-5.jpeg'];

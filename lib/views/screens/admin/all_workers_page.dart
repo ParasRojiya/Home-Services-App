@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:home_services_app/global/global.dart';
 import 'package:home_services_app/widgets/worker_container.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../../../helper/cloud_firestore_helper.dart';
+import 'package:flutter/cupertino.dart';
 
 class AllWorkers extends StatelessWidget {
   const AllWorkers({Key? key}) : super(key: key);
@@ -13,7 +14,16 @@ class AllWorkers extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Workers"),
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: const Icon(CupertinoIcons.arrow_left),
+        ),
+        title: Text(
+          "Workers",
+          style: GoogleFonts.habibi(),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -25,31 +35,20 @@ class AllWorkers extends StatelessWidget {
               QuerySnapshot? document = snapshot.data;
               List<QueryDocumentSnapshot> documents = document!.docs;
 
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  mainAxisExtent: 220,
-                ),
-                itemCount: documents.length,
+              return ListView.builder(
                 physics: const BouncingScrollPhysics(),
+                itemCount: documents.length,
                 itemBuilder: (context, i) {
                   return InkWell(
                     onTap: () {
-                      (Global.isAdmin)
-                          ? Get.toNamed('/edit_worker', arguments: documents[i])
-                          : Get.toNamed('/worker_details',
-                              arguments: documents[i]);
+                      Get.toNamed('/worker_details', arguments: documents[i]);
                     },
                     child: workerContainer(
                         hourlyCharge: documents[i]['hourlyCharge'],
                         name: documents[i]['name'],
                         imageURL: documents[i]['imageURL'],
                         number: documents[i]['number'],
-                        service: documents[i]['category']
-                        // imageURL: "",
-                        ),
+                        service: documents[i]['category']),
                   );
                 },
               );

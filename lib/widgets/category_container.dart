@@ -22,13 +22,16 @@ categoryContainer(
         ]),
         child: Image.network(imageURL),
       ),
-      const SizedBox(height: 10),
-      Center(
+      const SizedBox(height: 5),
+      Container(
+        height: 30,
+        width: 90,
+        alignment: Alignment.center,
         child: Text(
           categoryName,
           textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
           style: GoogleFonts.poppins(
+            height: 1,
             fontSize: 13,
             fontWeight: FontWeight.w300,
           ),
