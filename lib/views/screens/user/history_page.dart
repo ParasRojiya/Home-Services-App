@@ -1,8 +1,6 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 
@@ -15,173 +13,341 @@ class HistoryPage extends StatefulWidget {
   State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _HistoryPageState extends State<HistoryPage>
+    with TickerProviderStateMixin {
+  late TabController tabController;
   int index = 0;
+  PageController pageController = PageController();
+  int initailTabIndex = 0;
 
   List pending = [];
   List ongoing = [];
   List completed = [];
 
+  List data = [];
+  List isOpen = [];
+
   DateTime dateTime = DateTime.now();
 
-  bool isProcessDone = false;
+  @override
+  initState() {
+    super.initState();
+    tabController = TabController(length: 3, vsync: this);
+    data = pending;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Cart",
-          style: GoogleFonts.poppins(),
+          "Bookings",
+          style: GoogleFonts.habibi(),
         ),
         centerTitle: true,
-      ),
-      body: Container(
-        child: StreamBuilder<QuerySnapshot>(
-          stream:
-              CloudFirestoreHelper.cloudFirestoreHelper.selectUsersRecords(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text("Error: ${snapshot.error}"),
-              );
-            } else if (snapshot.hasData) {
-              QuerySnapshot? document = snapshot.data;
-              List<QueryDocumentSnapshot> documents = document!.docs;
-              List bookings = [];
-              for (var users in documents) {
-                if (users.id == Global.currentUser!['email']) {
-                  bookings = users['bookings'];
+        bottom: TabBar(
+          onTap: (val) {
+            setState(
+              () {
+                tabController.animateTo(val);
+                initailTabIndex = val;
+                if (initailTabIndex == 0) {
+                  data = pending;
+                } else if (initailTabIndex == 1) {
+                  data = ongoing;
+                } else if (initailTabIndex == 2) {
+                  data = completed;
                 }
+              },
+            );
+          },
+          controller: tabController,
+          unselectedLabelStyle: const TextStyle(fontSize: 14),
+          unselectedLabelColor: Colors.grey,
+          indicatorWeight: 2.5,
+          indicatorSize: TabBarIndicatorSize.tab,
+          tabs: [
+            Tab(
+              child: Text(
+                'Pending',
+                style: GoogleFonts.habibi(fontSize: 16),
+              ),
+            ),
+            Tab(
+              child: Text(
+                'OnGoing',
+                style: GoogleFonts.habibi(fontSize: 16),
+              ),
+            ),
+            Tab(
+              child: Text(
+                'Completed',
+                style: GoogleFonts.habibi(fontSize: 16),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: CloudFirestoreHelper.cloudFirestoreHelper.selectUsersRecords(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Error: ${snapshot.error}"),
+            );
+          } else if (snapshot.hasData) {
+            QuerySnapshot? document = snapshot.data;
+            List<QueryDocumentSnapshot> documents = document!.docs;
+            List bookings = [];
+            for (var users in documents) {
+              if (users.id == Global.currentUser!['email']) {
+                bookings = users['bookings'];
+              }
+            }
+
+            pending.clear();
+            completed.clear();
+            ongoing.clear();
+
+            for (Map book in bookings) {
+              String fetchDateTime = book['SelectedDateTime'];
+              String bookDate = fetchDateTime.split(' ').first;
+              String bookTime = fetchDateTime.split(' ').elementAt(1);
+              String period = fetchDateTime.split(' ').last;
+
+              int date = int.parse(bookDate.split('-').first);
+              int month = int.parse(bookDate.split('-').elementAt(1));
+
+              double time =
+                  getTimeOFService(bookTime: bookTime, period: period);
+
+              double currentTime = 0;
+
+              if (dateTime.minute > 30) {
+                currentTime = dateTime.hour + 0.30;
+              } else {
+                currentTime = dateTime.hour as double;
               }
 
-              pending.clear();
-              completed.clear();
-              ongoing.clear();
+              double duration = 0;
 
-              for (Map book in bookings) {
-                String fetchDateTime = book['SelectedDateTime'];
-                String bookDate = fetchDateTime.split(' ').first;
-                String bookTime = fetchDateTime.split(' ').elementAt(1);
-                String period = fetchDateTime.split(' ').last;
+              if (book['duration'] == 30) {
+                duration = 0.30;
+              } else {
+                duration = 1;
+              }
 
-                int date = int.parse(bookDate.split('-').first);
-                int month = int.parse(bookDate.split('-').elementAt(1));
+              double checkOnGoingTime = time + duration;
 
-                double time =
-                    getTimeOFService(bookTime: bookTime, period: period);
-
-                double checkOnGoingTime = time + 1;
-
-                if (month == dateTime.month &&
-                    date == dateTime.day &&
-                    dateTime.hour >= time &&
-                    dateTime.hour <= checkOnGoingTime) {
-                  ongoing.add(book);
-                } else if (month < dateTime.month) {
+              if (month == dateTime.month &&
+                  date == dateTime.day &&
+                  currentTime >= time &&
+                  currentTime <= checkOnGoingTime) {
+                ongoing.add(book);
+              } else if (month < dateTime.month) {
+                completed.add(book);
+              } else if (month == dateTime.month) {
+                if (date < dateTime.day) {
                   completed.add(book);
-                } else if (month == dateTime.month) {
-                  if (date < dateTime.day) {
+                } else if (date == dateTime.day) {
+                  if (time < dateTime.hour) {
                     completed.add(book);
-                  } else if (date == dateTime.day) {
-                    if (time < dateTime.hour) {
-                      completed.add(book);
-                    } else {
-                      pending.add(book);
-                    }
                   } else {
                     pending.add(book);
                   }
                 } else {
                   pending.add(book);
                 }
+              } else {
+                pending.add(book);
               }
+            }
 
-              return Column(
-                children: [
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            index = 0;
-                          });
+            if (initailTabIndex == 0) {
+              data = pending;
+            } else if (initailTabIndex == 1) {
+              data = ongoing;
+            } else if (initailTabIndex == 2) {
+              data = completed;
+            }
+
+            for (Map book in data) {
+              bool isOpenPanel = false;
+              isOpen.add(isOpenPanel);
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              itemCount: data.length,
+              itemBuilder: (context, i) {
+                return Card(
+                  child: ExpansionPanelList(
+                    expansionCallback: (panelIndex, isExpanded) {
+                      setState(() {
+                        isOpen[i] = !isOpen[i];
+                      });
+                    },
+                    expandedHeaderPadding: const EdgeInsets.all(0),
+                    elevation: 0,
+                    children: <ExpansionPanel>[
+                      ExpansionPanel(
+                        headerBuilder: (context, isExpanded) {
+                          return Container(
+                            height: 120,
+                            width: Get.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 8),
+                                Container(
+                                  height: 105,
+                                  width: 115,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    image: DecorationImage(
+                                      image: NetworkImage(data[i]['imageURL']),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      data[i]['serviceCategory'],
+                                      style: GoogleFonts.poppins(fontSize: 13),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      data[i]['serviceName'],
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.indigo),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '₹ ${data[i]['servicePrice']}',
+                                      style: GoogleFonts.poppins(fontSize: 13),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      '4.3 ⭐   |    12 Review',
+                                      style: GoogleFonts.poppins(fontSize: 12),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          );
                         },
-                        child: Text('pending'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            index = 1;
-                          });
-                        },
-                        child: Text('ongoing'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            index = 2;
-                          });
-                        },
-                        child: Text('complete'),
+                        body: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Date',
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    data[i]['SelectedDateTime']
+                                        .split(' ')
+                                        .first,
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Time',
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${data[i]['SelectedDateTime'].split(' ').elementAt(1)} ${data[i]['SelectedDateTime'].split(' ').last}',
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Worker',
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    data[i]['workerName'],
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Phone Number',
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '+91 ${data[i]['workerNumber']}',
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Container(
+                                height: 45,
+                                alignment: Alignment.center,
+                                width: 240,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade300,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Text(
+                                  'View Receipt',
+                                  style: GoogleFonts.habibi(fontSize: 16),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
+                        ),
+                        isExpanded: isOpen[i],
+                        canTapOnHeader: true,
+                        backgroundColor: Colors.transparent,
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: IndexedStack(
-                      index: index,
-                      children: [
-                        ListView.builder(
-                          itemCount: pending.length,
-                          itemBuilder: (context, i) {
-                            return Card(
-                              child: ListTile(
-                                title: Text("${pending[i]['name']}"),
-                                subtitle: Text("Rs. ${pending[i]['price']}"),
-                                trailing:
-                                    Text('${pending[i]['SelectedDateTime']}'),
-                              ),
-                            );
-                          },
-                        ),
-                        ListView.builder(
-                          itemCount: ongoing.length,
-                          itemBuilder: (context, i) {
-                            return Card(
-                              child: ListTile(
-                                title: Text("${ongoing[i]['name']}"),
-                                subtitle: Text("Rs. ${ongoing[i]['price']}"),
-                                trailing:
-                                    Text('${ongoing[i]['SelectedDateTime']}'),
-                              ),
-                            );
-                          },
-                        ),
-                        ListView.builder(
-                          itemCount: completed.length,
-                          itemBuilder: (context, i) {
-                            return Card(
-                              child: ListTile(
-                                title: Text("${completed[i]['name']}"),
-                                subtitle: Text("Rs. ${completed[i]['price']}"),
-                                trailing:
-                                    Text('${completed[i]['SelectedDateTime']}'),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            }
-
-            return const Center(
-              child: CircularProgressIndicator(),
+                );
+              },
             );
-          },
-        ),
+          }
+
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }
