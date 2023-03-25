@@ -257,7 +257,7 @@ class _BookServiceState extends State<BookService> {
       'customerName': Global.currentUser!['name'],
       'customerNumber': Global.currentUser!['contact'],
       'serviceName': res.currentData['name'],
-      'serviceCategory': res.currentData['name'],
+      'serviceCategory': (res.ids == "z") ? "More" : res.ids,
       'servicePrice': res.currentData['price'],
       'desc': res.currentData['desc'],
       'imageURL': res.currentData['imageURL'],
