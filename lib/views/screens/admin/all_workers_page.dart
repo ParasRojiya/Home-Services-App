@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/global.dart';
 import 'package:home_services_app/widgets/worker_container.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import '../../../helper/cloud_firestore_helper.dart';
-import 'package:flutter/cupertino.dart';
 
 class AllWorkers extends StatelessWidget {
   const AllWorkers({Key? key}) : super(key: key);
@@ -41,7 +42,10 @@ class AllWorkers extends StatelessWidget {
                 itemBuilder: (context, i) {
                   return InkWell(
                     onTap: () {
-                      Get.toNamed('/worker_details', arguments: documents[i]);
+                      (Global.isAdmin)
+                          ? Get.toNamed('/edit_worker', arguments: documents[i])
+                          : Get.toNamed('/worker_details',
+                              arguments: documents[i]);
                     },
                     child: workerContainer(
                         hourlyCharge: documents[i]['hourlyCharge'],

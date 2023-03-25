@@ -76,9 +76,7 @@ class _AddWorkerState extends State<AddWorker> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: (res != null)
-            ? const Text("Update Worker")
-            : const Text("Add New Worker"),
+        title: const Text("Add New Worker"),
         centerTitle: true,
       ),
       body: Container(

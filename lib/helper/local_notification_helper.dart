@@ -51,7 +51,7 @@ class LocalNotificationHelper {
       FlutterLocalNotificationsPlugin();
 
   Future<void> sendSimpleNotification(
-      {required String title, required String msg}) async {
+      {required String? title, required String? msg}) async {
     AndroidNotificationDetails androidNotificationDetails =
         const AndroidNotificationDetails(
       'demoId',

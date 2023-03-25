@@ -29,14 +29,20 @@ import 'package:home_services_app/views/screens/user/worker_details_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'global/global.dart';
+import 'helper/local_notification_helper.dart';
 import 'views/screens/user/user_home_page.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
 
   print("Handling a background message: ${message.messageId}");
+  if (message.notification != null) {
+    print(
+        'Message also contained a notification: ${message.notification!.title}');
+    print(message.notification?.body);
+  }
+  await LocalNotificationHelper.localNotificationHelper.sendSimpleNotification(
+      title: message.notification!.title, msg: message.notification!.body);
 }
 
 void main() async {

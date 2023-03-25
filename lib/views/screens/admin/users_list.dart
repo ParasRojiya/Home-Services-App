@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../helper/firebase_auth_helper.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../global/global.dart';
 
 class UsersList extends StatelessWidget {
   const UsersList({Key? key}) : super(key: key);
@@ -59,6 +60,7 @@ class UsersList extends StatelessWidget {
                             Map<String, dynamic> data = {
                               "isActive": !documents[i]['isActive'],
                             };
+
                             await CloudFirestoreHelper.cloudFirestoreHelper
                                 .updateUsersRecords(
                                     id: documents[i].id, data: data);

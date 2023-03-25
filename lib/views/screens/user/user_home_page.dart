@@ -340,15 +340,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
     persistentTabController = PersistentTabController(initialIndex: 0);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-    });
-
     AndroidInitializationSettings androidInitializationSettings =
         const AndroidInitializationSettings("mipmap/ic_launcher");
     DarwinInitializationSettings darwinInitializationSettings =
@@ -364,6 +355,21 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {},
     );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print(
+            'Message also contained a notification: ${message.notification!.title}');
+        print(message.notification?.body);
+      }
+      await LocalNotificationHelper.localNotificationHelper
+          .sendSimpleNotification(
+              title: message.notification!.title,
+              msg: message.notification!.body);
+    });
   }
 
   List<Widget> screens = [

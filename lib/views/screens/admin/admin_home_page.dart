@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -46,6 +47,15 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  List color = [
+    Colors.blue.withOpacity(0.1),
+    Colors.green.withOpacity(0.1),
+    Colors.indigo.withOpacity(0.1),
+    Colors.orangeAccent.withOpacity(0.1),
+    Colors.teal.withOpacity(0.1),
+    Colors.grey.withOpacity(0.1),
+  ];
+
   @override
   void initState() {
     currentUserData();
@@ -56,8 +66,23 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin Dashboard"),
-        centerTitle: true,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Welcome 👋',
+              style:
+                  GoogleFonts.habibi(fontSize: 15, color: Colors.grey.shade500),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              (Global.currentUser != null)
+                  ? '${Global.currentUser!['name']}'
+                  : 'User',
+              style: GoogleFonts.habibi(fontSize: 18, color: Colors.black),
+            )
+          ],
+        ),
         actions: [
           IconButton(
             onPressed: () async {
@@ -73,22 +98,17 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Get.toNamed('/chats_page');
             },
-            icon: const Icon(Icons.chat),
+            icon: const Icon(CupertinoIcons.captions_bubble),
           ),
         ],
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              Container(
-                color: Colors.teal,
-                height: 180,
-                alignment: Alignment.center,
-                child: const Text("Special Offers in Carousel Slider"),
-              ),
+              const SizedBox(height: 10),
               Column(
                 children: [
                   Row(
@@ -96,8 +116,8 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "Categories",
                         style: GoogleFonts.poppins(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const Spacer(),
@@ -107,12 +127,17 @@ class _HomePageState extends State<HomePage> {
                         },
                         style: TextButton.styleFrom(
                             textStyle: GoogleFonts.poppins()),
-                        child: const Text("View all"),
+                        child: const Text(
+                          "View all",
+                          style: TextStyle(
+                            fontSize: 13,
+                          ),
+                        ),
                       )
                     ],
                   ),
-                  Container(
-                    height: 420,
+                  SizedBox(
+                    height: 230,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: CloudFirestoreHelper.cloudFirestoreHelper
                           .fetchAllCategories(),
@@ -126,23 +151,22 @@ class _HomePageState extends State<HomePage> {
                             physics: const BouncingScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 14,
-                              crossAxisSpacing: 14,
-                              mainAxisExtent: 200,
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisExtent: 110,
                             ),
                             itemCount:
-                                (documents.length >= 4) ? 4 : documents.length,
+                                (documents.length >= 6) ? 6 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
                                   Get.toNamed('/all_services_page',
                                       arguments: documents[i]);
-                                  print(documents[i]['services']);
                                 },
                                 child: categoryContainer(
                                     categoryName: documents[i].id,
-                                    color: Colors.blue.withOpacity(0.1),
+                                    color: color[i],
                                     imageURL: documents[i]['imageURL']),
                               );
                             },
@@ -171,8 +195,8 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "Workers",
                         style: GoogleFonts.poppins(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const Spacer(),
@@ -182,12 +206,15 @@ class _HomePageState extends State<HomePage> {
                         },
                         style: TextButton.styleFrom(
                             textStyle: GoogleFonts.poppins()),
-                        child: const Text("View all"),
+                        child: const Text(
+                          "View all",
+                          style: TextStyle(fontSize: 13),
+                        ),
                       )
                     ],
                   ),
-                  Container(
-                    height: 420,
+                  SizedBox(
+                    height: 380,
                     child: StreamBuilder<QuerySnapshot>(
                       stream: CloudFirestoreHelper.cloudFirestoreHelper
                           .fetchAllWorker(),
@@ -197,28 +224,21 @@ class _HomePageState extends State<HomePage> {
                           List<QueryDocumentSnapshot> documents =
                               document!.docs;
 
-                          return GridView.builder(
+                          return ListView.builder(
                             physics: const BouncingScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 14,
-                              crossAxisSpacing: 14,
-                              mainAxisExtent: 225,
-                            ),
                             itemCount:
-                                (documents.length >= 4) ? 4 : documents.length,
+                                (documents.length >= 3) ? 3 : documents.length,
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                  Get.toNamed('/edit_worker',
+                                  Get.toNamed('/worker_details',
                                       arguments: documents[i]);
                                 },
                                 child: workerContainer(
                                     hourlyCharge: documents[i]['hourlyCharge'],
                                     name: documents[i]['name'],
-                                    number: documents[i]['number'],
                                     imageURL: documents[i]['imageURL'],
+                                    number: documents[i]['number'],
                                     service: documents[i]['category']),
                               );
                             },
@@ -244,6 +264,173 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+      // SingleChildScrollView(
+      //   physics: const BouncingScrollPhysics(),
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(12.0),
+      //     child: Column(
+      //       children: [
+      //         Container(
+      //           color: Colors.teal,
+      //           height: 180,
+      //           alignment: Alignment.center,
+      //           child: const Text("Special Offers in Carousel Slider"),
+      //         ),
+      //         Column(
+      //           children: [
+      //             Row(
+      //               children: [
+      //                 Text(
+      //                   "Categories",
+      //                   style: GoogleFonts.poppins(
+      //                     fontSize: 20,
+      //                     fontWeight: FontWeight.w600,
+      //                   ),
+      //                 ),
+      //                 const Spacer(),
+      //                 TextButton(
+      //                   onPressed: () {
+      //                     Get.toNamed("/all_categories_page");
+      //                   },
+      //                   style: TextButton.styleFrom(
+      //                       textStyle: GoogleFonts.poppins()),
+      //                   child: const Text("View all"),
+      //                 )
+      //               ],
+      //             ),
+      //             Container(
+      //               height: 420,
+      //               child: StreamBuilder<QuerySnapshot>(
+      //                 stream: CloudFirestoreHelper.cloudFirestoreHelper
+      //                     .fetchAllCategories(),
+      //                 builder: (context, AsyncSnapshot snapshot) {
+      //                   if (snapshot.hasData) {
+      //                     QuerySnapshot? document = snapshot.data;
+      //                     List<QueryDocumentSnapshot> documents =
+      //                         document!.docs;
+      //
+      //                     return GridView.builder(
+      //                       physics: const BouncingScrollPhysics(),
+      //                       gridDelegate:
+      //                           const SliverGridDelegateWithFixedCrossAxisCount(
+      //                         crossAxisCount: 2,
+      //                         mainAxisSpacing: 14,
+      //                         crossAxisSpacing: 14,
+      //                         mainAxisExtent: 200,
+      //                       ),
+      //                       itemCount:
+      //                           (documents.length >= 4) ? 4 : documents.length,
+      //                       itemBuilder: (context, i) {
+      //                         return InkWell(
+      //                           onTap: () {
+      //                             Get.toNamed('/all_services_page',
+      //                                 arguments: documents[i]);
+      //                             print(documents[i]['services']);
+      //                           },
+      //                           child: categoryContainer(
+      //                               categoryName: documents[i].id,
+      //                               color: Colors.blue.withOpacity(0.1),
+      //                               imageURL: documents[i]['imageURL']),
+      //                         );
+      //                       },
+      //                     );
+      //                   } else if (snapshot.hasError) {
+      //                     return Center(
+      //                       child: Text(
+      //                         "Error: ${snapshot.error}",
+      //                         style: GoogleFonts.poppins(),
+      //                       ),
+      //                     );
+      //                   }
+      //
+      //                   return const Center(
+      //                     child: CircularProgressIndicator(),
+      //                   );
+      //                 },
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //         Column(
+      //           children: [
+      //             Row(
+      //               children: [
+      //                 Text(
+      //                   "Workers",
+      //                   style: GoogleFonts.poppins(
+      //                     fontSize: 20,
+      //                     fontWeight: FontWeight.w600,
+      //                   ),
+      //                 ),
+      //                 const Spacer(),
+      //                 TextButton(
+      //                   onPressed: () {
+      //                     Get.toNamed("/all_workers");
+      //                   },
+      //                   style: TextButton.styleFrom(
+      //                       textStyle: GoogleFonts.poppins()),
+      //                   child: const Text("View all"),
+      //                 )
+      //               ],
+      //             ),
+      //             Container(
+      //               height: 420,
+      //               child: StreamBuilder<QuerySnapshot>(
+      //                 stream: CloudFirestoreHelper.cloudFirestoreHelper
+      //                     .fetchAllWorker(),
+      //                 builder: (context, AsyncSnapshot snapshot) {
+      //                   if (snapshot.hasData) {
+      //                     QuerySnapshot? document = snapshot.data;
+      //                     List<QueryDocumentSnapshot> documents =
+      //                         document!.docs;
+      //
+      //                     return GridView.builder(
+      //                       physics: const BouncingScrollPhysics(),
+      //                       gridDelegate:
+      //                           const SliverGridDelegateWithFixedCrossAxisCount(
+      //                         crossAxisCount: 2,
+      //                         mainAxisSpacing: 14,
+      //                         crossAxisSpacing: 14,
+      //                         mainAxisExtent: 225,
+      //                       ),
+      //                       itemCount:
+      //                           (documents.length >= 4) ? 4 : documents.length,
+      //                       itemBuilder: (context, i) {
+      //                         return InkWell(
+      //                           onTap: () {
+      //                             Get.toNamed('/edit_worker',
+      //                                 arguments: documents[i]);
+      //                           },
+      //                           child: workerContainer(
+      //                               hourlyCharge: documents[i]['hourlyCharge'],
+      //                               name: documents[i]['name'],
+      //                               number: documents[i]['number'],
+      //                               imageURL: documents[i]['imageURL'],
+      //                               service: documents[i]['category']),
+      //                         );
+      //                       },
+      //                     );
+      //                   } else if (snapshot.hasError) {
+      //                     return Center(
+      //                       child: Text(
+      //                         "Error: ${snapshot.error}",
+      //                         style: GoogleFonts.poppins(),
+      //                       ),
+      //                     );
+      //                   }
+      //
+      //                   return const Center(
+      //                     child: CircularProgressIndicator(),
+      //                   );
+      //                 },
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

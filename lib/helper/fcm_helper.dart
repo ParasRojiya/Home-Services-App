@@ -36,8 +36,8 @@ class FCMHelper {
       "data": {
         "priority": "high",
         "content_available": true,
-        "school": "school",
-        "age": "21",
+        "title": title,
+        "body": body,
       }
     };
 
