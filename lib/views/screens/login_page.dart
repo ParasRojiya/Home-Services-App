@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/global/snack_bar.dart';
+import 'package:home_services_app/helper/fcm_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../global/button_syle.dart';
@@ -151,12 +152,26 @@ class _LoginPageState extends State<LoginPage> {
                           Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
                               .signIn(email: email!, password: password!);
-                          snackBar(
-                              user: Global.user,
-                              context: context,
-                              name: "Sign In");
 
-                          Get.offAndToNamed('/admin_home_page');
+                          if (Global.user != null) {
+                            snackBar(
+                                user: Global.user,
+                                context: context,
+                                name: "Sign In");
+
+                            Map<String, dynamic> data = {
+                              'token': await FCMHelper.fcmHelper.getToken(),
+                            };
+
+                            await CloudFirestoreHelper.cloudFirestoreHelper
+                                .updateUsersRecords(id: email!, data: data);
+
+                            Get.offNamedUntil(
+                                '/admin_home_page', (route) => false);
+                          } else {
+                            errorSnackBar(
+                                msg: "Sign in failed...", context: context);
+                          }
                         }
 
                         if (element.data()?['role'] == 'user') {
@@ -174,8 +189,17 @@ class _LoginPageState extends State<LoginPage> {
                                 context: context,
                                 name: "Sign In");
 
-                            // Navigator.of(context).pushNamedAndRemoveUntil('/user_home_page', (route) => false,arguments: Global.user);
+                            Map<String, dynamic> data = {
+                              'token': await FCMHelper.fcmHelper.getToken(),
+                            };
+
+                            await CloudFirestoreHelper.cloudFirestoreHelper
+                                .updateUsersRecords(id: email!, data: data);
+
                             Get.offAndToNamed('/user_home_page');
+                          } else {
+                            errorSnackBar(
+                                msg: "Sign in failed...", context: context);
                           }
                         }
                       });

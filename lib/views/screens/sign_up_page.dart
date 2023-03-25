@@ -165,7 +165,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               "DOB": null,
                               "contact": null,
                               "address": null,
-                              "token":await FCMHelper.fcmHelper.getToken(),
+                              "token": await FCMHelper.fcmHelper.getToken(),
                             },
                           );
 
@@ -183,7 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           behavior: SnackBarBehavior.floating,
                         );
 
-                        Get.back();
+                        Get.offNamedUntil('/login_page', (route) => false);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                     const Icon(CupertinoIcons.search),
                     const SizedBox(width: 10),
                     Text(
-                      'search',
+                      'Search',
                       style: GoogleFonts.habibi(
                           fontSize: 17, color: Colors.black54),
                     )

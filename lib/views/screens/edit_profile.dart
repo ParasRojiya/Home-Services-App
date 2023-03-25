@@ -389,7 +389,8 @@ class _EditProfileState extends State<EditProfile> {
                           .updateUsersRecords(
                               id: Global.currentUser!['email'], data: data);
                       await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-                      Get.offAndToNamed('/login_page');
+
+                      Get.offNamedUntil('/login_page', (route) => false);
                     }
                   },
                   child: Text(
@@ -434,7 +435,8 @@ class _EditProfileState extends State<EditProfile> {
       contactNo = null;
       address = null;
 
-      Get.offAndToNamed('/user_home_page');
+      // Get.offNamedUntil('/user_home_page', (route) => false);
+      Get.back();
     }
   }
 }

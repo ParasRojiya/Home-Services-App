@@ -204,6 +204,9 @@ class _BookServiceState extends State<BookService> {
                     int b = 0;
 
                     if (categoryWorkers.isEmpty) {
+                      Get.snackbar("Oops!",
+                          "Sorry workers not available for this service",
+                          backgroundColor: Colors.red);
                     } else {
                       for (int i = 0; i < categoryWorkers.length; i++) {
                         List data = categoryWorkers[i]['bookings'];
@@ -217,18 +220,9 @@ class _BookServiceState extends State<BookService> {
                             Map tada = data[j];
                             if (tada['SelectedDateTime'] != "$date $time") {
                               b++;
-                              print("=========================");
-                              print("$b");
-                              print("=========================");
-                              // availableWorkers.add(categoryWorkers[i]);
-                              // bookService(res: res);
                             }
                           }
                           if (a == b) {
-                            print('][][][][]][][][][][][][][][][][][][][]');
-                            print("$a");
-                            print("$b");
-                            print('][][][][]][][][][][][][][][][][][][][]');
                             availableWorkers.add(categoryWorkers[i]);
                           }
                         }
@@ -262,8 +256,9 @@ class _BookServiceState extends State<BookService> {
     Map<String, dynamic> serviceData = {
       'customerName': Global.currentUser!['name'],
       'customerNumber': Global.currentUser!['contact'],
-      'name': res.currentData['name'],
-      'price': res.currentData['price'],
+      'serviceName': res.currentData['name'],
+      'serviceCategory': res.currentData['name'],
+      'servicePrice': res.currentData['price'],
       'desc': res.currentData['desc'],
       'imageURL': res.currentData['imageURL'],
       'duration': res.currentData['duration'],
@@ -271,7 +266,7 @@ class _BookServiceState extends State<BookService> {
       'workerName': availableWorkers[workerIndex]['name'],
       'workerNumber': availableWorkers[workerIndex]['number'],
     };
-    //
+
     List bookings = Global.currentUser!['bookings'];
     bookings.add(serviceData);
 
@@ -302,7 +297,6 @@ class _BookServiceState extends State<BookService> {
       'Date': date,
       'Time': time,
       'Price': res.currentData['price'],
-      'Image': res.currentData['imageURL'],
       'WorkerName': availableWorkers[workerIndex]['name'],
       'WorkerNumber': availableWorkers[workerIndex]['number'],
     };

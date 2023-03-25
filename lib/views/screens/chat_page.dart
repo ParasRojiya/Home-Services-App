@@ -82,15 +82,31 @@ class _ChatPageState extends State<ChatPage> {
                                         : CrossAxisAlignment.start,
                                 children: [
                                   Bubble(
-                                    margin: const BubbleEdges.only(top: 10),
-                                    elevation: 5,
-                                    nip: BubbleNip.rightTop,
+                                    margin: BubbleEdges.only(
+                                      top: 10,
+                                      right: (Global.currentUser!['email'] ==
+                                              data['email'])
+                                          ? 0
+                                          : 80,
+                                      left: (Global.currentUser!['email'] ==
+                                              data['email'])
+                                          ? 80
+                                          : 0,
+                                    ),
+                                    nip: (Global.currentUser!['email'] ==
+                                            data['email'])
+                                        ? BubbleNip.rightTop
+                                        : BubbleNip.leftTop,
                                     color: (Global.currentUser!['email'] ==
                                             data['email'])
                                         ? const Color(0xFF1B97F3)
-                                        : Colors.grey.shade300,
+                                        : Colors.grey.shade200,
                                     child: Stack(
-                                      alignment: Alignment.bottomRight,
+                                      alignment:
+                                          (Global.currentUser!['email'] ==
+                                                  data['email'])
+                                              ? Alignment.bottomRight
+                                              : Alignment.bottomLeft,
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(bottom: 11),

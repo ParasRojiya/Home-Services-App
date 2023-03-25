@@ -63,16 +63,14 @@ class _AddCardPageState extends State<AddCardPage> {
           child: ListView(
             children: [
               FlipCard(
-                fill: Fill
-                    .fillBack,
-                autoFlipDuration: Duration(microseconds: 200),
+                fill: Fill.fillBack,
+                autoFlipDuration: const Duration(microseconds: 200),
                 direction: FlipDirection.HORIZONTAL, // default
                 front: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 5),
                   height: 200,
                   width: 300,
                   decoration: BoxDecoration(
-
                     borderRadius: BorderRadius.circular(20),
                     image: const DecorationImage(
                       image: AssetImage('assets/images/b.jpg'),
@@ -85,7 +83,6 @@ class _AddCardPageState extends State<AddCardPage> {
                   height: 200,
                   width: 300,
                   decoration: BoxDecoration(
-
                     borderRadius: BorderRadius.circular(20),
                     image: const DecorationImage(
                       image: AssetImage('assets/images/f.jpg'),
@@ -237,12 +234,12 @@ class _AddCardPageState extends State<AddCardPage> {
                           .updateUsersRecords(
                               id: Global.currentUser!['email'], data: data);
 
-                      Get.back();
                       successSnackBar(
                           msg: (res != null)
                               ? "Wallet details updated successfully"
                               : "Wallet details added Successfully",
                           context: context);
+                      Get.back();
                     }
                   },
                   child: Container(

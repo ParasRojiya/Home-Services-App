@@ -23,6 +23,31 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  currentUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Global.user = FireBaseAuthHelper.firebaseAuth.currentUser;
+
+    CloudFirestoreHelper.firebaseFirestore
+        .collection('users')
+        .doc(prefs.getString('currentUser'))
+        .snapshots()
+        .forEach((element) {
+      Global.currentUser = {
+        'name': element.data()?['name'],
+        'email': element.data()?['email'],
+        'password': element.data()?['password'],
+        'role': element.data()?['role'],
+        'bookings': element.data()?['bookings'],
+        'imageURL': element.data()?['imageURL'],
+        'address': element.data()?['address'],
+        'DOB': element.data()?['DOB'],
+        'contact': element.data()?['contact'],
+        'token': element.data()?['token'],
+        'wallet': element.data()?['wallet'],
+      };
+    });
+  }
+
   final GlobalKey<FormState> editProfileFormKey = GlobalKey<FormState>();
   final TextEditingController profileEmailController = TextEditingController();
   final TextEditingController profileNameController = TextEditingController();
@@ -33,6 +58,8 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   void initState() {
+    currentUserData();
+
     AndroidInitializationSettings androidInitializationSettings =
         const AndroidInitializationSettings("mipmap/ic_launcher");
     DarwinInitializationSettings darwinInitializationSettings =
@@ -259,7 +286,8 @@ class _AccountPageState extends State<AccountPage> {
 
                                   await FireBaseAuthHelper.fireBaseAuthHelper
                                       .signOut();
-                                  Get.offAndToNamed("/login_page");
+                                  Get.offNamedUntil(
+                                      '/login_page', (route) => false);
                                 },
                                 child: Container(
                                   height: 55,
@@ -332,7 +360,6 @@ class _AccountPageState extends State<AccountPage> {
           icon: Icon(Icons.handshake),
           instantInit: false,
           leftBarIndicatorColor: Colors.amber,
-
         );
       } else {
         //  _rateAndReviewApp();
