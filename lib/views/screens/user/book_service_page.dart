@@ -208,14 +208,6 @@ class _BookServiceState extends State<BookService> {
                       for (int i = 0; i < categoryWorkers.length; i++) {
                         List data = categoryWorkers[i]['bookings'];
                         a = data.length;
-                        // String dateTime = data[i]["SelectedDateTime"];
-                        // String time = dateTime.split(' ').elementAt(1);
-                        // data.sort(
-                        //   (a, b) {
-                        //     return a["SelectedDateTime"]
-                        //         .compareTo(b["SelectedDateTime"]);
-                        //   },
-                        // );
 
                         if (data.isEmpty) {
                           availableWorkers.add(categoryWorkers[i]);
@@ -233,8 +225,10 @@ class _BookServiceState extends State<BookService> {
                             }
                           }
                           if (a == b) {
-                            //  print("$a");
-                            //  print("$b");
+                            print('][][][][]][][][][][][][][][][][][][][]');
+                            print("$a");
+                            print("$b");
+                            print('][][][][]][][][][][][][][][][][][][][]');
                             availableWorkers.add(categoryWorkers[i]);
                           }
                         }
@@ -242,7 +236,7 @@ class _BookServiceState extends State<BookService> {
                       }
 
                       if (availableWorkers.isNotEmpty) {
-                        //  bookService(res: res);
+                        bookService(res: res);
                       } else {
                         Get.snackbar("Oops!",
                             "Sorry workers not available for this time slot");
