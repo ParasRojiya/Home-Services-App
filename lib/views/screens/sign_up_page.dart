@@ -172,6 +172,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           await CloudFirestoreHelper.cloudFirestoreHelper
                               .insertChatRecords(
                                   id: email!, data: {"chats": []});
+
+                          CloudFirestoreHelper.firebaseFirestore
+                              .collection('bookings')
+                              .doc(email!);
                         }
 
                         SnackBar(
