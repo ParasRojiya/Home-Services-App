@@ -24,7 +24,7 @@ class FCMHelper {
   sendNotification(
       {required String title,
       required String body,
-      required String token}) async {
+      required String? token}) async {
     Map<String, dynamic> data = {
       "to": token,
       "notification": {

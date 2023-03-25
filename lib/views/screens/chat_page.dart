@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 
 import '../../global/global.dart';
+import '../../helper/fcm_helper.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -16,10 +17,40 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   TextEditingController msg = TextEditingController();
   List chat = [];
+  String? token;
+
+  getToken({required String email}) async {
+    await CloudFirestoreHelper.cloudFirestoreHelper
+        .selectUsersRecords()
+        .forEach((element) {
+      List list = element.docs;
+
+      for (var user in list) {
+        if (user.id == email) {
+          token = user['token'];
+        }
+      }
+    });
+
+    print("======================");
+    print(token);
+    print("======================");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (Global.currentUser!['role'] == 'user') {
+      getToken(email: "admin@gmail.com");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var res = ModalRoute.of(context)!.settings.arguments;
+    if (Global.currentUser!['role'] == 'admin') {
+      getToken(email: res as String);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -209,6 +240,11 @@ class _ChatPageState extends State<ChatPage> {
                                     ? Global.currentUser!['email']
                                     : res,
                                 data: data);
+
+                        FCMHelper.fcmHelper.sendNotification(
+                            title: Global.currentUser!['email'],
+                            body: msg.text,
+                            token: token);
 
                         msg.clear();
                       }
