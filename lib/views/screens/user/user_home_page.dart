@@ -327,6 +327,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         'contact': element.data()?['contact'],
         'token': element.data()?['token'],
         'wallet': element.data()?['wallet'],
+        'rate':element.data()?['rate'],
+        'comment':element.data()?['comment'],
       };
     });
   }

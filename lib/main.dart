@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/admin/add_new_service.dart';
@@ -13,6 +14,7 @@ import 'package:home_services_app/views/screens/admin/chats_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_service_page.dart';
 import 'package:home_services_app/views/screens/admin/edit_worker.dart';
 import 'package:home_services_app/views/screens/admin/users_list.dart';
+import 'package:home_services_app/views/screens/admin/view_rating_page.dart';
 import 'package:home_services_app/views/screens/chat_page.dart';
 import 'package:home_services_app/views/screens/document/FAQs.dart';
 import 'package:home_services_app/views/screens/document/privacy_policy.dart';
@@ -56,6 +58,7 @@ void main() async {
 
   runApp(
     GetMaterialApp(
+      builder: FToastBuilder(),
       theme: ThemeData.light(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       initialRoute: (isLoggedIn)
@@ -88,6 +91,7 @@ void main() async {
         GetPage(name: '/users_list', page: () => const UsersList()),
         GetPage(name: '/chats_page', page: () => const ChatsPage()),
         GetPage(name: '/edit_worker', page: () => const EditWorker()),
+        GetPage(name: '/rating_page', page: () => const ViewRatingPage()),
 
         //USER SCREENS
         GetPage(name: '/user_home_page', page: () => const UserHomeScreen()),

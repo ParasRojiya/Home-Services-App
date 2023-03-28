@@ -166,6 +166,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               "contact": null,
                               "address": null,
                               "token": await FCMHelper.fcmHelper.getToken(),
+                              "comment":"",
+                              "rate":0.toDouble(),
                             },
                           );
 

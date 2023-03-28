@@ -40,6 +40,7 @@ dependencies:
   rating_dialog: ^2.0.4
   bubble: ^1.2.1
   flip_card:
+  fluttertoast: ^8.2.1
 
 dev_dependencies:
   flutter_test:

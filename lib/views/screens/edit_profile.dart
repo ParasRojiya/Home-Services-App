@@ -181,7 +181,7 @@ class _EditProfileState extends State<EditProfile> {
                               color: Colors.grey.shade600, fontSize: 16),
                         ),
                         const Spacer(),
-                        Icon(
+                        const Icon(
                           Icons.arrow_forward_ios,
                           size: 18,
                         ),

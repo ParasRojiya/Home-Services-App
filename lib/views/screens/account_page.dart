@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/cloud_firestore_helper.dart';
@@ -44,6 +45,8 @@ class _AccountPageState extends State<AccountPage> {
         'contact': element.data()?['contact'],
         'token': element.data()?['token'],
         'wallet': element.data()?['wallet'],
+        'rate': element.data()?['rate'],
+        'comment': element.data()?['comment'],
       };
     });
   }
@@ -54,6 +57,7 @@ class _AccountPageState extends State<AccountPage> {
 
   String? profileName;
   String? profileEmail;
+
   bool isDark = false;
 
   @override
@@ -74,7 +78,6 @@ class _AccountPageState extends State<AccountPage> {
     LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        print(response.payload);
       },
     );
     super.initState();
@@ -183,18 +186,83 @@ class _AccountPageState extends State<AccountPage> {
               },
               icon: CupertinoIcons.doc_on_clipboard,
             ),
-            accountOptionContainer(
-              title: "Review & Rating",
+            (Global.isAdmin)?Container()
+           : accountOptionContainer(
+              title: "Rating & Review",
               onTap: () {
+                dynamic rating = Global.currentUser!['rate'];
                 showDialog(
                   context: context,
                   barrierDismissible: true,
-                  // set to false if you want to force a rating
-                  builder: (context) => _dialog,
+                  builder: (context) => RatingDialog(
+                    initialRating: rating.toDouble(),
+                    title: const Text(
+                      'Share Your Experience',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent
+                      ),
+                    ),
+                    message: const Text(
+                      'Tap a star to set your rating',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    image: Container(
+                      alignment: Alignment.bottomCenter,
+                      height: 200,
+                      width: 80,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/logo/1.png"),fit: BoxFit.fill,
+                        ),
+                      ),
+                      child: const Text(
+                        'Home Services',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    submitButtonText: 'Submit',
+                    commentHint: 'Write a review(Optional)',
+                    onCancelled: () => print('cancelled'),
+                    onSubmitted: (response) async {
+                      if (response.rating>=1) {
+                        Fluttertoast.showToast(
+                            msg: "Thank You For Your Feedback",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black,
+                            fontSize: 16.0
+                        );
+                      }
+                      Map<String, dynamic> data = {
+                        'rate': response.rating,
+                        'comment': response.comment,
+                      };
+                      await CloudFirestoreHelper.cloudFirestoreHelper
+                          .updateUsersRecords(
+                          id: Global.currentUser!['email'], data: data);
+                    },
+                  ),
                 );
               },
               icon: Icons.star,
             ),
+            (Global.isAdmin == true)?accountOptionContainer(
+              title: "View Rating & Review",
+              onTap: () {
+                   Get.toNamed('rating_page');
+              },
+              icon: Icons.sentiment_neutral_rounded,
+            ):Container(),
             accountOptionContainer(
               title: "Help",
               onTap: () {
@@ -320,52 +388,7 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  final _dialog = RatingDialog(
-    initialRating: 1.0,
-    // your app's name?
-    title: const Text(
-      'Rating Dialog',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 25,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    // encourage your user to leave a high rating?
-    message: const Text(
-      'Tap a star to set your rating. Add more description here if you want.',
-      textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 15),
-    ),
-    // your app's logo?
-    image: const FlutterLogo(size: 100),
-    submitButtonText: 'Submit',
-    commentHint: 'Set your custom comment hint',
-    onCancelled: () => print('cancelled'),
-    onSubmitted: (response) {
-      print('rating: ${response.rating}, comment: ${response.comment}');
-
-      // TODO: add your own logic
-      if (response.rating < 3.0) {
-        Get.snackbar(
-          "Thanks",
-          "Your FeedBack Successfully Accepted..",
-          borderRadius: 2,
-          dismissDirection: DismissDirection.vertical,
-          forwardAnimationCurve: Curves.decelerate,
-          showProgressIndicator: true,
-          progressIndicatorBackgroundColor: Colors.green,
-          reverseAnimationCurve: Curves.easeInQuad,
-          colorText: Colors.black,
-          icon: Icon(Icons.handshake),
-          instantInit: false,
-          leftBarIndicatorColor: Colors.amber,
-        );
-      } else {
-        //  _rateAndReviewApp();
-      }
-    },
-  );
+  // final _dialog = ;
 
   Future<void> _launchUrl() async {
     final Uri _url = Uri.parse('https://flutter.dev');
