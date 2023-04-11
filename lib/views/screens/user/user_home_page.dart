@@ -39,6 +39,27 @@ class _HomePageState extends State<HomePage> {
 
   List banner = ['b-1.jpeg', 'b-2.jpeg', 'b-3.jpeg', 'b-4.jpeg', 'b-5.jpeg'];
 
+  firebaseMessagingForegroundHandler(RemoteMessage message) async {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      print(
+          'Message also contained a notification: ${message.notification!.title}');
+      print(message.notification?.body);
+    }
+    await LocalNotificationHelper.localNotificationHelper
+        .sendSimpleNotification(
+            title: message.notification!.title,
+            msg: message.notification!.body);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -327,13 +348,28 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         'contact': element.data()?['contact'],
         'token': element.data()?['token'],
         'wallet': element.data()?['wallet'],
-        'rate':element.data()?['rate'],
-        'comment':element.data()?['comment'],
+        'rate': element.data()?['rate'],
+        'comment': element.data()?['comment'],
       };
     });
   }
 
   late PersistentTabController persistentTabController;
+
+  firebaseMessagingForegroundHandler(RemoteMessage message) async {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      print(
+          'Message also contained a notification: ${message.notification!.title}');
+      print(message.notification?.body);
+    }
+    await LocalNotificationHelper.localNotificationHelper
+        .sendSimpleNotification(
+            title: message.notification!.title,
+            msg: message.notification!.body);
+  }
 
   @override
   void initState() {
@@ -358,20 +394,23 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       onDidReceiveNotificationResponse: (NotificationResponse response) {},
     );
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
+    //
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    //   print('Got a message whilst in the foreground!');
+    //   print('Message data: ${message.data}');
+    //
+    //   if (message.notification != null) {
+    //     print(
+    //         'Message also contained a notification: ${message.notification!.title}');
+    //     print(message.notification?.body);
+    //   }
+    //   await LocalNotificationHelper.localNotificationHelper
+    //       .sendSimpleNotification(
+    //           title: message.notification!.title,
+    //           msg: message.notification!.body);
+    // });
 
-      if (message.notification != null) {
-        print(
-            'Message also contained a notification: ${message.notification!.title}');
-        print(message.notification?.body);
-      }
-      await LocalNotificationHelper.localNotificationHelper
-          .sendSimpleNotification(
-              title: message.notification!.title,
-              msg: message.notification!.body);
-    });
+    FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
   }
 
   List<Widget> screens = [

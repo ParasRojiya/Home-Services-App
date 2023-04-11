@@ -166,28 +166,24 @@ class _SignUpPageState extends State<SignUpPage> {
                               "contact": null,
                               "address": null,
                               "token": await FCMHelper.fcmHelper.getToken(),
-                              "comment":"",
-                              "rate":0.toDouble(),
+                              "comment": "",
+                              "rate": 0.toDouble(),
                             },
                           );
 
                           await CloudFirestoreHelper.cloudFirestoreHelper
                               .insertChatRecords(
                                   id: email!, data: {"chats": []});
-
-                          CloudFirestoreHelper.firebaseFirestore
-                              .collection('bookings')
-                              .doc(email!);
                         }
 
-                        SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(
                             "Successfully registered",
                             style: GoogleFonts.poppins(),
                           ),
                           backgroundColor: Colors.green,
                           behavior: SnackBarBehavior.floating,
-                        );
+                        ));
 
                         Get.offNamedUntil('/login_page', (route) => false);
                       } else {

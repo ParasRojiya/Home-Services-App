@@ -233,6 +233,7 @@ class _AddNewServiceState extends State<AddNewService> {
         'duration': duration,
         'desc': serviceDescription,
         'imageURL': Global.imageURL,
+        'ratings': [],
       };
 
       data?.add(dota);

@@ -1,14 +1,16 @@
-import 'package:printing/printing.dart';
-import 'package:path_provider/path_provider.dart';
- import 'dart:io';
-import 'package:upi_india/upi_india.dart';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:upi_india/upi_india.dart';
+
 import '../../../global/global.dart';
 
 class ServiceReceiptPage extends StatefulWidget {
@@ -23,7 +25,6 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
   final pdf = pw.Document();
 
   final UpiIndia _upiIndia = UpiIndia();
-
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +58,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
         actions: [
           IconButton(
             onPressed: () {
-              Get.offAndToNamed('/user_home_page');
+              Get.offNamedUntil('/user_home_page', (route) => false);
             },
             icon: const Icon(CupertinoIcons.home),
           )
@@ -124,7 +125,8 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                               const SizedBox(width: 10),
                               Text(
                                 '${data[i]['key']} :',
-                                style: GoogleFonts.ubuntu(fontSize: 17,fontWeight: FontWeight.bold),
+                                style: GoogleFonts.ubuntu(
+                                    fontSize: 17, fontWeight: FontWeight.bold),
                               ),
                               const Spacer(),
                               Text(
@@ -154,7 +156,8 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       const SizedBox(width: 10),
                       Text(
                         'Service Price :',
-                        style: GoogleFonts.ubuntu(fontSize: 18,fontWeight: FontWeight.bold),
+                        style: GoogleFonts.ubuntu(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
@@ -170,7 +173,8 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       const SizedBox(width: 10),
                       Text(
                         'Promo :',
-                        style: GoogleFonts.ubuntu(fontSize: 18,fontWeight: FontWeight.bold),
+                        style: GoogleFonts.ubuntu(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
@@ -201,7 +205,8 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       const SizedBox(width: 10),
                       Text(
                         'Total :',
-                        style: GoogleFonts.ubuntu(fontSize: 19,fontWeight: FontWeight.bold),
+                        style: GoogleFonts.ubuntu(
+                            fontSize: 19, fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
@@ -228,7 +233,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
               },
               child: Container(
                 height: 50,
-                margin: const EdgeInsets.only(right: 10,left: 10),
+                margin: const EdgeInsets.only(right: 10, left: 10),
                 alignment: Alignment.center,
                 width: width,
                 decoration: BoxDecoration(
@@ -241,7 +246,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            // const SizedBox(height: 10),
             GestureDetector(
               onTap: () {
                 showModalBottomSheet(
@@ -295,7 +300,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
               },
               child: Container(
                 height: 50,
-                margin: const EdgeInsets.only(right: 10,left: 10),
+                margin: const EdgeInsets.only(right: 10, left: 10),
                 alignment: Alignment.center,
                 width: width,
                 decoration: BoxDecoration(
@@ -377,12 +382,12 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                           height: 130,
                           width: width * 0.80,
                           child: pw.Image(pw.MemoryImage(image))
-                        // decoration: pw.BoxDecoration(
-                        //   image: pw.DecorationImage(
-                        //       image: pw.Image(pw.MemoryImage(image)),
-                        //       fit: pw.BoxFit.cover),
-                        // ),
-                      ),
+                          // decoration: pw.BoxDecoration(
+                          //   image: pw.DecorationImage(
+                          //       image: pw.Image(pw.MemoryImage(image)),
+                          //       fit: pw.BoxFit.cover),
+                          // ),
+                          ),
                       pw.Divider(
                         color: PdfColors.black,
                         thickness: 1,

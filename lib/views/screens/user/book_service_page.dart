@@ -265,6 +265,8 @@ class _BookServiceState extends State<BookService> {
       'SelectedDateTime': "$date $time",
       'workerName': availableWorkers[workerIndex]['name'],
       'workerNumber': availableWorkers[workerIndex]['number'],
+      'rating': 0,
+      'review': null,
     };
 
     List bookings = Global.currentUser!['bookings'];
@@ -277,10 +279,8 @@ class _BookServiceState extends State<BookService> {
     await CloudFirestoreHelper.cloudFirestoreHelper
         .updateUsersRecords(id: Global.currentUser!['email'], data: data);
 
-    await CloudFirestoreHelper.cloudFirestoreHelper
-        .addServiceInBookingCollection(
-            data: data, userEmail: Global.currentUser!['email']);
-
+    serviceData.remove('rating');
+    serviceData.remove('review');
     workerBookings.add(serviceData);
     Map<String, dynamic> workerData = {
       'bookings': workerBookings,

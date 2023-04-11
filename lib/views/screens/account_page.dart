@@ -77,8 +77,7 @@ class _AccountPageState extends State<AccountPage> {
 
     LocalNotificationHelper.flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-      },
+      onDidReceiveNotificationResponse: (NotificationResponse response) {},
     );
     super.initState();
   }
@@ -186,83 +185,86 @@ class _AccountPageState extends State<AccountPage> {
               },
               icon: CupertinoIcons.doc_on_clipboard,
             ),
-            (Global.isAdmin)?Container()
-           : accountOptionContainer(
-              title: "Rating & Review",
-              onTap: () {
-                dynamic rating = Global.currentUser!['rate'];
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (context) => RatingDialog(
-                    initialRating: rating.toDouble(),
-                    title: const Text(
-                      'Share Your Experience',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent
-                      ),
-                    ),
-                    message: const Text(
-                      'Tap a star to set your rating',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    image: Container(
-                      alignment: Alignment.bottomCenter,
-                      height: 200,
-                      width: 80,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/logo/1.png"),fit: BoxFit.fill,
+            (Global.isAdmin)
+                ? Container()
+                : accountOptionContainer(
+                    title: "Rating & Review",
+                    onTap: () {
+                      dynamic rating = Global.currentUser!['rate'];
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (context) => RatingDialog(
+                          initialRating: rating.toDouble(),
+                          title: const Text(
+                            'Share Your Experience',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blueAccent),
+                          ),
+                          message: const Text(
+                            'Tap a star to set your rating',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          image: Container(
+                            alignment: Alignment.bottomCenter,
+                            height: 200,
+                            width: 80,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/logo/1.png"),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            child: const Text(
+                              'Home Services',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          submitButtonText: 'Submit',
+                          commentHint: 'Write a review(Optional)',
+                          onCancelled: () => print('cancelled'),
+                          onSubmitted: (response) async {
+                            if (response.rating >= 1) {
+                              Fluttertoast.showToast(
+                                  msg: "Thank You For Your Feedback",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.white,
+                                  textColor: Colors.black,
+                                  fontSize: 16.0);
+                            }
+                            Map<String, dynamic> data = {
+                              'rate': response.rating,
+                              'comment': response.comment,
+                            };
+                            await CloudFirestoreHelper.cloudFirestoreHelper
+                                .updateUsersRecords(
+                                    id: Global.currentUser!['email'],
+                                    data: data);
+                          },
                         ),
-                      ),
-                      child: const Text(
-                        'Home Services',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    submitButtonText: 'Submit',
-                    commentHint: 'Write a review(Optional)',
-                    onCancelled: () => print('cancelled'),
-                    onSubmitted: (response) async {
-                      if (response.rating>=1) {
-                        Fluttertoast.showToast(
-                            msg: "Thank You For Your Feedback",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.white,
-                            textColor: Colors.black,
-                            fontSize: 16.0
-                        );
-                      }
-                      Map<String, dynamic> data = {
-                        'rate': response.rating,
-                        'comment': response.comment,
-                      };
-                      await CloudFirestoreHelper.cloudFirestoreHelper
-                          .updateUsersRecords(
-                          id: Global.currentUser!['email'], data: data);
+                      );
                     },
+                    icon: Icons.star,
                   ),
-                );
-              },
-              icon: Icons.star,
-            ),
-            (Global.isAdmin == true)?accountOptionContainer(
-              title: "View Rating & Review",
-              onTap: () {
-                   Get.toNamed('rating_page');
-              },
-              icon: Icons.sentiment_neutral_rounded,
-            ):Container(),
+            (Global.isAdmin == true)
+                ? accountOptionContainer(
+                    title: "View Rating & Reviews",
+                    onTap: () {
+                      Get.toNamed('/rating_page');
+                    },
+                    icon: Icons.sentiment_neutral_rounded,
+                  )
+                : Container(),
             accountOptionContainer(
               title: "Help",
               onTap: () {

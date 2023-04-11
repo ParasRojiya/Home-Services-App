@@ -77,15 +77,17 @@ class CloudFirestoreHelper {
   }
 
   //BOOKINGS COLLECTION HELPER
-  connectionWithBookingsCollection() {
-    bookingsRef = firebaseFirestore.collection('bookings');
-  }
 
-  Future<void> addServiceInBookingCollection(
-      {required Map<String, dynamic> data, required String userEmail}) async {
-    connectionWithBookingsCollection();
-    await bookingsRef.doc(userEmail).update(data);
-  }
+  // connectionWithBookingsCollection() {
+  //   bookingsRef = firebaseFirestore.collection('bookings');
+  // }
+
+  // Future<void> addServiceInBookingCollection(
+  //     {required Map<String, dynamic> data, required String userEmail}) async {
+  //   connectionWithBookingsCollection();
+  //   await bookingsRef.doc(userEmail).update(data);
+  // }
+  //
 
   //USERS COLLECTION HELPER
   connectionWithUsersCollection() {
@@ -96,6 +98,7 @@ class CloudFirestoreHelper {
       {required Map<String, dynamic> data}) async {
     connectionWithUsersCollection();
     await userRef.doc(data["email"]).set(data);
+    //bookingsRef.doc(data["email"]).set({"bookings":[]});
   }
 
   // Stream<QuerySnapshot> fetchCart({required String id})  {
