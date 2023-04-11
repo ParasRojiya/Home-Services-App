@@ -41,17 +41,11 @@ dependencies:
   bubble: ^1.2.1
   flip_card:
   fluttertoast: ^8.2.1
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  animated_text_kit: ^4.2.2
+  upi_india: ^3.0.1
+  pdf: ^3.10.1
+  printing:
+  path_provider:
   flutter_local_notifications: ^12.0.3
   firebase_core:
   firebase_auth:
@@ -68,14 +62,21 @@ dev_dependencies:
   image_picker:
   time_range_picker:
   date_time_picker_widget:
-  pdf:
-  path_provider:
-  printing:
   firebase_messaging:
   http:
   carousel_slider:
 
 
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -95,6 +96,11 @@ flutter:
   assets:
     - assets/logo/
     - assets/images/
+    - assets/images/barcode.png
+    - assets/images/googlepay.jpg
+    - assets/images/amazonpay.jpg
+    - assets/images/paytm.png
+    - assets/images/phonepay.png
     - assets/images/b-1.jpeg
     - assets/images/b-2.jpeg
     - assets/images/b-3.jpeg

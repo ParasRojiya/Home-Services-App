@@ -1,14 +1,15 @@
-import 'dart:io';
-
+import 'package:printing/printing.dart';
+import 'package:path_provider/path_provider.dart';
+ import 'dart:io';
+import 'package:upi_india/upi_india.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../global/global.dart';
 
 class ServiceReceiptPage extends StatefulWidget {
   const ServiceReceiptPage({Key? key}) : super(key: key);
@@ -19,8 +20,10 @@ class ServiceReceiptPage extends StatefulWidget {
 
 class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
   List data = [];
-
   final pdf = pw.Document();
+
+  final UpiIndia _upiIndia = UpiIndia();
+
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                               const SizedBox(width: 10),
                               Text(
                                 '${data[i]['key']} :',
-                                style: GoogleFonts.ubuntu(fontSize: 17),
+                                style: GoogleFonts.ubuntu(fontSize: 17,fontWeight: FontWeight.bold),
                               ),
                               const Spacer(),
                               Text(
@@ -151,7 +154,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       const SizedBox(width: 10),
                       Text(
                         'Service Price :',
-                        style: GoogleFonts.ubuntu(fontSize: 18),
+                        style: GoogleFonts.ubuntu(fontSize: 18,fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
@@ -167,7 +170,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       const SizedBox(width: 10),
                       Text(
                         'Promo :',
-                        style: GoogleFonts.ubuntu(fontSize: 18),
+                        style: GoogleFonts.ubuntu(fontSize: 18,fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
@@ -198,7 +201,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       const SizedBox(width: 10),
                       Text(
                         'Total :',
-                        style: GoogleFonts.ubuntu(fontSize: 19),
+                        style: GoogleFonts.ubuntu(fontSize: 19,fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       Text(
@@ -219,30 +222,109 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
               onTap: () async {
                 await Printing.layoutPdf(
                     onLayout: (format) => generatePDF(res: res));
-
                 Directory? dir = await getExternalStorageDirectory();
-
                 File file = File("${dir!.path}/Service Receipt.pdf");
-
                 await file.writeAsBytes(await pdf.save());
               },
               child: Container(
-                height: 60,
+                height: 50,
+                margin: const EdgeInsets.only(right: 10,left: 10),
                 alignment: Alignment.center,
-                width: width * 0.85,
+                width: width,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.indigo,
                 ),
-                child: Text(
+                child: const Text(
                   'Download Receipt',
-                  style: GoogleFonts.ubuntu(fontSize: 25, color: Colors.white),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
-            )
+            ),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Column(
+                        children: [
+                          const Divider(color: Colors.transparent, height: 5),
+                          ...Global.payment
+                              .map(
+                                (e) => Column(
+                                  children: [
+                                    ListTile(
+                                      leading: InkWell(
+                                        onTap: () {
+                                          int bill = res['Price'];
+                                          initiateTransaction(
+                                              app: e['upiMethod'],
+                                              amount: bill.toDouble(),
+                                              service: res['Category']);
+                                        },
+                                        child: Container(
+                                          height: 60,
+                                          width: 60,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Image.asset(
+                                            e['image'],
+                                            scale: e['scale'],
+                                            filterQuality: FilterQuality.high,
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        "${e['upiName']}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const Divider(thickness: 1, height: 5),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ],
+                      );
+                    });
+              },
+              child: Container(
+                height: 50,
+                margin: const EdgeInsets.only(right: 10,left: 10),
+                alignment: Alignment.center,
+                width: width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.indigo,
+                ),
+                child: const Text(
+                  'Pay Online',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<UpiResponse> initiateTransaction(
+      {required UpiApp app,
+      required double amount,
+      required String service}) async {
+    return _upiIndia.startTransaction(
+      app: app,
+      receiverUpiId: "9081313402@ybl",
+      receiverName: 'Home Services',
+      transactionRefId: 'TestingUpiIndiaPlugin',
+      transactionNote: service,
+      amount: amount,
     );
   }
 
@@ -281,10 +363,10 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                   child: pw.Column(
                     children: [
                       pw.Container(
-                        margin: pw.EdgeInsets.only(bottom: 5),
+                        margin: const pw.EdgeInsets.only(bottom: 5),
                         height: 15,
                         width: width,
-                        decoration: pw.BoxDecoration(
+                        decoration: const pw.BoxDecoration(
                             borderRadius: pw.BorderRadius.only(
                               topRight: pw.Radius.circular(10),
                               topLeft: pw.Radius.circular(10),
@@ -295,12 +377,12 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                           height: 130,
                           width: width * 0.80,
                           child: pw.Image(pw.MemoryImage(image))
-                          // decoration: pw.BoxDecoration(
-                          //   image: pw.DecorationImage(
-                          //       image: pw.Image(pw.MemoryImage(image)),
-                          //       fit: pw.BoxFit.cover),
-                          // ),
-                          ),
+                        // decoration: pw.BoxDecoration(
+                        //   image: pw.DecorationImage(
+                        //       image: pw.Image(pw.MemoryImage(image)),
+                        //       fit: pw.BoxFit.cover),
+                        // ),
+                      ),
                       pw.Divider(
                         color: PdfColors.black,
                         thickness: 1,

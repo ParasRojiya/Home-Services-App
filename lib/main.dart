@@ -29,7 +29,6 @@ import 'package:home_services_app/views/screens/user/history_page.dart';
 import 'package:home_services_app/views/screens/user/service_receipt_page.dart';
 import 'package:home_services_app/views/screens/user/worker_details_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'global/global.dart';
 import 'helper/local_notification_helper.dart';
 import 'views/screens/user/user_home_page.dart';
