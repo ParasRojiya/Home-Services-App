@@ -1059,13 +1059,13 @@ class _HistoryPageState extends State<HistoryPage>
                                                     'bookings': bookings,
                                                   };
 
-                                                  // await CloudFirestoreHelper
-                                                  //     .cloudFirestoreHelper
-                                                  //     .updateUsersRecords(
-                                                  //         id: Global
-                                                  //                 .currentUser![
-                                                  //             'email'],
-                                                  //         data: dete);
+                                                  await CloudFirestoreHelper
+                                                      .cloudFirestoreHelper
+                                                      .updateUsersRecords(
+                                                          id: Global
+                                                                  .currentUser![
+                                                              'email'],
+                                                          data: dete);
 
                                                   Map<String, dynamic> deta = {
                                                     'name': Global
@@ -1082,11 +1082,12 @@ class _HistoryPageState extends State<HistoryPage>
                                                     if (categoryServices[j]
                                                             ['name'] ==
                                                         data[i]
-                                                            ['serviceName']) {}
-                                                    serviceMap =
-                                                        categoryServices[j];
-                                                    categoryServices
-                                                        .removeAt(j);
+                                                            ['serviceName']) {
+                                                      serviceMap =
+                                                          categoryServices[j];
+                                                      categoryServices
+                                                          .removeAt(j);
+                                                    }
                                                   }
 
                                                   List ratings =
@@ -1105,32 +1106,32 @@ class _HistoryPageState extends State<HistoryPage>
                                                     'services':
                                                         categoryServices,
                                                   };
+                                                  print(
+                                                      "=============================");
                                                   log("$updatedService");
-                                                  // await CloudFirestoreHelper
-                                                  //     .cloudFirestoreHelper
-                                                  //     .updateService(
-                                                  //         name: data[i][
-                                                  //             'serviceCategory'],
-                                                  //         data: updatedService);
+                                                  print(
+                                                      "=============================");
+                                                  await CloudFirestoreHelper
+                                                      .cloudFirestoreHelper
+                                                      .updateService(
+                                                          name: data[i][
+                                                              'serviceCategory'],
+                                                          data: updatedService);
 
-                                                  // await CloudFirestoreHelper
-                                                  //     .cloudFirestoreHelper
-                                                  //     .fetchAllCategories()
-                                                  //     .forEach((element) {
-                                                  //   element.docs
-                                                  //       .forEach((element) {
-                                                  //     if (element.id ==
-                                                  //         data[i][
-                                                  //             'serviceCategory']) {
-                                                  //       categoryServices =
-                                                  //           element['services'];
-                                                  //     }
-                                                  //   });
-                                                  // });
-
-                                                  Get.offNamedUntil(
-                                                      'user_home_page',
-                                                      (route) => false);
+                                                  await CloudFirestoreHelper
+                                                      .cloudFirestoreHelper
+                                                      .fetchAllCategories()
+                                                      .forEach((element) {
+                                                    element.docs
+                                                        .forEach((element) {
+                                                      if (element.id ==
+                                                          data[i][
+                                                              'serviceCategory']) {
+                                                        categoryServices =
+                                                            element['services'];
+                                                      }
+                                                    });
+                                                  });
                                                 },
                                               ),
                                             );
