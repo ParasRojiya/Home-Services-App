@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker_widget/date_time_picker_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
+';
+
 import '../../../global/button_syle.dart';
 import '../../../global/global.dart';
 import '../../../global/snack_bar.dart';
@@ -453,7 +456,7 @@ class _BookServiceState extends State<BookService> {
       'Name': Global.currentUser?['name'],
       'Service': res.currentData['name'],
       'Category': res.ids,
-      'Duration': "${res.currentData['duration']} Hr",
+      'Duration': "${res.currentData['duration']}",
       'Date': date,
       'Time': time,
       'Price': res.currentData['price'],

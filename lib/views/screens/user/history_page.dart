@@ -182,634 +182,11 @@ class _HistoryPageState extends State<HistoryPage>
               isOpen.add(isOpenPanel);
             }
 
-            // return TabBarView(controller: tabController, children: [
-            //   ListView.builder(
-            //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            //     itemCount: pending.length,
-            //     itemBuilder: (context, i) {
-            //       return Card(
-            //         child: ExpansionPanelList(
-            //           expansionCallback: (panelIndex, isExpanded) {
-            //             setState(() {
-            //               isOpen[i] = !isOpen[i];
-            //             });
-            //           },
-            //           expandedHeaderPadding: const EdgeInsets.all(0),
-            //           elevation: 0,
-            //           children: <ExpansionPanel>[
-            //             ExpansionPanel(
-            //               headerBuilder: (context, isExpanded) {
-            //                 return Container(
-            //                   height: 120,
-            //                   width: Get.width,
-            //                   decoration: BoxDecoration(
-            //                     borderRadius: BorderRadius.circular(15),
-            //                   ),
-            //                   child: Row(
-            //                     children: [
-            //                       const SizedBox(width: 8),
-            //                       Container(
-            //                         height: 105,
-            //                         width: 115,
-            //                         decoration: BoxDecoration(
-            //                           borderRadius: BorderRadius.circular(15),
-            //                           image: DecorationImage(
-            //                             image: NetworkImage(
-            //                                 pending[i]['imageURL']),
-            //                             fit: BoxFit.cover,
-            //                           ),
-            //                         ),
-            //                       ),
-            //                       const SizedBox(width: 12),
-            //                       Column(
-            //                         crossAxisAlignment:
-            //                             CrossAxisAlignment.start,
-            //                         children: [
-            //                           const SizedBox(height: 8),
-            //                           Text(
-            //                             pending[i]['serviceCategory'],
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 13),
-            //                           ),
-            //                           const SizedBox(height: 5),
-            //                           Text(
-            //                             pending[i]['serviceName'],
-            //                             style: GoogleFonts.poppins(
-            //                                 fontSize: 16,
-            //                                 fontWeight: FontWeight.w500,
-            //                                 color: Colors.indigo),
-            //                           ),
-            //                           const SizedBox(height: 4),
-            //                           Text(
-            //                             '₹ ${pending[i]['servicePrice']}',
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 13),
-            //                           ),
-            //                           const SizedBox(height: 10),
-            //                           Text(
-            //                             '4.3 ⭐   |    12 Review',
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 12),
-            //                           ),
-            //                         ],
-            //                       )
-            //                     ],
-            //                   ),
-            //                 );
-            //               },
-            //               body: Padding(
-            //                 padding:
-            //                     const EdgeInsets.symmetric(horizontal: 10.0),
-            //                 child: Column(
-            //                   children: [
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Date',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           pending[i]['SelectedDateTime']
-            //                               .split(' ')
-            //                               .first,
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Time',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           '${pending[i]['SelectedDateTime'].split(' ').elementAt(1)} ${pending[i]['SelectedDateTime'].split(' ').last}',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Worker',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           pending[i]['workerName'],
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Phone Number',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           '+91 ${pending[i]['workerNumber']}',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 12),
-            //                     Container(
-            //                       height: 45,
-            //                       alignment: Alignment.center,
-            //                       width: 240,
-            //                       decoration: BoxDecoration(
-            //                         color: Colors.blue.shade300,
-            //                         borderRadius: BorderRadius.circular(15),
-            //                       ),
-            //                       child: Text(
-            //                         'View Receipt',
-            //                         style: GoogleFonts.habibi(fontSize: 16),
-            //                       ),
-            //                     ),
-            //                     const SizedBox(height: 8),
-            //                   ],
-            //                 ),
-            //               ),
-            //               isExpanded: isOpen[i],
-            //               canTapOnHeader: true,
-            //               backgroundColor: Colors.transparent,
-            //             ),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            //   ListView.builder(
-            //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            //     itemCount: ongoing.length,
-            //     itemBuilder: (context, i) {
-            //       return Card(
-            //         child: ExpansionPanelList(
-            //           expansionCallback: (panelIndex, isExpanded) {
-            //             setState(() {
-            //               isOpen[i] = !isOpen[i];
-            //             });
-            //           },
-            //           expandedHeaderPadding: const EdgeInsets.all(0),
-            //           elevation: 0,
-            //           children: <ExpansionPanel>[
-            //             ExpansionPanel(
-            //               headerBuilder: (context, isExpanded) {
-            //                 return Container(
-            //                   height: 120,
-            //                   width: Get.width,
-            //                   decoration: BoxDecoration(
-            //                     borderRadius: BorderRadius.circular(15),
-            //                   ),
-            //                   child: Row(
-            //                     children: [
-            //                       const SizedBox(width: 8),
-            //                       Container(
-            //                         height: 105,
-            //                         width: 115,
-            //                         decoration: BoxDecoration(
-            //                           borderRadius: BorderRadius.circular(15),
-            //                           image: DecorationImage(
-            //                             image: NetworkImage(
-            //                                 ongoing[i]['imageURL']),
-            //                             fit: BoxFit.cover,
-            //                           ),
-            //                         ),
-            //                       ),
-            //                       const SizedBox(width: 12),
-            //                       Column(
-            //                         crossAxisAlignment:
-            //                             CrossAxisAlignment.start,
-            //                         children: [
-            //                           const SizedBox(height: 8),
-            //                           Text(
-            //                             ongoing[i]['serviceCategory'],
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 13),
-            //                           ),
-            //                           const SizedBox(height: 5),
-            //                           Text(
-            //                             ongoing[i]['serviceName'],
-            //                             style: GoogleFonts.poppins(
-            //                                 fontSize: 16,
-            //                                 fontWeight: FontWeight.w500,
-            //                                 color: Colors.indigo),
-            //                           ),
-            //                           const SizedBox(height: 4),
-            //                           Text(
-            //                             '₹ ${ongoing[i]['servicePrice']}',
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 13),
-            //                           ),
-            //                           const SizedBox(height: 10),
-            //                           Text(
-            //                             '4.3 ⭐   |    12 Review',
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 12),
-            //                           ),
-            //                         ],
-            //                       )
-            //                     ],
-            //                   ),
-            //                 );
-            //               },
-            //               body: Padding(
-            //                 padding:
-            //                     const EdgeInsets.symmetric(horizontal: 10.0),
-            //                 child: Column(
-            //                   children: [
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Date',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           ongoing[i]['SelectedDateTime']
-            //                               .split(' ')
-            //                               .first,
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Time',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           '${ongoing[i]['SelectedDateTime'].split(' ').elementAt(1)} ${ongoing[i]['SelectedDateTime'].split(' ').last}',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Worker',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           data[i]['workerName'],
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Phone Number',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           '+91 ${ongoing[i]['workerNumber']}',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 12),
-            //                     Container(
-            //                       height: 45,
-            //                       alignment: Alignment.center,
-            //                       width: 240,
-            //                       decoration: BoxDecoration(
-            //                         color: Colors.blue.shade300,
-            //                         borderRadius: BorderRadius.circular(15),
-            //                       ),
-            //                       child: Text(
-            //                         'View Receipt',
-            //                         style: GoogleFonts.habibi(fontSize: 16),
-            //                       ),
-            //                     ),
-            //                     const SizedBox(height: 8),
-            //                   ],
-            //                 ),
-            //               ),
-            //               isExpanded: isOpen[i],
-            //               canTapOnHeader: true,
-            //               backgroundColor: Colors.transparent,
-            //             ),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            //   ListView.builder(
-            //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-            //     itemCount: completed.length,
-            //     itemBuilder: (context, i) {
-            //       return Card(
-            //         child: ExpansionPanelList(
-            //           expansionCallback: (panelIndex, isExpanded) {
-            //             setState(() {
-            //               isOpen[i] = !isOpen[i];
-            //             });
-            //           },
-            //           expandedHeaderPadding: const EdgeInsets.all(0),
-            //           elevation: 0,
-            //           children: <ExpansionPanel>[
-            //             ExpansionPanel(
-            //               headerBuilder: (context, isExpanded) {
-            //                 return Container(
-            //                   height: 120,
-            //                   width: Get.width,
-            //                   decoration: BoxDecoration(
-            //                     borderRadius: BorderRadius.circular(15),
-            //                   ),
-            //                   child: Row(
-            //                     children: [
-            //                       const SizedBox(width: 8),
-            //                       Container(
-            //                         height: 105,
-            //                         width: 115,
-            //                         decoration: BoxDecoration(
-            //                           borderRadius: BorderRadius.circular(15),
-            //                           image: DecorationImage(
-            //                             image: NetworkImage(
-            //                                 completed[i]['imageURL']),
-            //                             fit: BoxFit.cover,
-            //                           ),
-            //                         ),
-            //                       ),
-            //                       const SizedBox(width: 12),
-            //                       Column(
-            //                         crossAxisAlignment:
-            //                             CrossAxisAlignment.start,
-            //                         children: [
-            //                           const SizedBox(height: 8),
-            //                           Text(
-            //                             completed[i]['serviceCategory'],
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 13),
-            //                           ),
-            //                           const SizedBox(height: 5),
-            //                           Text(
-            //                             completed[i]['serviceName'],
-            //                             style: GoogleFonts.poppins(
-            //                                 fontSize: 16,
-            //                                 fontWeight: FontWeight.w500,
-            //                                 color: Colors.indigo),
-            //                           ),
-            //                           const SizedBox(height: 4),
-            //                           Text(
-            //                             '₹ ${completed[i]['servicePrice']}',
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 13),
-            //                           ),
-            //                           const SizedBox(height: 10),
-            //                           Text(
-            //                             '4.3 ⭐   |    12 Review',
-            //                             style:
-            //                                 GoogleFonts.poppins(fontSize: 12),
-            //                           ),
-            //                         ],
-            //                       )
-            //                     ],
-            //                   ),
-            //                 );
-            //               },
-            //               body: Padding(
-            //                 padding:
-            //                     const EdgeInsets.symmetric(horizontal: 10.0),
-            //                 child: Column(
-            //                   children: [
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Date',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           completed[i]['SelectedDateTime']
-            //                               .split(' ')
-            //                               .first,
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Time',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           '${completed[i]['SelectedDateTime'].split(' ').elementAt(1)} ${completed[i]['SelectedDateTime'].split(' ').last}',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Worker',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           completed[i]['workerName'],
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 6),
-            //                     Row(
-            //                       children: [
-            //                         const SizedBox(width: 8),
-            //                         Text(
-            //                           'Phone Number',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const Spacer(),
-            //                         Text(
-            //                           '+91 ${completed[i]['workerNumber']}',
-            //                           style: GoogleFonts.poppins(fontSize: 14),
-            //                         ),
-            //                         const SizedBox(width: 8),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 12),
-            //                     Row(
-            //                       mainAxisAlignment: MainAxisAlignment.center,
-            //                       children: [
-            //                         Container(
-            //                           height: 45,
-            //                           alignment: Alignment.center,
-            //                           width: 240,
-            //                           decoration: BoxDecoration(
-            //                             color: Colors.blue.shade300,
-            //                             borderRadius: BorderRadius.circular(15),
-            //                           ),
-            //                           child: Text(
-            //                             'View Receipt',
-            //                             style: GoogleFonts.habibi(fontSize: 16),
-            //                           ),
-            //                         ),
-            //                         TextButton(
-            //                           child: const Text("Rate & Review"),
-            //                           onPressed: () {
-            //                             showDialog(
-            //                               context: context,
-            //                               barrierDismissible: true,
-            //                               builder: (context) => RatingDialog(
-            //                                 initialRating: completed[i]
-            //                                         ['rating']
-            //                                     .toDouble(),
-            //                                 title: Text(
-            //                                   completed[i]['serviceName'],
-            //                                   textAlign: TextAlign.center,
-            //                                   style: const TextStyle(
-            //                                       fontSize: 18,
-            //                                       fontWeight: FontWeight.bold,
-            //                                       color: Colors.blueAccent),
-            //                                 ),
-            //                                 message: const Text(
-            //                                   'Tap a star to set your rating',
-            //                                   textAlign: TextAlign.center,
-            //                                   style: TextStyle(fontSize: 15),
-            //                                 ),
-            //                                 image: Container(
-            //                                   alignment: Alignment.bottomCenter,
-            //                                   height: 150,
-            //                                   width: 80,
-            //                                   decoration: BoxDecoration(
-            //                                     image: DecorationImage(
-            //                                       image: NetworkImage(
-            //                                           completed[i]['imageURL']),
-            //                                       fit: BoxFit.fill,
-            //                                     ),
-            //                                   ),
-            //                                   // child: const Text(
-            //                                   //   'Home Services',
-            //                                   //   textAlign: TextAlign.center,
-            //                                   //   style: TextStyle(
-            //                                   //     fontSize: 25,
-            //                                   //     fontWeight: FontWeight.bold,
-            //                                   //   ),
-            //                                   // ),
-            //                                 ),
-            //                                 submitButtonText: 'Submit',
-            //                                 commentHint:
-            //                                     'Write a review(Optional)',
-            //                                 onCancelled: () =>
-            //                                     print('cancelled'),
-            //                                 onSubmitted: (response) async {
-            //                                   if (response.rating >= 1) {
-            //                                     Fluttertoast.showToast(
-            //                                         msg:
-            //                                             "Thank You For Your Feedback",
-            //                                         toastLength:
-            //                                             Toast.LENGTH_SHORT,
-            //                                         gravity:
-            //                                             ToastGravity.BOTTOM,
-            //                                         timeInSecForIosWeb: 1,
-            //                                         backgroundColor:
-            //                                             Colors.white,
-            //                                         textColor: Colors.black,
-            //                                         fontSize: 16.0);
-            //                                   }
-            //
-            //                                   Map<String, dynamic> data = {
-            //                                     'name':
-            //                                         Global.currentUser!['name'],
-            //                                     'rate': response.rating,
-            //                                     'comment': response.comment,
-            //                                   };
-            //
-            //                                   print(
-            //                                       "============================");
-            //                                   print(data);
-            //                                   print(
-            //                                       "============================");
-            //                                   await CloudFirestoreHelper
-            //                                       .cloudFirestoreHelper
-            //                                       .updateService(
-            //                                           name: completed[i]
-            //                                               ['serviceCategory'],
-            //                                           data: data);
-            //
-            //                                   // List bookings = Global.currentUser!['bookings'];
-            //                                   // bookings.add(serviceData);
-            //                                   //
-            //                                   // Map<String, dynamic> data = {
-            //                                   //   'bookings': bookings,
-            //                                   // };
-            //                                   //
-            //                                   // await CloudFirestoreHelper.cloudFirestoreHelper
-            //                                   //     .updateUsersRecords(id: Global.currentUser!['email'], data: data);
-            //                                   //
-            //
-            //                                   // await CloudFirestoreHelper
-            //                                   //     .cloudFirestoreHelper
-            //                                   //     .updateUsersRecords(
-            //                                   //         id: Global.currentUser![
-            //                                   //             'email'],
-            //                                   //         data: data);
-            //                                 },
-            //                               ),
-            //                             );
-            //                           },
-            //                         ),
-            //                       ],
-            //                     ),
-            //                     const SizedBox(height: 8),
-            //                   ],
-            //                 ),
-            //               ),
-            //               isExpanded: isOpen[i],
-            //               canTapOnHeader: true,
-            //               backgroundColor: Colors.transparent,
-            //             ),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ]);
+            print("===============================");
+            print(pending);
+            print("===============================");
+            print(data);
+            print("===============================");
 
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -967,179 +344,202 @@ class _HistoryPageState extends State<HistoryPage>
                                       style: GoogleFonts.habibi(fontSize: 16),
                                     ),
                                   ),
-                                  (data[i] == completed[i])
-                                      ? TextButton(
-                                          child: const Text("Rate & Review"),
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              barrierDismissible: true,
-                                              builder: (context) =>
-                                                  RatingDialog(
-                                                initialRating: completed[i]
-                                                        ['rating']
-                                                    .toDouble(),
-                                                title: Text(
-                                                  completed[i]['serviceName'],
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.blueAccent),
-                                                ),
-                                                message: const Text(
-                                                  'Tap a star to set your rating',
-                                                  textAlign: TextAlign.center,
-                                                  style:
-                                                      TextStyle(fontSize: 15),
-                                                ),
-                                                image: Container(
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  height: 150,
-                                                  width: 80,
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          completed[i]
-                                                              ['imageURL']),
-                                                      fit: BoxFit.fill,
+                                  (completed.isNotEmpty)
+                                      ? (data[i] == completed[i])
+                                          ? TextButton(
+                                              child:
+                                                  const Text("Rate & Review"),
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  barrierDismissible: true,
+                                                  builder: (context) =>
+                                                      RatingDialog(
+                                                    initialRating: completed[i]
+                                                            ['rating']
+                                                        .toDouble(),
+                                                    title: Text(
+                                                      completed[i]
+                                                          ['serviceName'],
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors
+                                                              .blueAccent),
                                                     ),
-                                                  ),
-                                                ),
-                                                submitButtonText: 'Submit',
-                                                commentHint:
-                                                    'Write a review(Optional)',
-                                                onCancelled: () =>
-                                                    print('cancelled'),
-                                                onSubmitted: (response) async {
-                                                  if (response.rating >= 1) {
-                                                    Fluttertoast.showToast(
-                                                        msg:
-                                                            "Thank You For Your Feedback",
-                                                        toastLength:
-                                                            Toast.LENGTH_SHORT,
-                                                        gravity:
-                                                            ToastGravity.BOTTOM,
-                                                        timeInSecForIosWeb: 1,
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        textColor: Colors.black,
-                                                        fontSize: 16.0);
-                                                  }
-
-                                                  int ind = 0;
-
-                                                  for (int j = 0;
-                                                      j < bookings.length;
-                                                      j++) {
-                                                    if (bookings[j] ==
-                                                        data[i]) {
-                                                      ind = j;
-                                                    }
-                                                  }
-
-                                                  Map<String, dynamic> element =
-                                                      bookings[ind];
-
-                                                  element.update(
-                                                      "rating",
-                                                      (value) =>
-                                                          response.rating);
-                                                  element.update(
-                                                      "review",
-                                                      (value) =>
-                                                          response.comment);
-
-                                                  bookings.removeAt(ind);
-                                                  bookings.insert(ind, element);
-
-                                                  Map<String, dynamic> dete = {
-                                                    'bookings': bookings,
-                                                  };
-
-                                                  await CloudFirestoreHelper
-                                                      .cloudFirestoreHelper
-                                                      .updateUsersRecords(
-                                                          id: Global
-                                                                  .currentUser![
-                                                              'email'],
-                                                          data: dete);
-
-                                                  Map<String, dynamic> deta = {
-                                                    'imageURL':
-                                                        Global.currentUser![
-                                                            'imageURL'],
-                                                    'name': Global
-                                                        .currentUser!['name'],
-                                                    'rating': response.rating,
-                                                    'review': response.comment,
-                                                  };
-
-                                                  for (int j = 0;
-                                                      j <
-                                                          categoryServices
-                                                              .length;
-                                                      j++) {
-                                                    if (categoryServices[j]
-                                                            ['name'] ==
-                                                        data[i]
-                                                            ['serviceName']) {
-                                                      serviceMap =
-                                                          categoryServices[j];
-                                                      categoryServices
-                                                          .removeAt(j);
-                                                    }
-                                                  }
-
-                                                  List ratings =
-                                                      serviceMap['ratings'];
-                                                  ratings.add(deta);
-                                                  serviceMap.update('ratings',
-                                                      (value) => ratings);
-                                                  //   print(serviceMap);
-
-                                                  categoryServices
-                                                      .add(serviceMap);
-                                                  //  print(categoryServices);
-
-                                                  Map<String, dynamic>
-                                                      updatedService = {
-                                                    'services':
-                                                        categoryServices,
-                                                  };
-                                                  print(
-                                                      "=============================");
-                                                  log("$updatedService");
-                                                  print(
-                                                      "=============================");
-                                                  await CloudFirestoreHelper
-                                                      .cloudFirestoreHelper
-                                                      .updateService(
-                                                          name: data[i][
-                                                              'serviceCategory'],
-                                                          data: updatedService);
-
-                                                  await CloudFirestoreHelper
-                                                      .cloudFirestoreHelper
-                                                      .fetchAllCategories()
-                                                      .forEach((element) {
-                                                    element.docs
-                                                        .forEach((element) {
-                                                      if (element.id ==
-                                                          data[i][
-                                                              'serviceCategory']) {
-                                                        categoryServices =
-                                                            element['services'];
+                                                    message: const Text(
+                                                      'Tap a star to set your rating',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 15),
+                                                    ),
+                                                    image: Container(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      height: 150,
+                                                      width: 80,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              completed[i]
+                                                                  ['imageURL']),
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    submitButtonText: 'Submit',
+                                                    commentHint:
+                                                        'Write a review(Optional)',
+                                                    onCancelled: () =>
+                                                        print('cancelled'),
+                                                    onSubmitted:
+                                                        (response) async {
+                                                      if (response.rating >=
+                                                          1) {
+                                                        Fluttertoast.showToast(
+                                                            msg:
+                                                                "Thank You For Your Feedback",
+                                                            toastLength: Toast
+                                                                .LENGTH_SHORT,
+                                                            gravity:
+                                                                ToastGravity
+                                                                    .BOTTOM,
+                                                            timeInSecForIosWeb:
+                                                                1,
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                            textColor:
+                                                                Colors.black,
+                                                            fontSize: 16.0);
                                                       }
-                                                    });
-                                                  });
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        )
+
+                                                      int ind = 0;
+
+                                                      for (int j = 0;
+                                                          j < bookings.length;
+                                                          j++) {
+                                                        if (bookings[j] ==
+                                                            data[i]) {
+                                                          ind = j;
+                                                        }
+                                                      }
+
+                                                      Map<String, dynamic>
+                                                          element =
+                                                          bookings[ind];
+
+                                                      element.update(
+                                                          "rating",
+                                                          (value) =>
+                                                              response.rating);
+                                                      element.update(
+                                                          "review",
+                                                          (value) =>
+                                                              response.comment);
+
+                                                      bookings.removeAt(ind);
+                                                      bookings.insert(
+                                                          ind, element);
+
+                                                      Map<String, dynamic>
+                                                          dete = {
+                                                        'bookings': bookings,
+                                                      };
+
+                                                      await CloudFirestoreHelper
+                                                          .cloudFirestoreHelper
+                                                          .updateUsersRecords(
+                                                              id: Global
+                                                                      .currentUser![
+                                                                  'email'],
+                                                              data: dete);
+
+                                                      Map<String, dynamic>
+                                                          deta = {
+                                                        'imageURL':
+                                                            Global.currentUser![
+                                                                'imageURL'],
+                                                        'name':
+                                                            Global.currentUser![
+                                                                'name'],
+                                                        'rating':
+                                                            response.rating,
+                                                        'review':
+                                                            response.comment,
+                                                      };
+
+                                                      for (int j = 0;
+                                                          j <
+                                                              categoryServices
+                                                                  .length;
+                                                          j++) {
+                                                        if (categoryServices[j]
+                                                                ['name'] ==
+                                                            data[i][
+                                                                'serviceName']) {
+                                                          serviceMap =
+                                                              categoryServices[
+                                                                  j];
+                                                          categoryServices
+                                                              .removeAt(j);
+                                                        }
+                                                      }
+
+                                                      List ratings =
+                                                          serviceMap['ratings'];
+                                                      ratings.add(deta);
+                                                      serviceMap.update(
+                                                          'ratings',
+                                                          (value) => ratings);
+                                                      //   print(serviceMap);
+
+                                                      categoryServices
+                                                          .add(serviceMap);
+                                                      //  print(categoryServices);
+
+                                                      Map<String, dynamic>
+                                                          updatedService = {
+                                                        'services':
+                                                            categoryServices,
+                                                      };
+                                                      print(
+                                                          "=============================");
+                                                      log("$updatedService");
+                                                      print(
+                                                          "=============================");
+                                                      await CloudFirestoreHelper
+                                                          .cloudFirestoreHelper
+                                                          .updateService(
+                                                              name: data[i][
+                                                                  'serviceCategory'],
+                                                              data:
+                                                                  updatedService);
+
+                                                      await CloudFirestoreHelper
+                                                          .cloudFirestoreHelper
+                                                          .fetchAllCategories()
+                                                          .forEach((element) {
+                                                        element.docs
+                                                            .forEach((element) {
+                                                          if (element.id ==
+                                                              data[i][
+                                                                  'serviceCategory']) {
+                                                            categoryServices =
+                                                                element[
+                                                                    'services'];
+                                                          }
+                                                        });
+                                                      });
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          : Container()
                                       : Container(),
                                 ],
                               ),

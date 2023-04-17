@@ -132,10 +132,6 @@ class _AllServicesPageState extends State<AllServicesPage> {
                               ],
                             ),
                             const Spacer(),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(CupertinoIcons.bookmark),
-                            ),
                           ],
                         ),
                       ),

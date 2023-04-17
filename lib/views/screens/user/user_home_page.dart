@@ -100,10 +100,6 @@ class _HomePageState extends State<HomePage> {
             },
             icon: const Icon(CupertinoIcons.captions_bubble),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(CupertinoIcons.bookmark),
-          ),
         ],
       ),
       body: SingleChildScrollView(
