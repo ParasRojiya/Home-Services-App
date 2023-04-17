@@ -1068,6 +1068,9 @@ class _HistoryPageState extends State<HistoryPage>
                                                           data: dete);
 
                                                   Map<String, dynamic> deta = {
+                                                    'imageURL':
+                                                        Global.currentUser![
+                                                            'imageURL'],
                                                     'name': Global
                                                         .currentUser!['name'],
                                                     'rating': response.rating,
