@@ -235,7 +235,6 @@ class _HomePageState extends State<HomePage> {
                                       arguments: documents[i]);
                                 },
                                 child: workerContainer(
-                                    hourlyCharge: documents[i]['hourlyCharge'],
                                     name: documents[i]['name'],
                                     imageURL: documents[i]['imageURL'],
                                     number: documents[i]['number'],

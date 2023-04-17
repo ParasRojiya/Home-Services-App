@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 Widget workerContainer({
   required String name,
-  required int hourlyCharge,
   required String imageURL,
   required String service,
   required int number,
