@@ -274,25 +274,32 @@ class _BookServiceState extends State<BookService> {
                         ),
                         const SizedBox(height: 5),
                         SizedBox(
-                          height: 450,
+                          height: 80 * ratings.length.toDouble(),
                           width: Get.width,
                           child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: ratings.length,
                             itemBuilder: (context, i) {
                               return Card(
-                                margin: const EdgeInsets.symmetric(vertical: 3),
+                                margin: const EdgeInsets.symmetric(vertical: 4),
                                 elevation: 2,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 10),
+                                    horizontal: 5,
+                                    vertical: 10,
+                                  ),
                                   child: Row(
                                     children: [
                                       Container(
                                         height: 55,
                                         width: 55,
-                                        decoration: const BoxDecoration(
+                                        decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: Colors.red,
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                ratings[i]['imageURL']),
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(width: 10),
