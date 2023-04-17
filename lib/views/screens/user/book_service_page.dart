@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
-';
+
 
 import '../../../global/button_syle.dart';
 import '../../../global/global.dart';
