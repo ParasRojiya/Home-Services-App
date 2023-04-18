@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 
-
 import '../../../global/button_syle.dart';
 import '../../../global/global.dart';
 import '../../../global/snack_bar.dart';
@@ -75,10 +74,9 @@ class _BookServiceState extends State<BookService> {
                   Container(
                     height: 220,
                     width: Get.width,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(
-                            'https://firebasestorage.googleapis.com/v0/b/home-services-app-dd113.appspot.com/o/workers%2F360_F_307970377_gY9KgeQJs2U88vhV6S02YvwSMOStALVh.jpg?alt=media&token=96adf932-7b9a-4a5b-82bd-44cca81d961f'),
+                        image: NetworkImage(res.currentData['imageURL']),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -271,86 +269,109 @@ class _BookServiceState extends State<BookService> {
                         Text(
                           "Rating & Reviews :",
                           style: GoogleFonts.poppins(
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                         const SizedBox(height: 5),
                         SizedBox(
-                          height: 80 * ratings.length.toDouble(),
+                          height: (ratings.isEmpty)
+                              ? 120
+                              : 80 * ratings.length.toDouble(),
                           width: Get.width,
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: ratings.length,
-                            itemBuilder: (context, i) {
-                              return Card(
-                                margin: const EdgeInsets.symmetric(vertical: 4),
-                                elevation: 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 5,
-                                    vertical: 10,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 55,
-                                        width: 55,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.red,
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                ratings[i]['imageURL']),
-                                          ),
+                          child: (ratings.isNotEmpty)
+                              ? ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: ratings.length,
+                                  itemBuilder: (context, i) {
+                                    return Card(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 4),
+                                      elevation: 2,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                          vertical: 10,
                                         ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                        child: Row(
                                           children: [
-                                            Text(
-                                              '${ratings[i]['name']}',
-                                              style: GoogleFonts.habibi(
-                                                  fontSize: 16),
+                                            Container(
+                                              height: 55,
+                                              width: 55,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.red,
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      ratings[i]['imageURL']),
+                                                ),
+                                              ),
                                             ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              "${ratings[i]['review']}",
-                                              style: GoogleFonts.habibi(
-                                                  fontSize: 14),
-                                            )
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${ratings[i]['name']}',
+                                                    style: GoogleFonts.habibi(
+                                                        fontSize: 16),
+                                                  ),
+                                                  const SizedBox(height: 2),
+                                                  Text(
+                                                    "${ratings[i]['review']}",
+                                                    style: GoogleFonts.habibi(
+                                                        fontSize: 14),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Container(
+                                              height: 30,
+                                              alignment: Alignment.center,
+                                              width: 70,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                  color: Colors.indigo,
+                                                  width: 1.5,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                '⭐ ${ratings[i]['rating']} ',
+                                                style: GoogleFonts.ubuntu(
+                                                    fontSize: 15),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 3),
                                           ],
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
-                                      Container(
-                                        height: 30,
-                                        alignment: Alignment.center,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                            color: Colors.indigo,
-                                            width: 1.5,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          '⭐ ${ratings[i]['rating']} ',
-                                          style:
-                                              GoogleFonts.ubuntu(fontSize: 15),
+                                    );
+                                  },
+                                )
+                              : Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.network(
+                                        'https://firebasestorage.googleapis.com/v0/b/home-services-app-dd113.appspot.com/o/categories%2Fout-of-stock.png?alt=media&token=7bd49209-5d2f-4bee-9e0a-95d84fa8dad3',
+                                        height: 60,
+                                        width: 60,
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        "No Review & Rating are Available",
+                                        style: GoogleFonts.ubuntu(
+                                          fontSize: 16,
                                         ),
                                       ),
-                                      const SizedBox(width: 3),
                                     ],
                                   ),
                                 ),
-                              );
-                            },
-                          ),
                         )
                       ],
                     ),
@@ -359,7 +380,7 @@ class _BookServiceState extends State<BookService> {
               ),
             ),
             Container(
-              height: 50,
+              height: 65,
               width: Get.width,
               color: Colors.white,
               margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),

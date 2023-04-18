@@ -29,10 +29,9 @@ class WorkerDetailsPage extends StatelessWidget {
           Container(
             height: 220,
             width: Get.width,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
-                    'https://firebasestorage.googleapis.com/v0/b/home-services-app-dd113.appspot.com/o/workers%2F360_F_307970377_gY9KgeQJs2U88vhV6S02YvwSMOStALVh.jpg?alt=media&token=96adf932-7b9a-4a5b-82bd-44cca81d961f'),
+                image: NetworkImage(res['imageURL']),
                 fit: BoxFit.cover,
               ),
             ),
