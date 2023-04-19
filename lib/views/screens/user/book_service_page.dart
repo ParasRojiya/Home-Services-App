@@ -35,7 +35,7 @@ class _BookServiceState extends State<BookService> {
   List availableWorkers = [];
   List workerBookings = [];
   List finalWorkers = [];
-  List ratings = [];
+  List? ratings = [];
 
   @override
   void initState() {
@@ -275,14 +275,14 @@ class _BookServiceState extends State<BookService> {
                         ),
                         const SizedBox(height: 5),
                         SizedBox(
-                          height: (ratings.isEmpty)
+                          height: (ratings!.isEmpty)
                               ? 120
-                              : 80 * ratings.length.toDouble(),
+                              : 80 * ratings!.length.toDouble(),
                           width: Get.width,
-                          child: (ratings.isNotEmpty)
+                          child: (ratings!.isNotEmpty)
                               ? ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: ratings.length,
+                                  itemCount: ratings!.length,
                                   itemBuilder: (context, i) {
                                     return Card(
                                       margin: const EdgeInsets.symmetric(
@@ -300,10 +300,9 @@ class _BookServiceState extends State<BookService> {
                                               width: 55,
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
-                                                color: Colors.red,
                                                 image: DecorationImage(
                                                   image: NetworkImage(
-                                                      ratings[i]['imageURL']),
+                                                      ratings![i]['imageURL']),
                                                 ),
                                               ),
                                             ),
@@ -314,13 +313,13 @@ class _BookServiceState extends State<BookService> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    '${ratings[i]['name']}',
+                                                    '${ratings![i]['name']}',
                                                     style: GoogleFonts.habibi(
                                                         fontSize: 16),
                                                   ),
                                                   const SizedBox(height: 2),
                                                   Text(
-                                                    "${ratings[i]['review']}",
+                                                    "${ratings![i]['review']}",
                                                     style: GoogleFonts.habibi(
                                                         fontSize: 14),
                                                   )
@@ -341,7 +340,7 @@ class _BookServiceState extends State<BookService> {
                                                 ),
                                               ),
                                               child: Text(
-                                                '⭐ ${ratings[i]['rating']} ',
+                                                '⭐ ${ratings![i]['rating']} ',
                                                 style: GoogleFonts.ubuntu(
                                                     fontSize: 15),
                                               ),

@@ -1,14 +1,13 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class ServiceReceiptPage extends StatefulWidget {
   const ServiceReceiptPage({Key? key}) : super(key: key);
@@ -27,7 +26,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Map<String, dynamic> res =
-    ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     data = [
       {'key': 'Name', 'value': res['Name']},
@@ -57,7 +56,14 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-
+        leading: Container(),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.home),
+              onPressed: () {
+                Get.offNamedUntil('/user_home_page', (route) => false);
+              }),
+        ],
       ),
       backgroundColor: Colors.grey.shade200,
       body: Center(
@@ -171,7 +177,9 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                       endIndent: 10,
                       height: 1,
                     ),
-                    SizedBox(height: 1,),
+                    SizedBox(
+                      height: 1,
+                    ),
                     const Divider(
                       color: Colors.black,
                       thickness: 1,
@@ -198,7 +206,9 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                     ),
                     const SizedBox(height: 10),
 
-                    SizedBox(height: 10,)
+                    SizedBox(
+                      height: 10,
+                    )
                   ],
                 ),
               ),
@@ -206,8 +216,9 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                 height: 40,
               ),
               GestureDetector(
-                onTap: () async{
-                  await Printing.layoutPdf(onLayout: (format) => generatePDF(res: res));
+                onTap: () async {
+                  await Printing.layoutPdf(
+                      onLayout: (format) => generatePDF(res: res));
 
                   Directory? dir = await getExternalStorageDirectory();
 
@@ -225,11 +236,14 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
                   ),
                   child: Text(
                     'Download Receipt',
-                    style: GoogleFonts.ubuntu(fontSize: 23, color: Colors.white),
+                    style:
+                        GoogleFonts.ubuntu(fontSize: 23, color: Colors.white),
                   ),
                 ),
               ),
-              SizedBox(height: 10,)
+              SizedBox(
+                height: 10,
+              )
             ],
           ),
         ),
@@ -237,8 +251,7 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
     );
   }
 
-  Future<Uint8List> generatePDF ({required var res}) async {
-
+  Future<Uint8List> generatePDF({required var res}) async {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     final image = (await rootBundle.load('assets/images/barcode.png'))
@@ -253,159 +266,150 @@ class _ServiceReceiptPageState extends State<ServiceReceiptPage> {
 
     print(data);
 
-    try{
-      pdf.addPage(
-          pw.Page(
-            pageFormat: PdfPageFormat.a4,
-            build: (pw.Context context) {
-              return pw.Center(
-                // color: PdfColors.amber,
-                // height: height,
-                // width: width,
-                child: pw.Column(
-                  children: [
-                    pw.SizedBox(
-                      height: 20,
-                    ),
-                    // pw.SizedBox(
-                    //   height: 8,
-                    // ),
-                    pw.Container(
-                      height:705,
-                      width: 520,
-                      decoration: pw.BoxDecoration(
-                        borderRadius: pw.BorderRadius.circular(10),
-                        color: PdfColors.white,
+    try {
+      pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Center(
+            // color: PdfColors.amber,
+            // height: height,
+            // width: width,
+            child: pw.Column(
+              children: [
+                pw.SizedBox(
+                  height: 20,
+                ),
+                // pw.SizedBox(
+                //   height: 8,
+                // ),
+                pw.Container(
+                  height: 705,
+                  width: 520,
+                  decoration: pw.BoxDecoration(
+                    borderRadius: pw.BorderRadius.circular(10),
+                    color: PdfColors.white,
+                  ),
+                  child: pw.Column(
+                    children: [
+                      pw.Container(
+                        // color: PdfColors.amber,
+                        // margin: pw.EdgeInsets.only(bottom: 5),
+                        height: 30,
+                        width: 450,
+                        decoration: const pw.BoxDecoration(
+                          borderRadius: pw.BorderRadius.only(
+                            topRight: pw.Radius.circular(28),
+                            topLeft: pw.Radius.circular(28),
+                          ),
+                          color: PdfColors.indigo,
+                        ),
                       ),
-                      child: pw.Column(
-                        children: [
-                          pw.Container(
-                            // color: PdfColors.amber,
-                            // margin: pw.EdgeInsets.only(bottom: 5),
-                            height: 30,
-                            width: 450 ,
-                            decoration: const pw.BoxDecoration(
-                              borderRadius: pw.BorderRadius.only(
-                                topRight: pw.Radius.circular(28),
-                                topLeft: pw.Radius.circular(28),
-                              ),
-                              color: PdfColors.indigo,
-                            ),
+                      pw.SizedBox(height: 20),
+                      pw.Container(
+                          height: 130,
+                          width: width * 0.80,
+                          child: pw.Image(pw.MemoryImage(image),
+                              fit: pw.BoxFit.cover, height: 150, width: 430)
+                          // decoration: pw.BoxDecoration(
+                          //   image: pw.DecorationImage(
+                          //       image: pw.Image(pw.MemoryImage(image)),
+                          //       fit: pw.BoxFit.cover),
+                          // ),
                           ),
-                          pw.SizedBox(
-                              height: 20
-                          ),
-                          pw.Container(
-                              height: 130,
-                              width: width * 0.80,
-                              child: pw.Image(pw.MemoryImage(image),fit: pw.BoxFit.cover,height:150,width:430)
-                            // decoration: pw.BoxDecoration(
-                            //   image: pw.DecorationImage(
-                            //       image: pw.Image(pw.MemoryImage(image)),
-                            //       fit: pw.BoxFit.cover),
-                            // ),
-                          ),
-                          pw.SizedBox(
-                              height: 20
-                          ),
-                          pw.Divider(
-                            color: PdfColors.black,
-                            thickness: 1,
-                            height: 1,
-                            indent: 10,
-                            endIndent: 10,
-                          ),
-                          pw.SizedBox(height: 12),
-                          pw.Expanded(
-                            child: pw.ListView.builder(
-                              // physics: NeverScrollableScrollPhysics(),
-                              itemCount: data.length,
-                              itemBuilder: (context, i) {
-                                return pw.Padding(
-                                  padding: pw.EdgeInsets.all(8.0),
-                                  child: pw.Row(
-                                    children: [
-                                      pw.SizedBox(width: 10),
-                                      pw.Text(
-                                        '${data[i]['key']} :',
-                                        style: pw.TextStyle(
-                                          font: pw.Font.helvetica(),
-                                          fontSize: 24,
-                                        ),
-                                        // style: GoogleFonts.ubuntu(fontSize: 17),
-                                      ),
-                                      pw.Spacer(),
-                                      pw.Text(
-                                        '${data[i]['value']}',
-                                        style: pw.TextStyle(
-                                          font: pw.Font.helvetica(),
-                                          fontSize: 24,
-                                        ),
-                                      ),
-                                      pw.SizedBox(width: 15),
-                                    ],
+                      pw.SizedBox(height: 20),
+                      pw.Divider(
+                        color: PdfColors.black,
+                        thickness: 1,
+                        height: 1,
+                        indent: 10,
+                        endIndent: 10,
+                      ),
+                      pw.SizedBox(height: 12),
+                      pw.Expanded(
+                        child: pw.ListView.builder(
+                          // physics: NeverScrollableScrollPhysics(),
+                          itemCount: data.length,
+                          itemBuilder: (context, i) {
+                            return pw.Padding(
+                              padding: pw.EdgeInsets.all(8.0),
+                              child: pw.Row(
+                                children: [
+                                  pw.SizedBox(width: 10),
+                                  pw.Text(
+                                    '${data[i]['key']} :',
+                                    style: pw.TextStyle(
+                                      font: pw.Font.helvetica(),
+                                      fontSize: 24,
+                                    ),
+                                    // style: GoogleFonts.ubuntu(fontSize: 17),
                                   ),
-                                );
-                              },
+                                  pw.Spacer(),
+                                  pw.Text(
+                                    '${data[i]['value']}',
+                                    style: pw.TextStyle(
+                                      font: pw.Font.helvetica(),
+                                      fontSize: 24,
+                                    ),
+                                  ),
+                                  pw.SizedBox(width: 15),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      pw.SizedBox(height: 5),
+                      pw.Divider(
+                        color: PdfColors.black,
+                        thickness: 1,
+                        indent: 10,
+                        endIndent: 10,
+                        height: 1,
+                      ),
+                      pw.Divider(
+                        color: PdfColors.black,
+                        thickness: 1,
+                        indent: 10,
+                        endIndent: 10,
+                        height: 2.5,
+                      ),
+                      pw.SizedBox(height: 8),
+                      pw.Row(
+                        children: [
+                          pw.SizedBox(width: 10),
+                          pw.Text(
+                            'Total :',
+                            style: pw.TextStyle(
+                              font: pw.Font.helvetica(),
+                              fontSize: 34,
                             ),
                           ),
-                          pw.SizedBox(height: 5),
-                          pw.Divider(
-                            color: PdfColors.black,
-                            thickness: 1,
-                            indent: 10,
-                            endIndent: 10,
-                            height: 1,
+                          pw.Spacer(),
+                          pw.Text(
+                            '${res['Price']} RS.',
+                            style: pw.TextStyle(
+                              font: pw.Font.helvetica(),
+                              fontSize: 34,
+                            ),
                           ),
-                          pw.Divider(
-                            color: PdfColors.black,
-                            thickness: 1,
-                            indent: 10,
-                            endIndent: 10,
-                            height: 2.5,
-                          ),
-                          pw.SizedBox(height: 8),
-                          pw.Row(
-                            children: [
-                              pw.SizedBox(width: 10),
-                              pw.Text(
-                                'Total :',
-                                style: pw.TextStyle(
-                                  font: pw.Font.helvetica(),
-                                  fontSize: 34,
-                                ),
-                              ),
-                              pw.Spacer(),
-                              pw.Text(
-                                '${res['Price']} RS.',
-                                style: pw.TextStyle(
-                                  font: pw.Font.helvetica(),
-                                  fontSize: 34,
-                                ),
-                              ),
-                              pw.SizedBox(width: 10),
-                            ],
-                          ),
-                          pw.SizedBox(height: 10),
+                          pw.SizedBox(width: 10),
                         ],
                       ),
-                    ),
-                    pw.SizedBox(
-                      height: 40,
-                    ),
-
-                  ],
+                      pw.SizedBox(height: 10),
+                    ],
+                  ),
                 ),
-              );
-            },
-          )
-      );
-    }
-    catch(e){
+                pw.SizedBox(
+                  height: 40,
+                ),
+              ],
+            ),
+          );
+        },
+      ));
+    } catch (e) {
       print("Exception:$e");
     }
     return pdf.save();
   }
-
 }
-

@@ -31,10 +31,6 @@ class _ChatPageState extends State<ChatPage> {
         }
       }
     });
-
-    print("======================");
-    print(token);
-    print("======================");
   }
 
   @override
@@ -51,7 +47,7 @@ class _ChatPageState extends State<ChatPage> {
     if (Global.currentUser!['role'] == 'admin') {
       getToken(email: res as String);
     }
-    print(token);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -84,9 +80,6 @@ class _ChatPageState extends State<ChatPage> {
                     }
                   });
                   chat = chatList!['chats'];
-                  print("========================");
-                  // print(chat);
-                  print("========================");
 
                   return ListView.builder(
                     padding:

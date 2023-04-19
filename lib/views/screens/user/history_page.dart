@@ -181,12 +181,12 @@ class _HistoryPageState extends State<HistoryPage>
               bool isOpenPanel = false;
               isOpen.add(isOpenPanel);
             }
-
-            print("===============================");
-            print(pending);
-            print("===============================");
-            print(data);
-            print("===============================");
+            //
+            // print("===============================");
+            // print(pending);
+            // print("===============================");
+            // print(data);
+            // print("===============================");
 
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -489,17 +489,27 @@ class _HistoryPageState extends State<HistoryPage>
                                                         }
                                                       }
 
-                                                      List ratings =
+                                                      print(
+                                                          "++++++++++++++++++++++++++++++++++++++++++++++++");
+                                                      print("$serviceMap");
+                                                      print(
+                                                          "++++++++++++++++++++++++++++++++++++++++++++++++");
+                                                      List ratings = [];
+
+                                                      ratings =
                                                           serviceMap['ratings'];
+                                                      print(
+                                                          "--------------------------");
+                                                      print(ratings);
+                                                      print(
+                                                          "--------------------------");
                                                       ratings.add(deta);
                                                       serviceMap.update(
                                                           'ratings',
                                                           (value) => ratings);
-                                                      //   print(serviceMap);
 
                                                       categoryServices
                                                           .add(serviceMap);
-                                                      //  print(categoryServices);
 
                                                       Map<String, dynamic>
                                                           updatedService = {
@@ -511,6 +521,7 @@ class _HistoryPageState extends State<HistoryPage>
                                                       log("$updatedService");
                                                       print(
                                                           "=============================");
+
                                                       await CloudFirestoreHelper
                                                           .cloudFirestoreHelper
                                                           .updateService(
@@ -519,6 +530,12 @@ class _HistoryPageState extends State<HistoryPage>
                                                               data:
                                                                   updatedService);
 
+                                                      print(
+                                                          "*******************************");
+                                                      print(
+                                                          "$categoryServices");
+                                                      print(
+                                                          "*******************************");
                                                       await CloudFirestoreHelper
                                                           .cloudFirestoreHelper
                                                           .fetchAllCategories()
@@ -639,128 +656,3 @@ class _HistoryPageState extends State<HistoryPage>
     return time;
   }
 }
-
-//
-// Row(
-// mainAxisAlignment: MainAxisAlignment.center,
-// children: [
-// Container(
-// height: 45,
-// alignment: Alignment.center,
-// width: 240,
-// decoration: BoxDecoration(
-// color: Colors.blue.shade300,
-// borderRadius: BorderRadius.circular(15),
-// ),
-// child: Text(
-// 'View Receipt',
-// style: GoogleFonts.habibi(fontSize: 16),
-// ),
-// ),
-// TextButton(
-// child: const Text("Rate & Review"),
-// onPressed: () {
-// showDialog(
-// context: context,
-// barrierDismissible: true,
-// builder: (context) => RatingDialog(
-// initialRating: completed[i]
-// ['rating']
-//     .toDouble(),
-// title: Text(
-// completed[i]['serviceName'],
-// textAlign: TextAlign.center,
-// style: const TextStyle(
-// fontSize: 18,
-// fontWeight: FontWeight.bold,
-// color: Colors.blueAccent),
-// ),
-// message: const Text(
-// 'Tap a star to set your rating',
-// textAlign: TextAlign.center,
-// style: TextStyle(fontSize: 15),
-// ),
-// image: Container(
-// alignment: Alignment.bottomCenter,
-// height: 150,
-// width: 80,
-// decoration: BoxDecoration(
-// image: DecorationImage(
-// image: NetworkImage(
-// completed[i]['imageURL']),
-// fit: BoxFit.fill,
-// ),
-// ),
-// // child: const Text(
-// //   'Home Services',
-// //   textAlign: TextAlign.center,
-// //   style: TextStyle(
-// //     fontSize: 25,
-// //     fontWeight: FontWeight.bold,
-// //   ),
-// // ),
-// ),
-// submitButtonText: 'Submit',
-// commentHint:
-// 'Write a review(Optional)',
-// onCancelled: () =>
-// print('cancelled'),
-// onSubmitted: (response) async {
-// if (response.rating >= 1) {
-// Fluttertoast.showToast(
-// msg:
-// "Thank You For Your Feedback",
-// toastLength:
-// Toast.LENGTH_SHORT,
-// gravity:
-// ToastGravity.BOTTOM,
-// timeInSecForIosWeb: 1,
-// backgroundColor:
-// Colors.white,
-// textColor: Colors.black,
-// fontSize: 16.0);
-// }
-//
-// Map<String, dynamic> data = {
-// 'name':
-// Global.currentUser!['name'],
-// 'rate': response.rating,
-// 'comment': response.comment,
-// };
-//
-// print(
-// "============================");
-// print(data);
-// print(
-// "============================");
-// await CloudFirestoreHelper
-//     .cloudFirestoreHelper
-//     .updateService(
-// name: completed[i]
-// ['serviceCategory'],
-// data: data);
-//
-// // List bookings = Global.currentUser!['bookings'];
-// // bookings.add(serviceData);
-// //
-// // Map<String, dynamic> data = {
-// //   'bookings': bookings,
-// // };
-// //
-// // await CloudFirestoreHelper.cloudFirestoreHelper
-// //     .updateUsersRecords(id: Global.currentUser!['email'], data: data);
-// //
-//
-// // await CloudFirestoreHelper
-// //     .cloudFirestoreHelper
-// //     .updateUsersRecords(
-// //         id: Global.currentUser![
-// //             'email'],
-// //         data: data);
-// },
-// ),
-// );
-// },
-// ),
-// ],
-// ),
