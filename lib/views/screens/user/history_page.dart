@@ -198,10 +198,6 @@ class _HistoryPageState extends State<HistoryPage>
                                       style: GoogleFonts.poppins(fontSize: 13),
                                     ),
                                     const SizedBox(height: 10),
-                                    Text(
-                                      '4.3 ⭐   |    12 Review',
-                                      style: GoogleFonts.poppins(fontSize: 12),
-                                    ),
                                   ],
                                 )
                               ],

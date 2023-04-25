@@ -7,6 +7,7 @@ import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/admin/add_new_service.dart';
 import 'package:home_services_app/views/screens/admin/add_worker.dart';
 import 'package:home_services_app/views/screens/admin/admin_home_page.dart';
+import 'package:home_services_app/views/screens/admin/all_bookings.dart';
 import 'package:home_services_app/views/screens/admin/all_categories_page.dart';
 import 'package:home_services_app/views/screens/admin/all_services_page.dart';
 import 'package:home_services_app/views/screens/admin/all_workers_page.dart';
@@ -94,6 +95,7 @@ void main() async {
         GetPage(name: '/chats_page', page: () => const ChatsPage()),
         GetPage(name: '/edit_worker', page: () => const EditWorker()),
         GetPage(name: '/rating_page', page: () => const ViewRatingPage()),
+        GetPage(name: '/all_bookings', page: () => const AllBookings()),
 
         //USER SCREENS
         GetPage(name: '/user_home_page', page: () => const UserHomeScreen()),

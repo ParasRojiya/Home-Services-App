@@ -93,7 +93,7 @@ class _AccountPageState extends State<AccountPage> {
         actions: [
           IconButton(
             onPressed: () {
-              _launchUrl();
+              _launchUrl(url: 'https://flutter.dev');
             },
             icon: const Icon(
               CupertinoIcons.info,
@@ -173,14 +173,19 @@ class _AccountPageState extends State<AccountPage> {
             accountOptionContainer(
               title: "Privacy And Policy",
               onTap: () {
-                Get.toNamed('/privacy_policy_page');
+                // Get.toNamed('/privacy_policy_page');
+                _launchUrl(
+                    url: "https://ourpocily.blogspot.com/2023/03/policy.html");
               },
               icon: CupertinoIcons.shield_lefthalf_fill,
             ),
             accountOptionContainer(
               title: "Terms & Condition",
               onTap: () {
-                Get.toNamed('/terms_condition_page');
+                //Get.toNamed('/terms_condition_page');
+                _launchUrl(
+                    url:
+                        "https://flutterninjas.blogspot.com/2022/12/terms-and-conditions.html");
               },
               icon: CupertinoIcons.doc_on_clipboard,
             ),
@@ -397,8 +402,8 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Future<void> _launchUrl() async {
-    final Uri _url = Uri.parse('https://flutter.dev');
+  Future<void> _launchUrl({required String url}) async {
+    final Uri _url = Uri.parse(url);
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
     }

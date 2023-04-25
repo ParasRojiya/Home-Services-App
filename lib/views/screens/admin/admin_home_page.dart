@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +13,6 @@ import '../../../helper/cloud_firestore_helper.dart';
 import '../../../widgets/category_container.dart';
 import '../../../widgets/nav_bar_item.dart';
 import '../../../widgets/worker_container.dart';
-import 'chats_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -94,12 +94,12 @@ class _HomePageState extends State<HomePage> {
             },
             icon: const Icon(Icons.power_settings_new),
           ),
-          // IconButton(
-          //   onPressed: () {
-          //     Get.toNamed('/chats_page');
-          //   },
-          //   icon: const Icon(CupertinoIcons.captions_bubble),
-          // ),
+          IconButton(
+            onPressed: () {
+              Get.toNamed('/chats_page');
+            },
+            icon: const Icon(CupertinoIcons.captions_bubble),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -437,6 +437,231 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class AdminDashboard extends StatefulWidget {
+  const AdminDashboard({Key? key}) : super(key: key);
+
+  @override
+  State<AdminDashboard> createState() => _AdminDashboardState();
+}
+
+class _AdminDashboardState extends State<AdminDashboard> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Welcome 👋',
+              style:
+                  GoogleFonts.habibi(fontSize: 15, color: Colors.grey.shade500),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              (Global.currentUser != null)
+                  ? '${Global.currentUser!['name']}'
+                  : 'User',
+              style: GoogleFonts.habibi(fontSize: 18, color: Colors.black),
+            )
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('isLoggedIn', false);
+              prefs.remove('isAdmin');
+              await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+
+              Get.offNamedUntil("/login_page", (route) => false);
+            },
+            icon: const Icon(Icons.power_settings_new),
+          ),
+          IconButton(
+            onPressed: () {
+              Get.toNamed('/chats_page');
+            },
+            icon: const Icon(CupertinoIcons.captions_bubble),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Get.toNamed('/all_categories_page');
+                    },
+                    child: Container(
+                      height: 130,
+                      width: Get.width * 0.45,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.black)),
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: CloudFirestoreHelper.cloudFirestoreHelper
+                            .fetchAllCategories(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            QuerySnapshot? document = snapshot.data;
+                            List<QueryDocumentSnapshot> documents =
+                                document!.docs;
+
+                            return Text(
+                              "Total Categories:- ${documents.length}",
+                              style: GoogleFonts.poppins(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                "Error: ${snapshot.error}",
+                                style: GoogleFonts.poppins(),
+                              ),
+                            );
+                          }
+
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: (){
+                      Get.toNamed('/all_workers');
+                    },
+                    child: Container(
+                      height: 130,
+                      width: Get.width * 0.45,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.black)),
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: CloudFirestoreHelper.cloudFirestoreHelper
+                            .fetchAllWorker(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            QuerySnapshot? document = snapshot.data;
+                            List<QueryDocumentSnapshot> documents =
+                                document!.docs;
+
+                            return Text("Total Workers:- ${documents.length}");
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                "Error: ${snapshot.error}",
+                                style: GoogleFonts.poppins(),
+                              ),
+                            );
+                          }
+
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Get.toNamed('/users_list');
+                    },
+                    child: Container(
+                      height: 130,
+                      width: Get.width * 0.45,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.black)),
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: CloudFirestoreHelper.cloudFirestoreHelper
+                            .selectUsersRecords(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            QuerySnapshot? document = snapshot.data;
+                            List<QueryDocumentSnapshot> documents =
+                                document!.docs;
+
+                            return Text(
+                              "Total Users:- ${documents.length}",
+                              style: GoogleFonts.poppins(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                "Error: ${snapshot.error}",
+                                style: GoogleFonts.poppins(),
+                              ),
+                            );
+                          }
+
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: (){
+                      Get.toNamed('/all_bookings');
+                    },
+                    child: Container(
+                      height: 130,
+                      width: Get.width * 0.45,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.black)),
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: CloudFirestoreHelper.cloudFirestoreHelper
+                            .fetchAllBookings(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            QuerySnapshot? document = snapshot.data;
+                            List<QueryDocumentSnapshot> documents =
+                                document!.docs;
+
+                            return Text("Total Bookings:- ${documents.length}");
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                "Error: ${snapshot.error}",
+                                style: GoogleFonts.poppins(),
+                              ),
+                            );
+                          }
+
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
 
@@ -454,15 +679,15 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   }
 
   List<Widget> screens = [
+    const AdminDashboard(),
     const HomePage(),
-    const ChatsPage(),
     const AccountPage(),
   ];
 
   List<PersistentBottomNavBarItem> navBarItems() {
     return [
+      bottomNavBarItem(icon: const Icon(Icons.dashboard), title: "Dashboard"),
       bottomNavBarItem(icon: const Icon(Icons.home), title: "Home"),
-      bottomNavBarItem(icon: const Icon(Icons.chat), title: "Chats"),
       bottomNavBarItem(
           icon: const Icon(Icons.account_circle), title: "Account"),
     ];

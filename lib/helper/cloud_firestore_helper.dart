@@ -79,16 +79,20 @@ class CloudFirestoreHelper {
 
   //BOOKINGS COLLECTION HELPER
 
-  // connectionWithBookingsCollection() {
-  //   bookingsRef = firebaseFirestore.collection('bookings');
-  // }
+  connectionWithBookingsCollection() {
+    bookingsRef = firebaseFirestore.collection('bookings');
+  }
 
-  // Future<void> addServiceInBookingCollection(
-  //     {required Map<String, dynamic> data, required String userEmail}) async {
-  //   connectionWithBookingsCollection();
-  //   await bookingsRef.doc(userEmail).update(data);
-  // }
-  //
+  Future<void> addServiceInBookingCollection(
+      {required Map<String, dynamic> data}) async {
+    connectionWithBookingsCollection();
+    await bookingsRef.add(data);
+  }
+
+  fetchAllBookings() {
+    connectionWithBookingsCollection();
+    return bookingsRef.snapshots();
+  }
 
   //USERS COLLECTION HELPER
   connectionWithUsersCollection() {
@@ -149,7 +153,7 @@ class CloudFirestoreHelper {
   }
 
   fetchShoppingRecords() {
-    connectionWithChatCollection();
+    connectionWithShoppingCollection();
     return shoppingRef.snapshots();
   }
 }

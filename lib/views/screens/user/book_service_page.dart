@@ -486,6 +486,9 @@ class _BookServiceState extends State<BookService> {
       'WorkerEmail': availableWorkers[workerIndex]['email'],
     };
 
+    await CloudFirestoreHelper.cloudFirestoreHelper
+        .addServiceInBookingCollection(data: serviceData);
+
     await LocalNotificationHelper.localNotificationHelper.sendSimpleNotification(
         title: res.currentData['name'],
         msg:
