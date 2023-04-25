@@ -27,6 +27,7 @@ import 'package:home_services_app/views/screens/user/book_category.dart';
 import 'package:home_services_app/views/screens/user/book_service_page.dart';
 import 'package:home_services_app/views/screens/user/history_page.dart';
 import 'package:home_services_app/views/screens/user/service_receipt_page.dart';
+import 'package:home_services_app/views/screens/user/shop_page.dart';
 import 'package:home_services_app/views/screens/user/worker_details_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'global/global.dart';
@@ -98,6 +99,7 @@ void main() async {
         GetPage(name: '/worker_details', page: () => const WorkerDetailsPage()),
         GetPage(name: '/book_category', page: () => const BookCategory()),
         GetPage(name: '/book_service', page: () => const BookService()),
+        GetPage(name: '/shop_page', page: () => const ShopPage()),
         GetPage(name: '/add_card', page: () => const AddCardPage()),
         GetPage(
             name: '/service_receipt', page: () => const ServiceReceiptPage()),

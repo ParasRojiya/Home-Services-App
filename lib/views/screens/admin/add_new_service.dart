@@ -200,7 +200,7 @@ class _AddNewServiceState extends State<AddNewService> {
                         name: "Service Description", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
                 Container(
-                  width: Get.width * 0.90,
+                  width: Get.width * 0.80,
                   margin:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ElevatedButton(

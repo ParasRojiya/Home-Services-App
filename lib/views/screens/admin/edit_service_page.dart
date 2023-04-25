@@ -211,7 +211,7 @@ class _EditServiceState extends State<EditService> {
                         name: "Service Description", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
                 Container(
-                  width: Get.width * 0.90,
+                  width: Get.width * 0.85,
                   margin:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ElevatedButton(
@@ -219,7 +219,7 @@ class _EditServiceState extends State<EditService> {
                       updateService();
                     },
                     style: elevatedButtonStyle(),
-                    child: const Text("Edit Service"),
+                    child: const Text("Update Service"),
                   ),
                 ),
               ],

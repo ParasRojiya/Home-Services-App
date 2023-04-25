@@ -263,7 +263,7 @@ class _AddWorkerState extends State<AddWorker> {
                 Row(
                   children: [
                     Container(
-                      width: Get.width * 0.90,
+                      width: Get.width * 0.85,
                       margin: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       child: ElevatedButton(
@@ -292,8 +292,8 @@ class _AddWorkerState extends State<AddWorker> {
 
                             await CloudFirestoreHelper.cloudFirestoreHelper
                                 .addWorker(
-                                    name:
-                                        workerEmail!, //serviceCategoryController.dropDownVal!,
+                                    name: workerEmail!,
+                                    //serviceCategoryController.dropDownVal!,
                                     data: data);
 
                             successSnackBar(

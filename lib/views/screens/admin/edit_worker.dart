@@ -25,9 +25,9 @@ class _EditWorkerState extends State<EditWorker> {
   final TextEditingController workerNameController = TextEditingController();
   final TextEditingController workerEmailController = TextEditingController();
   final TextEditingController workerMobileNumberController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController workerHourlyPriceController =
-      TextEditingController();
+  TextEditingController();
 
   String? workerName;
   String? workerEmail;
@@ -57,7 +57,10 @@ class _EditWorkerState extends State<EditWorker> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic res = ModalRoute.of(context)!.settings.arguments;
+    dynamic res = ModalRoute
+        .of(context)!
+        .settings
+        .arguments;
 
     workerName = res['name'];
     workerNameController.text = res['name'];
@@ -100,15 +103,16 @@ class _EditWorkerState extends State<EditWorker> {
               children: [
                 const SizedBox(height: 12),
                 GetBuilder(
-                  builder: (WorkerController controller) => CircleAvatar(
-                    radius: 70,
-                    backgroundImage: (res != null)
-                        ? NetworkImage(res['imageURL'])
-                        : (controller.image != null)
-                        ? FileImage(controller.image!) as ImageProvider
-                        : null,
-                    backgroundColor: Colors.grey,
-                  ),
+                  builder: (WorkerController controller) =>
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundImage: (res != null)
+                            ? NetworkImage(res['imageURL'])
+                            : (controller.image != null)
+                            ? FileImage(controller.image!) as ImageProvider
+                            : null,
+                        backgroundColor: Colors.grey,
+                      ),
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton(
@@ -171,7 +175,8 @@ class _EditWorkerState extends State<EditWorker> {
                 const SizedBox(height: 12),
                 TextFormField(
                     controller: workerMobileNumberController,
-                    validator: (val) => (val!.isEmpty)
+                    validator: (val) =>
+                    (val!.isEmpty)
                         ? "Please enter worker mobile number"
                         : (val!.length != 10)
                         ? "Mobile number length must by 10 numbers"
@@ -248,20 +253,22 @@ class _EditWorkerState extends State<EditWorker> {
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                    controller: workerHourlyPriceController,
-                    validator: (val) => (val!.isEmpty)
-                        ? "Please enter worker hourly price"
-                        : null,
-                    onSaved: (val) {
-                      workerHourlyPrice = int.parse(val!);
-                    },
-                    decoration: textFieldDecoration(
-                        name: "Hourly Price", icon: Icons.eighteen_mp)),
+                  controller: workerHourlyPriceController,
+                  validator: (val) =>
+                  (val!.isEmpty)
+                      ? "Please enter worker hourly price"
+                      : null,
+                  onSaved: (val) {
+                    workerHourlyPrice = int.parse(val!);
+                  },
+                  decoration: textFieldDecoration(
+                      name: "Hourly Price", icon: Icons.eighteen_mp),
+                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
                     Container(
-                      width: Get.width * 0.90,
+                      width: Get.width * 0.85,
                       margin: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       child: ElevatedButton(
@@ -290,8 +297,8 @@ class _EditWorkerState extends State<EditWorker> {
 
                             await CloudFirestoreHelper.cloudFirestoreHelper
                                 .addWorker(
-                                name:
-                                workerEmail!, //serviceCategoryController.dropDownVal!,
+                                name: workerEmail!,
+                                //serviceCategoryController.dropDownVal!,
                                 data: data);
 
                             successSnackBar(
@@ -320,7 +327,7 @@ class _EditWorkerState extends State<EditWorker> {
                           }
                         },
                         style: elevatedButtonStyle(),
-                        child: const Text("Add Worker"),
+                        child: const Text("Update Worker"),
                       ),
                     ),
                   ],

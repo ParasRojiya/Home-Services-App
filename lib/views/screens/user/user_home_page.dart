@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:home_services_app/views/screens/user/history_page.dart';
+import 'package:home_services_app/views/screens/user/shop_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -411,6 +412,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   List<Widget> screens = [
     const HomePage(),
     const HistoryPage(),
+    const ShopPage(),
     const AccountPage(),
   ];
 
@@ -419,6 +421,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       bottomNavBarItem(icon: const Icon(CupertinoIcons.home), title: "Home"),
       bottomNavBarItem(
           icon: const Icon(CupertinoIcons.calendar), title: "Booking"),
+      bottomNavBarItem(
+          icon: const Icon(CupertinoIcons.shopping_cart), title: "Shopping"),
       bottomNavBarItem(
           icon: const Icon(CupertinoIcons.person), title: "Profile"),
     ];
