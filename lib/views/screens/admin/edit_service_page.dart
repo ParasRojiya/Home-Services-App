@@ -317,7 +317,7 @@ class _EditServiceState extends State<EditService> {
       serviceDuration = null;
       serviceDescription = null;
 
-      Get.offAndToNamed('/all_categories_page');
+      Get.offNamedUntil("/all_categories_page", (route) => false);
     }
   }
 }

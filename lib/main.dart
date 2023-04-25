@@ -29,7 +29,9 @@ import 'package:home_services_app/views/screens/user/history_page.dart';
 import 'package:home_services_app/views/screens/user/service_receipt_page.dart';
 import 'package:home_services_app/views/screens/user/shop_page.dart';
 import 'package:home_services_app/views/screens/user/worker_details_page.dart';
+import 'package:home_services_app/views/screens/worker/worker_home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'global/global.dart';
 import 'helper/local_notification_helper.dart';
 import 'views/screens/user/user_home_page.dart';
@@ -103,6 +105,9 @@ void main() async {
         GetPage(name: '/add_card', page: () => const AddCardPage()),
         GetPage(
             name: '/service_receipt', page: () => const ServiceReceiptPage()),
+
+        //WORKER SCREENS
+        GetPage(name: '/worker_home_page', page: () => const WorkerHomePage()),
       ],
     ),
   );

@@ -258,7 +258,7 @@ class _AddNewServiceState extends State<AddNewService> {
       serviceDuration = null;
       serviceDescription = null;
 
-      Get.offAndToNamed('/all_categories_page');
+      Get.offNamedUntil("/all_categories_page", (route) => false);
     } else if (serviceCategoryController.image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

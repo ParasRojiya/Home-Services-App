@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,8 @@ import '../../../global/snack_bar.dart';
 import '../../../global/text_field_decoration.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../helper/cloud_storage_helper.dart';
+import '../../../helper/fcm_helper.dart';
+import '../../../helper/firebase_auth_helper.dart';
 
 class AddWorker extends StatefulWidget {
   const AddWorker({Key? key}) : super(key: key);
@@ -263,7 +266,7 @@ class _AddWorkerState extends State<AddWorker> {
                 Row(
                   children: [
                     Container(
-                      width: Get.width * 0.85,
+                      width: Get.width * 0.90,
                       margin: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       child: ElevatedButton(
@@ -272,45 +275,73 @@ class _AddWorkerState extends State<AddWorker> {
                               workerController.image != null) {
                             formKey.currentState!.save();
 
-                            await CloudStorageHelper.cloudStorageHelper
-                                .storeWorkerImage(
-                                    image: workerController.image!,
-                                    name: workerName!);
+                            User? user = await FireBaseAuthHelper
+                                .fireBaseAuthHelper
+                                .signUp(
+                                    email: workerEmail!, password: "12345678");
 
-                            Map<String, dynamic> data = {
-                              'name': workerName!,
-                              'email': workerEmail,
-                              'number': workerMobileNumber,
-                              'hourlyCharge': workerHourlyPrice,
-                              'imageURL': Global.imageURL,
-                              'gender': gender,
-                              'category': category,
-                              'ratings': [],
-                              'reviews': [],
-                              'bookings': [],
-                            };
+                            if (user != null) {
+                              await CloudFirestoreHelper.cloudFirestoreHelper
+                                  .insertDataInUsersCollection(
+                                data: {
+                                  "name": workerName,
+                                  "email": workerEmail,
+                                  "role": "worker",
+                                  "password": "12345678",
+                                  "isActive": true,
+                                  "imageURL": Global.imageURL,
+                                  'hourlyCharge': workerHourlyPrice,
+                                  "DOB": null,
+                                  'gender': gender,
+                                  'category': category,
+                                  "contact": workerMobileNumber,
+                                  "address": null,
+                                  "token": await FCMHelper.fcmHelper.getToken(),
+                                  "comment": "",
+                                  "rate": 0.toDouble(),
+                                },
+                              );
 
-                            await CloudFirestoreHelper.cloudFirestoreHelper
-                                .addWorker(
-                                    name: workerEmail!,
-                                    //serviceCategoryController.dropDownVal!,
-                                    data: data);
+                              await CloudFirestoreHelper.cloudFirestoreHelper
+                                  .insertChatRecords(
+                                      id: workerEmail!, data: {"chats": []});
 
-                            successSnackBar(
-                                msg: "Worker successfully added in database",
-                                context: context);
+                              await CloudStorageHelper.cloudStorageHelper
+                                  .storeWorkerImage(
+                                      image: workerController.image!,
+                                      name: workerName!);
 
-                            workerNameController.clear();
-                            workerEmailController.clear();
-                            workerMobileNumberController.clear();
-                            workerHourlyPriceController.clear();
+                              Map<String, dynamic> data = {
+                                'name': workerName!,
+                                'email': workerEmail,
+                                'number': workerMobileNumber,
+                                'hourlyCharge': workerHourlyPrice,
+                                'imageURL': Global.imageURL,
+                                'gender': gender,
+                                'category': category,
+                                'bookings': [],
+                              };
 
-                            workerName = null;
-                            workerEmail = null;
-                            workerMobileNumber = null;
-                            workerHourlyPrice = null;
+                              await CloudFirestoreHelper.cloudFirestoreHelper
+                                  .addWorker(name: workerEmail!, data: data);
 
-                            Get.offAndToNamed("all_workers");
+                              successSnackBar(
+                                  msg: "Worker successfully added in database",
+                                  context: context);
+
+                              workerNameController.clear();
+                              workerEmailController.clear();
+                              workerMobileNumberController.clear();
+                              workerHourlyPriceController.clear();
+
+                              workerName = null;
+                              workerEmail = null;
+                              workerMobileNumber = null;
+                              workerHourlyPrice = null;
+
+                              Get.offNamedUntil(
+                                  "/all_workers", (route) => false);
+                            }
                           } else if (workerController.image == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

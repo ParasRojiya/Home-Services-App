@@ -25,9 +25,9 @@ class _EditWorkerState extends State<EditWorker> {
   final TextEditingController workerNameController = TextEditingController();
   final TextEditingController workerEmailController = TextEditingController();
   final TextEditingController workerMobileNumberController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController workerHourlyPriceController =
-  TextEditingController();
+      TextEditingController();
 
   String? workerName;
   String? workerEmail;
@@ -44,10 +44,16 @@ class _EditWorkerState extends State<EditWorker> {
     "Cleaning",
     "Electronics",
     "Furniture",
+    "Gardening",
     "Kitchen Appliances",
     "Painting",
+    "Pest Control",
     "Plumbing",
+    "Renovation",
     "Shifting",
+    "Solar Consultant",
+    "Vehicles",
+    "More",
   ];
 
   File? image;
@@ -57,10 +63,7 @@ class _EditWorkerState extends State<EditWorker> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic res = ModalRoute
-        .of(context)!
-        .settings
-        .arguments;
+    dynamic res = ModalRoute.of(context)!.settings.arguments;
 
     workerName = res['name'];
     workerNameController.text = res['name'];
@@ -103,16 +106,15 @@ class _EditWorkerState extends State<EditWorker> {
               children: [
                 const SizedBox(height: 12),
                 GetBuilder(
-                  builder: (WorkerController controller) =>
-                      CircleAvatar(
-                        radius: 70,
-                        backgroundImage: (res != null)
-                            ? NetworkImage(res['imageURL'])
-                            : (controller.image != null)
+                  builder: (WorkerController controller) => CircleAvatar(
+                    radius: 70,
+                    backgroundImage: (res != null)
+                        ? NetworkImage(res['imageURL'])
+                        : (controller.image != null)
                             ? FileImage(controller.image!) as ImageProvider
                             : null,
-                        backgroundColor: Colors.grey,
-                      ),
+                    backgroundColor: Colors.grey,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton(
@@ -155,7 +157,7 @@ class _EditWorkerState extends State<EditWorker> {
                 TextFormField(
                     controller: workerNameController,
                     validator: (val) =>
-                    (val!.isEmpty) ? "Please enter worker name" : null,
+                        (val!.isEmpty) ? "Please enter worker name" : null,
                     onSaved: (val) {
                       workerName = val;
                     },
@@ -165,7 +167,7 @@ class _EditWorkerState extends State<EditWorker> {
                 TextFormField(
                     controller: workerEmailController,
                     validator: (val) =>
-                    (val!.isEmpty) ? "Please enter worker Email" : null,
+                        (val!.isEmpty) ? "Please enter worker Email" : null,
                     onSaved: (val) {
                       workerEmail = val!;
                     },
@@ -175,12 +177,11 @@ class _EditWorkerState extends State<EditWorker> {
                 const SizedBox(height: 12),
                 TextFormField(
                     controller: workerMobileNumberController,
-                    validator: (val) =>
-                    (val!.isEmpty)
+                    validator: (val) => (val!.isEmpty)
                         ? "Please enter worker mobile number"
                         : (val!.length != 10)
-                        ? "Mobile number length must by 10 numbers"
-                        : null,
+                            ? "Mobile number length must by 10 numbers"
+                            : null,
                     onSaved: (val) {
                       workerMobileNumber = int.parse(val!);
                     },
@@ -253,56 +254,58 @@ class _EditWorkerState extends State<EditWorker> {
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                  controller: workerHourlyPriceController,
-                  validator: (val) =>
-                  (val!.isEmpty)
-                      ? "Please enter worker hourly price"
-                      : null,
-                  onSaved: (val) {
-                    workerHourlyPrice = int.parse(val!);
-                  },
-                  decoration: textFieldDecoration(
-                      name: "Hourly Price", icon: Icons.eighteen_mp),
-                ),
+                    controller: workerHourlyPriceController,
+                    validator: (val) => (val!.isEmpty)
+                        ? "Please enter worker hourly price"
+                        : null,
+                    onSaved: (val) {
+                      workerHourlyPrice = int.parse(val!);
+                    },
+                    decoration: textFieldDecoration(
+                        name: "Hourly Price", icon: Icons.eighteen_mp)),
                 const SizedBox(height: 12),
                 Row(
                   children: [
                     Container(
-                      width: Get.width * 0.85,
+                      width: Get.width * 0.90,
                       margin: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       child: ElevatedButton(
                         onPressed: () async {
-                          if (formKey.currentState!.validate() &&
-                              workerController.image != null) {
+                          if (formKey.currentState!.validate()) {
                             formKey.currentState!.save();
 
-                            await CloudStorageHelper.cloudStorageHelper
-                                .storeWorkerImage(
-                                image: workerController.image!,
-                                name: workerName!);
+                            if (workerController.image != null) {
+                              await CloudStorageHelper.cloudStorageHelper
+                                  .storeWorkerImage(
+                                      image: workerController.image!,
+                                      name: workerName!);
+                            }
 
                             Map<String, dynamic> data = {
                               'name': workerName!,
                               'email': workerEmail,
                               'number': workerMobileNumber,
                               'hourlyCharge': workerHourlyPrice,
-                              'imageURL': Global.imageURL,
+                              'imageURL': (workerController.image != null)
+                                  ? Global.imageURL
+                                  : res['imageURL'],
                               'gender': gender,
                               'category': category,
-                              'ratings': [],
-                              'reviews': [],
-                              'bookings': [],
                             };
 
                             await CloudFirestoreHelper.cloudFirestoreHelper
-                                .addWorker(
-                                name: workerEmail!,
-                                //serviceCategoryController.dropDownVal!,
-                                data: data);
+                                .updateWorker(
+                                    name:
+                                        workerEmail!, //serviceCategoryController.dropDownVal!,
+                                    data: data);
+
+                            await CloudFirestoreHelper.cloudFirestoreHelper
+                                .updateUsersRecords(
+                                    id: workerEmail!, data: data);
 
                             successSnackBar(
-                                msg: "Worker successfully added in database",
+                                msg: "Worker successfully updated...",
                                 context: context);
 
                             workerNameController.clear();
@@ -315,15 +318,7 @@ class _EditWorkerState extends State<EditWorker> {
                             workerMobileNumber = null;
                             workerHourlyPrice = null;
 
-                            Get.offAndToNamed("all_workers");
-                          } else if (workerController.image == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Please add image"),
-                                backgroundColor: Colors.red,
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
+                            Get.offNamedUntil("/all_workers", (route) => false);
                           }
                         },
                         style: elevatedButtonStyle(),

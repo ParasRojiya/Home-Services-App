@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
-import 'package:home_services_app/views/screens/admin/users_list.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +12,7 @@ import '../../../helper/cloud_firestore_helper.dart';
 import '../../../widgets/category_container.dart';
 import '../../../widgets/nav_bar_item.dart';
 import '../../../widgets/worker_container.dart';
+import 'chats_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -90,16 +89,17 @@ class _HomePageState extends State<HomePage> {
               await prefs.setBool('isLoggedIn', false);
               prefs.remove('isAdmin');
               await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-              Get.offAndToNamed("/login_page");
+
+              Get.offNamedUntil("/login_page", (route) => false);
             },
             icon: const Icon(Icons.power_settings_new),
           ),
-          IconButton(
-            onPressed: () {
-              Get.toNamed('/chats_page');
-            },
-            icon: const Icon(CupertinoIcons.captions_bubble),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     Get.toNamed('/chats_page');
+          //   },
+          //   icon: const Icon(CupertinoIcons.captions_bubble),
+          // ),
         ],
       ),
       body: SingleChildScrollView(
@@ -231,8 +231,11 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, i) {
                               return InkWell(
                                 onTap: () {
-                                  Get.toNamed('/worker_details',
-                                      arguments: documents[i]);
+                                  (Global.isAdmin)
+                                      ? Get.toNamed('/edit_worker',
+                                          arguments: documents[i])
+                                      : Get.toNamed('/worker_details',
+                                          arguments: documents[i]);
                                 },
                                 child: workerContainer(
                                     name: documents[i]['name'],
@@ -452,14 +455,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   List<Widget> screens = [
     const HomePage(),
-    const UsersList(),
+    const ChatsPage(),
     const AccountPage(),
   ];
 
   List<PersistentBottomNavBarItem> navBarItems() {
     return [
       bottomNavBarItem(icon: const Icon(Icons.home), title: "Home"),
-      bottomNavBarItem(icon: const Icon(Icons.list), title: "User List"),
+      bottomNavBarItem(icon: const Icon(Icons.chat), title: "Chats"),
       bottomNavBarItem(
           icon: const Icon(Icons.account_circle), title: "Account"),
     ];

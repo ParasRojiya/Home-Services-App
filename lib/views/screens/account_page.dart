@@ -11,7 +11,6 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../global/global.dart';
-import '../../global/text_field_decoration.dart';
 import '../../helper/firebase_auth_helper.dart';
 import '../../helper/local_notification_helper.dart';
 import '../../utils/account_option_container.dart';
@@ -265,6 +264,14 @@ class _AccountPageState extends State<AccountPage> {
                     icon: Icons.sentiment_neutral_rounded,
                   )
                 : Container(),
+            (Global.isAdmin)
+                ? accountOptionContainer(
+                    title: "View Users",
+                    onTap: () {
+                      Get.toNamed('/users_list');
+                    },
+                    icon: Icons.list)
+                : Container(),
             accountOptionContainer(
               title: "Help",
               onTap: () {
@@ -390,8 +397,6 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  // final _dialog = ;
-
   Future<void> _launchUrl() async {
     final Uri _url = Uri.parse('https://flutter.dev');
     if (!await launchUrl(_url)) {
@@ -399,82 +404,83 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  editProfile() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          profileNameController.text = Global.currentUser!['name'];
-          profileEmailController.text = Global.currentUser!['email'];
-          return AlertDialog(
-            title: Text(
-              "Edit Your Profile",
-              style: GoogleFonts.poppins(),
-            ),
-            content: Form(
-              key: editProfileFormKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: profileNameController,
-                    decoration: textFieldDecoration(
-                        icon: Icons.person, name: "User Name"),
-                    onSaved: (val) {
-                      profileName = val;
-                    },
-                    validator: (val) =>
-                        (val!.isEmpty) ? "Please add user name" : null,
-                  ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    controller: profileEmailController,
-                    decoration: textFieldDecoration(
-                        icon: Icons.mail, name: "User Email"),
-                    onSaved: (val) {
-                      profileEmail = val;
-                    },
-                    validator: (val) =>
-                        (val!.isEmpty) ? "Please add user email" : null,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              OutlinedButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: Text(
-                  "Cancel",
-                  style: GoogleFonts.poppins(),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (editProfileFormKey.currentState!.validate()) {
-                    editProfileFormKey.currentState!.save();
-
-                    Map<String, dynamic> data = {
-                      'name': profileName,
-                      'email': profileEmail,
-                    };
-
-                    await CloudFirestoreHelper.cloudFirestoreHelper
-                        .updateUsersRecords(
-                            id: Global.currentUser!['email'], data: data);
-                    await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-                    Get.offAndToNamed('/login_page');
-                  }
-                },
-                child: Text(
-                  "Edit Profile",
-                  style: GoogleFonts.poppins(),
-                ),
-              ),
-            ],
-          );
-        });
-  }
+  // editProfile() {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         profileNameController.text = Global.currentUser!['name'];
+  //         profileEmailController.text = Global.currentUser!['email'];
+  //         return AlertDialog(
+  //           title: Text(
+  //             "Edit Your Profile",
+  //             style: GoogleFonts.poppins(),
+  //           ),
+  //           content: Form(
+  //             key: editProfileFormKey,
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 TextFormField(
+  //                   controller: profileNameController,
+  //                   decoration: textFieldDecoration(
+  //                       icon: Icons.person, name: "User Name"),
+  //                   onSaved: (val) {
+  //                     profileName = val;
+  //                   },
+  //                   validator: (val) =>
+  //                       (val!.isEmpty) ? "Please add user name" : null,
+  //                 ),
+  //                 const SizedBox(height: 10),
+  //                 TextFormField(
+  //                   controller: profileEmailController,
+  //                   decoration: textFieldDecoration(
+  //                       icon: Icons.mail, name: "User Email"),
+  //                   onSaved: (val) {
+  //                     profileEmail = val;
+  //                   },
+  //                   validator: (val) =>
+  //                       (val!.isEmpty) ? "Please add user email" : null,
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           actions: [
+  //             OutlinedButton(
+  //               onPressed: () {
+  //                 Get.back();
+  //               },
+  //               child: Text(
+  //                 "Cancel",
+  //                 style: GoogleFonts.poppins(),
+  //               ),
+  //             ),
+  //             ElevatedButton(
+  //               onPressed: () async {
+  //                 if (editProfileFormKey.currentState!.validate()) {
+  //                   editProfileFormKey.currentState!.save();
+  //
+  //                   Map<String, dynamic> data = {
+  //                     'name': profileName,
+  //                     'email': profileEmail,
+  //                   };
+  //
+  //                   await CloudFirestoreHelper.cloudFirestoreHelper
+  //                       .updateUsersRecords(
+  //                           id: Global.currentUser!['email'], data: data);
+  //                   await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+  //
+  //                   Get.offNamedUntil("/login_page", (route) => false);
+  //                 }
+  //               },
+  //               child: Text(
+  //                 "Edit Profile",
+  //                 style: GoogleFonts.poppins(),
+  //               ),
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
 
   contact() {
     showDialog<void>(

@@ -196,7 +196,38 @@ class _LoginPageState extends State<LoginPage> {
                             await CloudFirestoreHelper.cloudFirestoreHelper
                                 .updateUsersRecords(id: email!, data: data);
 
-                            Get.offAndToNamed('/user_home_page');
+                            Get.offNamedUntil(
+                                "/user_home_page", (route) => false);
+                          } else {
+                            errorSnackBar(
+                                msg: "Sign in failed...", context: context);
+                          }
+                        }
+
+                        if (element.data()?['role'] == 'worker') {
+                          // await prefs.setBool('isAdmin', false);
+                          //  await prefs.setBool('isLoggedIn', true);
+                          //  Global.isAdmin = prefs.getBool('isAdmin') ?? false;
+
+                          Global.user = await FireBaseAuthHelper
+                              .fireBaseAuthHelper
+                              .signIn(email: email!, password: password!);
+
+                          if (Global.user != null) {
+                            snackBar(
+                                user: Global.user,
+                                context: context,
+                                name: "Sign In");
+
+                            Map<String, dynamic> data = {
+                              'token': await FCMHelper.fcmHelper.getToken(),
+                            };
+
+                            await CloudFirestoreHelper.cloudFirestoreHelper
+                                .updateUsersRecords(id: email!, data: data);
+
+                            Get.offNamedUntil(
+                                "/worker_home_page", (route) => false);
                           } else {
                             errorSnackBar(
                                 msg: "Sign in failed...", context: context);

@@ -126,7 +126,7 @@ class _AllServicesPageState extends State<AllServicesPage> {
                                 ),
                                 const SizedBox(height: 9),
                                 Text(
-                                  '4.3 ⭐   |    12 Review',
+                                  '${ratings(ratings: data[i]['ratings'])} ⭐   |    ${data[i]['ratings'].length} Reviews',
                                   style: GoogleFonts.poppins(fontSize: 12),
                                 ),
                               ],
@@ -149,6 +149,15 @@ class _AllServicesPageState extends State<AllServicesPage> {
             )
           : null,
     );
+  }
+
+  double ratings({required List ratings}) {
+    double rating = 0;
+    for (var map in ratings) {
+      rating += map['rating'];
+    }
+    rating = rating / 5;
+    return rating;
   }
 }
 

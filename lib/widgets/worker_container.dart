@@ -38,7 +38,7 @@ Widget workerContainer({
                 service,
                 style: GoogleFonts.poppins(fontSize: 13),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 8),
               Text(
                 name,
                 style: GoogleFonts.poppins(
@@ -46,15 +46,10 @@ Widget workerContainer({
                     fontWeight: FontWeight.w500,
                     color: Colors.indigo),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Text(
                 '+91 $number',
                 style: GoogleFonts.poppins(fontSize: 13),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                '4.3 ⭐   |    12 Review',
-                style: GoogleFonts.poppins(fontSize: 12),
               ),
             ],
           )

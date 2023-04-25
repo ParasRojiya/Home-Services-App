@@ -83,17 +83,17 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actions: [
-          // IconButton(
-          //   onPressed: () async {
-          //     SharedPreferences prefs = await SharedPreferences.getInstance();
-          //     await prefs.setBool('isLoggedIn', false);
-          //     prefs.remove('isAdmin');
-          //     await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-          //     Get.offAndToNamed("/login_page");
-          //     await FCMHelper.fcmHelper.getToken();
-          //   },
-          //   icon: const Icon(Icons.power_settings_new),
-          // ),
+          IconButton(
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('isLoggedIn', false);
+              prefs.remove('isAdmin');
+              await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
+              Get.offNamedUntil("/login_page", (route) => false);
+              //   await FCMHelper.fcmHelper.getToken();
+            },
+            icon: const Icon(Icons.power_settings_new),
+          ),
           IconButton(
             onPressed: () {
               Get.toNamed('/chat_page',

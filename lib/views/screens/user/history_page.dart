@@ -32,14 +32,33 @@ class _HistoryPageState extends State<HistoryPage>
   List isOpen = [];
   List categoryServices = [];
   Map serviceMap = {};
+  List bookings = [];
+
+  List workerBookings = [];
 
   DateTime dateTime = DateTime.now();
+  List<QueryDocumentSnapshot> documents = [];
+
+  abcd() async {
+    await CloudFirestoreHelper.cloudFirestoreHelper
+        .selectUsersRecords()
+        .forEach((element) {
+      element.docs.forEach((element) {
+        documents.add(element);
+        print(element);
+      });
+    });
+  }
 
   @override
   initState() {
     super.initState();
     tabController = TabController(length: 3, vsync: this);
+    abcd();
     data = pending;
+    print("============================");
+    print(documents);
+    print("=============================");
   }
 
   @override
@@ -59,10 +78,23 @@ class _HistoryPageState extends State<HistoryPage>
                 initailTabIndex = val;
                 if (initailTabIndex == 0) {
                   data = pending;
+                  leKachukoLe(documents: documents);
+
+                  ongoing.clear();
+                  completed.clear();
                 } else if (initailTabIndex == 1) {
                   data = ongoing;
+                  leKachukoLe(documents: documents);
+
+                  pending.clear();
+                  completed.clear();
                 } else if (initailTabIndex == 2) {
                   data = completed;
+                  leKachukoLe(documents: documents);
+                  print(completed);
+
+                  pending.clear();
+                  ongoing.clear();
                 }
               },
             );
@@ -104,89 +136,8 @@ class _HistoryPageState extends State<HistoryPage>
           } else if (snapshot.hasData) {
             QuerySnapshot? document = snapshot.data;
             List<QueryDocumentSnapshot> documents = document!.docs;
-            List bookings = [];
-            for (var users in documents) {
-              if (users.id == Global.currentUser!['email']) {
-                bookings = users['bookings'];
-              }
-            }
 
-            pending.clear();
-            completed.clear();
-            ongoing.clear();
-
-            for (Map book in bookings) {
-              String fetchDateTime = book['SelectedDateTime'];
-              String bookDate = fetchDateTime.split(' ').first;
-              String bookTime = fetchDateTime.split(' ').elementAt(1);
-              String period = fetchDateTime.split(' ').last;
-
-              int date = int.parse(bookDate.split('-').first);
-              int month = int.parse(bookDate.split('-').elementAt(1));
-
-              double time =
-                  getTimeOFService(bookTime: bookTime, period: period);
-
-              double currentTime = 0;
-
-              if (dateTime.minute > 30) {
-                currentTime = dateTime.hour + 0.30;
-              } else {
-                currentTime = dateTime.hour.toDouble();
-              }
-
-              double duration = 0;
-
-              if (book['duration'] == 30) {
-                duration = 0.30;
-              } else {
-                duration = 1;
-              }
-
-              double checkOnGoingTime = time + duration;
-
-              if (month == dateTime.month &&
-                  date == dateTime.day &&
-                  currentTime >= time &&
-                  currentTime <= checkOnGoingTime) {
-                ongoing.add(book);
-              } else if (month < dateTime.month) {
-                completed.add(book);
-              } else if (month == dateTime.month) {
-                if (date < dateTime.day) {
-                  completed.add(book);
-                } else if (date == dateTime.day) {
-                  if (time < dateTime.hour) {
-                    completed.add(book);
-                  } else {
-                    pending.add(book);
-                  }
-                } else {
-                  pending.add(book);
-                }
-              } else {
-                pending.add(book);
-              }
-            }
-
-            if (initailTabIndex == 0) {
-              data = pending;
-            } else if (initailTabIndex == 1) {
-              data = ongoing;
-            } else if (initailTabIndex == 2) {
-              data = completed;
-            }
-
-            for (Map book in data) {
-              bool isOpenPanel = false;
-              isOpen.add(isOpenPanel);
-            }
-            //
-            // print("===============================");
-            // print(pending);
-            // print("===============================");
-            // print(data);
-            // print("===============================");
+            leKachukoLe(documents: documents);
 
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -300,6 +251,22 @@ class _HistoryPageState extends State<HistoryPage>
                                 children: [
                                   const SizedBox(width: 8),
                                   Text(
+                                    'Duration',
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${data[i]['duration']} Min',
+                                    style: GoogleFonts.poppins(fontSize: 14),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  const SizedBox(width: 8),
+                                  Text(
                                     'Worker',
                                     style: GoogleFonts.poppins(fontSize: 14),
                                   ),
@@ -331,249 +298,280 @@ class _HistoryPageState extends State<HistoryPage>
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    height: 45,
-                                    alignment: Alignment.center,
-                                    width: 240,
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade300,
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Text(
-                                      'View Receipt',
-                                      style: GoogleFonts.habibi(fontSize: 16),
+                                  InkWell(
+                                    onTap: () {
+                                      Map<String, dynamic> receiptData = {
+                                        'Name': Global.currentUser?['name'],
+                                        'Service': data[i]['serviceName'],
+                                        'Category': data[i]['serviceCategory'],
+                                        'Duration': data[i]['duration'],
+                                        'Date': data[i]['SelectedDateTime']
+                                            .split(' ')
+                                            .first,
+                                        'Time':
+                                            '${data[i]['SelectedDateTime'].split(' ').elementAt(1)} ${data[i]['SelectedDateTime'].split(' ').last}',
+                                        'Price': data[i]['servicePrice'],
+                                        'WorkerName': data[i]['workerName'],
+                                        'WorkerNumber': data[i]['workerNumber'],
+                                      };
+
+                                      Get.toNamed('/service_receipt',
+                                          arguments: receiptData);
+                                    },
+                                    child: Container(
+                                      height: 45,
+                                      alignment: Alignment.center,
+                                      width: 240,
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue.shade300,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Text(
+                                        'View Receipt',
+                                        style: GoogleFonts.habibi(fontSize: 16),
+                                      ),
                                     ),
                                   ),
-                                  (completed.isNotEmpty)
-                                      ? (data[i] == completed[i])
+                                  (pending.isNotEmpty)
+                                      ? (data[i] == pending[i])
                                           ? TextButton(
-                                              child:
-                                                  const Text("Rate & Review"),
                                               onPressed: () {
                                                 showDialog(
-                                                  context: context,
-                                                  barrierDismissible: true,
-                                                  builder: (context) =>
-                                                      RatingDialog(
-                                                    initialRating: completed[i]
-                                                            ['rating']
-                                                        .toDouble(),
-                                                    title: Text(
-                                                      completed[i]
-                                                          ['serviceName'],
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: const TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors
-                                                              .blueAccent),
-                                                    ),
-                                                    message: const Text(
-                                                      'Tap a star to set your rating',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontSize: 15),
-                                                    ),
-                                                    image: Container(
-                                                      alignment: Alignment
-                                                          .bottomCenter,
-                                                      height: 150,
-                                                      width: 80,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              completed[i]
-                                                                  ['imageURL']),
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    submitButtonText: 'Submit',
-                                                    commentHint:
-                                                        'Write a review(Optional)',
-                                                    onCancelled: () =>
-                                                        print('cancelled'),
-                                                    onSubmitted:
-                                                        (response) async {
-                                                      if (response.rating >=
-                                                          1) {
-                                                        Fluttertoast.showToast(
-                                                            msg:
-                                                                "Thank You For Your Feedback",
-                                                            toastLength: Toast
-                                                                .LENGTH_SHORT,
-                                                            gravity:
-                                                                ToastGravity
-                                                                    .BOTTOM,
-                                                            timeInSecForIosWeb:
-                                                                1,
-                                                            backgroundColor:
-                                                                Colors.white,
-                                                            textColor:
-                                                                Colors.black,
-                                                            fontSize: 16.0);
-                                                      }
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        title: Text(
+                                                            "Are you sure you want to cancel ${data[i]['serviceName']} service?"),
+                                                        actions: [
+                                                          OutlinedButton(
+                                                              onPressed: () {
+                                                                Get.back();
+                                                              },
+                                                              child: const Text(
+                                                                  "No")),
+                                                          ElevatedButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                bookings.remove(
+                                                                    data[i]);
 
-                                                      int ind = 0;
+                                                                Map<String,
+                                                                        dynamic>
+                                                                    deta = {
+                                                                  'bookings':
+                                                                      bookings,
+                                                                };
 
-                                                      for (int j = 0;
-                                                          j < bookings.length;
-                                                          j++) {
-                                                        if (bookings[j] ==
-                                                            data[i]) {
-                                                          ind = j;
-                                                        }
-                                                      }
+                                                                CloudFirestoreHelper
+                                                                    .cloudFirestoreHelper
+                                                                    .updateUsersRecords(
+                                                                        id: Global.currentUser![
+                                                                            'email'],
+                                                                        data:
+                                                                            deta);
 
-                                                      Map<String, dynamic>
-                                                          element =
-                                                          bookings[ind];
+                                                                CloudFirestoreHelper
+                                                                    .cloudFirestoreHelper
+                                                                    .fetchAllWorker()
+                                                                    .forEach(
+                                                                        (element) {
+                                                                  element.docs
+                                                                      .forEach(
+                                                                          (element) {
+                                                                    if (element
+                                                                            .id ==
+                                                                        data[i][
+                                                                            'workerEmail']) {
+                                                                      workerBookings.add(
+                                                                          element[
+                                                                              'bookings']);
+                                                                    }
+                                                                  });
+                                                                });
+                                                                print(
+                                                                    "====================");
+                                                                log("$workerBookings");
+                                                                print(
+                                                                    "====================");
 
-                                                      element.update(
-                                                          "rating",
-                                                          (value) =>
-                                                              response.rating);
-                                                      element.update(
-                                                          "review",
-                                                          (value) =>
-                                                              response.comment);
+                                                                workerBookings
+                                                                    .remove(
+                                                                        data[
+                                                                            i]);
 
-                                                      bookings.removeAt(ind);
-                                                      bookings.insert(
-                                                          ind, element);
+                                                                print(
+                                                                    "----------------------");
+                                                                log("$workerBookings");
+                                                                print(
+                                                                    "----------------------");
+                                                                Map<String,
+                                                                        dynamic>
+                                                                    dete = {
+                                                                  'bookings':
+                                                                      workerBookings
+                                                                };
 
-                                                      Map<String, dynamic>
-                                                          dete = {
-                                                        'bookings': bookings,
-                                                      };
+                                                                await CloudFirestoreHelper
+                                                                    .cloudFirestoreHelper
+                                                                    .updateWorker(
+                                                                        name: data[i]
+                                                                            [
+                                                                            'workerEmail'],
+                                                                        data:
+                                                                            dete);
 
-                                                      await CloudFirestoreHelper
-                                                          .cloudFirestoreHelper
-                                                          .updateUsersRecords(
-                                                              id: Global
-                                                                      .currentUser![
-                                                                  'email'],
-                                                              data: dete);
-
-                                                      Map<String, dynamic>
-                                                          deta = {
-                                                        'imageURL':
-                                                            Global.currentUser![
-                                                                'imageURL'],
-                                                        'name':
-                                                            Global.currentUser![
-                                                                'name'],
-                                                        'rating':
-                                                            response.rating,
-                                                        'review':
-                                                            response.comment,
-                                                      };
-
-                                                      for (int j = 0;
-                                                          j <
-                                                              categoryServices
-                                                                  .length;
-                                                          j++) {
-                                                        if (categoryServices[j]
-                                                                ['name'] ==
-                                                            data[i][
-                                                                'serviceName']) {
-                                                          serviceMap =
-                                                              categoryServices[
-                                                                  j];
-                                                          categoryServices
-                                                              .removeAt(j);
-                                                        }
-                                                      }
-
-                                                      print(
-                                                          "++++++++++++++++++++++++++++++++++++++++++++++++");
-                                                      print("$serviceMap");
-                                                      print(
-                                                          "++++++++++++++++++++++++++++++++++++++++++++++++");
-                                                      List ratings = [];
-
-                                                      ratings =
-                                                          serviceMap['ratings'];
-                                                      print(
-                                                          "--------------------------");
-                                                      print(ratings);
-                                                      print(
-                                                          "--------------------------");
-                                                      ratings.add(deta);
-                                                      serviceMap.update(
-                                                          'ratings',
-                                                          (value) => ratings);
-
-                                                      categoryServices
-                                                          .add(serviceMap);
-
-                                                      Map<String, dynamic>
-                                                          updatedService = {
-                                                        'services':
-                                                            categoryServices,
-                                                      };
-                                                      print(
-                                                          "=============================");
-                                                      log("$updatedService");
-                                                      print(
-                                                          "=============================");
-
-                                                      await CloudFirestoreHelper
-                                                          .cloudFirestoreHelper
-                                                          .updateService(
-                                                              name: data[i][
-                                                                  'serviceCategory'],
-                                                              data:
-                                                                  updatedService);
-
-                                                      print(
-                                                          "*******************************");
-                                                      print(
-                                                          "$categoryServices");
-                                                      print(
-                                                          "*******************************");
-                                                      await CloudFirestoreHelper
-                                                          .cloudFirestoreHelper
-                                                          .fetchAllCategories()
-                                                          .forEach((element) {
-                                                        element.docs
-                                                            .forEach((element) {
-                                                          if (element.id ==
-                                                              data[i][
-                                                                  'serviceCategory']) {
-                                                            categoryServices =
-                                                                element[
-                                                                    'services'];
-                                                          }
-                                                        });
-                                                      });
-                                                    },
-                                                  ),
-                                                );
+                                                                Get.back();
+                                                              },
+                                                              child: const Text(
+                                                                  "Yes")),
+                                                        ],
+                                                      );
+                                                    });
                                               },
+                                              child:
+                                                  const Text("Cancel Service"),
                                             )
                                           : Container()
-                                      : Container(),
+                                      : (completed.isNotEmpty)
+                                          ? (data[i] == completed[i])
+                                              ? TextButton(
+                                                  child: const Text(
+                                                      "Rate & Review"),
+                                                  onPressed: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      barrierDismissible: true,
+                                                      builder: (context) =>
+                                                          RatingDialog(
+                                                        initialRating:
+                                                            completed[i]
+                                                                    ['rating']
+                                                                .toDouble(),
+                                                        title: Text(
+                                                          completed[i]
+                                                              ['serviceName'],
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: const TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Colors
+                                                                  .blueAccent),
+                                                        ),
+                                                        message: const Text(
+                                                          'Tap a star to set your rating',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 15),
+                                                        ),
+                                                        image: Container(
+                                                          alignment: Alignment
+                                                              .bottomCenter,
+                                                          height: 150,
+                                                          width: 80,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            image:
+                                                                DecorationImage(
+                                                              image: NetworkImage(
+                                                                  completed[i][
+                                                                      'imageURL']),
+                                                              fit: BoxFit.fill,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        submitButtonText:
+                                                            'Submit',
+                                                        commentHint:
+                                                            'Write a review(Optional)',
+                                                        onCancelled: () =>
+                                                            print('cancelled'),
+                                                        onSubmitted:
+                                                            (response) async {
+                                                          if (response.rating >=
+                                                              1) {
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    "Thank You For Your Feedback",
+                                                                toastLength: Toast
+                                                                    .LENGTH_SHORT,
+                                                                gravity:
+                                                                    ToastGravity
+                                                                        .BOTTOM,
+                                                                timeInSecForIosWeb:
+                                                                    1,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white,
+                                                                textColor:
+                                                                    Colors
+                                                                        .black,
+                                                                fontSize: 16.0);
+                                                          }
+
+                                                          int ind = 0;
+
+                                                          for (int j = 0;
+                                                              j <
+                                                                  bookings
+                                                                      .length;
+                                                              j++) {
+                                                            if (bookings[j] ==
+                                                                data[i]) {
+                                                              ind = j;
+                                                            }
+                                                          }
+
+                                                          Map<String, dynamic>
+                                                              element =
+                                                              bookings[ind];
+
+                                                          element.update(
+                                                              "rating",
+                                                              (value) =>
+                                                                  response
+                                                                      .rating);
+                                                          element.update(
+                                                              "review",
+                                                              (value) =>
+                                                                  response
+                                                                      .comment);
+
+                                                          bookings
+                                                              .removeAt(ind);
+                                                          bookings.insert(
+                                                              ind, element);
+
+                                                          Map<String, dynamic>
+                                                              dete = {
+                                                            'bookings':
+                                                                bookings,
+                                                          };
+
+                                                          CloudFirestoreHelper
+                                                              .cloudFirestoreHelper
+                                                              .updateUsersRecords(
+                                                                  id: Global
+                                                                          .currentUser![
+                                                                      'email'],
+                                                                  data: dete);
+
+                                                          rateAndReview(
+                                                              i: i,
+                                                              response:
+                                                                  response);
+                                                        },
+                                                      ),
+                                                    );
+                                                  },
+                                                )
+                                              : Container()
+                                          : Container(),
                                 ],
                               ),
-
-                              // Container(
-                              //   height: 45,
-                              //   alignment: Alignment.center,
-                              //   width: 240,
-                              //   decoration: BoxDecoration(
-                              //     color: Colors.blue.shade300,
-                              //     borderRadius: BorderRadius.circular(15),
-                              //   ),
-                              //   child: Text(
-                              //     'View Receipt',
-                              //     style: GoogleFonts.habibi(fontSize: 16),
-                              //   ),
-                              // ),
                               const SizedBox(height: 8),
                             ],
                           ),
@@ -654,5 +652,137 @@ class _HistoryPageState extends State<HistoryPage>
       time = 19.30;
     }
     return time;
+  }
+
+  leKachukoLe({required List<QueryDocumentSnapshot> documents}) {
+    for (var users in documents) {
+      if (users.id == Global.currentUser!['email']) {
+        bookings = users['bookings'];
+      }
+    }
+
+    pending.clear();
+    completed.clear();
+    ongoing.clear();
+
+    for (Map book in bookings) {
+      String fetchDateTime = book['SelectedDateTime'];
+      String bookDate = fetchDateTime.split(' ').first;
+      String bookTime = fetchDateTime.split(' ').elementAt(1);
+      String period = fetchDateTime.split(' ').last;
+
+      int date = int.parse(bookDate.split('-').first);
+      int month = int.parse(bookDate.split('-').elementAt(1));
+
+      double time = getTimeOFService(bookTime: bookTime, period: period);
+
+      double currentTime = 0;
+
+      if (dateTime.minute > 30) {
+        currentTime = dateTime.hour + 0.30;
+      } else {
+        currentTime = dateTime.hour.toDouble();
+      }
+
+      double duration = 0;
+
+      if (book['duration'] == 30) {
+        duration = 0.30;
+      } else {
+        duration = 1;
+      }
+
+      double checkOnGoingTime = time + duration;
+
+      if (month == dateTime.month &&
+          date == dateTime.day &&
+          currentTime >= time &&
+          currentTime <= checkOnGoingTime) {
+        ongoing.add(book);
+      } else if (month < dateTime.month) {
+        completed.add(book);
+      } else if (month == dateTime.month) {
+        if (date < dateTime.day) {
+          completed.add(book);
+        } else if (date == dateTime.day) {
+          if (time < dateTime.hour) {
+            completed.add(book);
+          } else {
+            pending.add(book);
+          }
+        } else {
+          pending.add(book);
+        }
+      } else {
+        pending.add(book);
+      }
+    }
+
+    if (initailTabIndex == 0) {
+      data = pending;
+    } else if (initailTabIndex == 1) {
+      data = ongoing;
+    } else if (initailTabIndex == 2) {
+      data = completed;
+    }
+
+    for (Map book in data) {
+      bool isOpenPanel = false;
+      isOpen.add(isOpenPanel);
+    }
+  }
+
+  rateAndReview({required int i, required response}) async {
+    CloudFirestoreHelper.cloudFirestoreHelper
+        .fetchAllCategories()
+        .forEach((element) {
+      element.docs.forEach((element) {
+        if (element.id == data[i]['serviceCategory']) {
+          categoryServices = element['services'];
+        }
+      });
+    });
+
+    Map<String, dynamic> deta = {
+      'imageURL': Global.currentUser!['imageURL'],
+      'name': Global.currentUser!['name'],
+      'rating': response.rating,
+      'review': response.comment,
+    };
+
+    for (int j = 0; j < categoryServices.length; j++) {
+      if (categoryServices[j]['name'] == data[i]['serviceName']) {
+        serviceMap = categoryServices[j];
+        categoryServices.removeAt(j);
+      }
+    }
+
+    print("++++++++++++++++++++++++++++++++++++++++++++++++");
+    print("$serviceMap");
+    print("++++++++++++++++++++++++++++++++++++++++++++++++");
+    List ratings = [];
+
+    ratings = serviceMap['ratings'];
+    print("--------------------------");
+    print(ratings);
+    print("--------------------------");
+    ratings.add(deta);
+    serviceMap.update('ratings', (value) => ratings);
+
+    categoryServices.add(serviceMap);
+
+    Map<String, dynamic> updatedService = {
+      'services': categoryServices,
+    };
+    print("=============================");
+    log("$updatedService");
+    print("=============================");
+
+    CloudFirestoreHelper.cloudFirestoreHelper
+        .updateService(name: data[i]['serviceCategory'], data: updatedService);
+
+    print("*******************************");
+    print("$categoryServices");
+    print("*******************************");
   }
 }

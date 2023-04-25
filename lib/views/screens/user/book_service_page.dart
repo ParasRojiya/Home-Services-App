@@ -448,6 +448,7 @@ class _BookServiceState extends State<BookService> {
       'SelectedDateTime': "$date $time",
       'workerName': availableWorkers[workerIndex]['name'],
       'workerNumber': availableWorkers[workerIndex]['number'],
+      'workerEmail': availableWorkers[workerIndex]['email'],
       'rating': 0,
       'review': null,
     };
@@ -482,6 +483,7 @@ class _BookServiceState extends State<BookService> {
       'Price': res.currentData['price'],
       'WorkerName': availableWorkers[workerIndex]['name'],
       'WorkerNumber': availableWorkers[workerIndex]['number'],
+      'WorkerEmail': availableWorkers[workerIndex]['email'],
     };
 
     await LocalNotificationHelper.localNotificationHelper.sendSimpleNotification(
