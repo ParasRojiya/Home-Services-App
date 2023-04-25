@@ -4,6 +4,7 @@ import '../global/global.dart';
 
 class CloudFirestoreHelper {
   CloudFirestoreHelper._();
+
   static final CloudFirestoreHelper cloudFirestoreHelper =
       CloudFirestoreHelper._();
 
