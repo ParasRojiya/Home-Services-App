@@ -1,8 +1,11 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../helper/cloud_firestore_helper.dart';
 
 class ShopPage extends StatefulWidget {
   const ShopPage({Key? key}) : super(key: key);
@@ -88,6 +91,24 @@ class _ShopPageState extends State<ShopPage> {
             color: Colors.blue,
           ),
           const SizedBox(height: 8),
+          StreamBuilder<QuerySnapshot>(
+            stream: CloudFirestoreHelper.cloudFirestoreHelper
+                .fetchShoppingRecords(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error: ${snapshot.error}"),
+                );
+              } else if (snapshot.hasData) {
+                QuerySnapshot? document = snapshot.data;
+                List<QueryDocumentSnapshot> documents = document!.docs;
+              }
+
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(

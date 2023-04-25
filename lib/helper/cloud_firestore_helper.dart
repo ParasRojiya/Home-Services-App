@@ -13,6 +13,7 @@ class CloudFirestoreHelper {
   late CollectionReference workerRef;
   late CollectionReference bookingsRef;
   late CollectionReference chatRef;
+  late CollectionReference shoppingRef;
 
   //CATEGORIES COLLECTION HELPER
   connectionWithCategoryCollection() {
@@ -140,5 +141,15 @@ class CloudFirestoreHelper {
       {required String id, required Map<String, dynamic> data}) async {
     connectionWithChatCollection();
     await chatRef.doc(id).set(data);
+  }
+
+  //SHOPPING COLLECTION
+  connectionWithShoppingCollection() {
+    shoppingRef = firebaseFirestore.collection('shopping');
+  }
+
+  fetchShoppingRecords() {
+    connectionWithChatCollection();
+    return shoppingRef.snapshots();
   }
 }
