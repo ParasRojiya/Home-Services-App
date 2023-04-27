@@ -78,23 +78,14 @@ class _HomePageState extends State<HomePage> {
             Text(
               (Global.currentUser != null)
                   ? '${Global.currentUser!['name']}'
-                  : 'User',
+                  : (Global.isAdmin)
+                      ? 'Admin'
+                      : 'User',
               style: GoogleFonts.habibi(fontSize: 18, color: Colors.black),
             )
           ],
         ),
         actions: [
-          IconButton(
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setBool('isLoggedIn', false);
-              prefs.remove('isAdmin');
-              await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-
-              Get.offNamedUntil("/login_page", (route) => false);
-            },
-            icon: const Icon(Icons.power_settings_new),
-          ),
           IconButton(
             onPressed: () {
               Get.toNamed('/chats_page');
@@ -106,10 +97,10 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
           child: Column(
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 3),
               Column(
                 children: [
                   Row(
@@ -454,61 +445,21 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   final GraphController graphController = Get.put(GraphController());
-  List dummy = [];
-
-  double sun = 0;
-  double mon = 0;
-  double tue = 0;
-  double wed = 0;
-  double thu = 0;
-  double fri = 0;
-  double sat = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome 👋',
-              style:
-                  GoogleFonts.habibi(fontSize: 15, color: Colors.grey.shade500),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              (Global.currentUser != null)
-                  ? '${Global.currentUser!['name']}'
-                  : 'User',
-              style: GoogleFonts.habibi(fontSize: 18, color: Colors.black),
-            )
-          ],
+        title: Text(
+          "Admin's Dasboard",
+          style: GoogleFonts.habibi(fontSize: 20),
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setBool('isLoggedIn', false);
-              prefs.remove('isAdmin');
-              await FireBaseAuthHelper.fireBaseAuthHelper.signOut();
-
-              Get.offNamedUntil("/login_page", (route) => false);
-            },
-            icon: const Icon(Icons.power_settings_new),
-          ),
-          IconButton(
-            onPressed: () {
-              Get.toNamed('/chats_page');
-            },
-            icon: const Icon(CupertinoIcons.captions_bubble),
-          ),
-        ],
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
           child: Column(
             children: [
               const SizedBox(height: 8),
@@ -781,37 +732,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             List<QueryDocumentSnapshot> documents =
                                 document!.docs;
 
-                            for (int i = 0; i < documents.length; i++) {
-                              String date = documents[i]['SelectedDateTime']
-                                  .split('-')
-                                  .first;
-                              if (23 == int.parse(date)) {
-                                sun++;
-                              } else if (24 == int.parse(date)) {
-                                mon++;
-                              } else if (25 == int.parse(date)) {
-                                tue++;
-                              } else if (26 == int.parse(date)) {
-                                wed++;
-                              } else if (27 == int.parse(date)) {
-                                thu++;
-                              } else if (28 == int.parse(date)) {
-                                fri++;
-                              } else if (29 == int.parse(date)) {
-                                sat++;
-                              }
-                            }
-
-                            dummy = [
-                              Counter(x: 23, y: sun),
-                              Counter(x: 24, y: mon),
-                              Counter(x: 25, y: tue),
-                              Counter(x: 26, y: wed),
-                              Counter(x: 27, y: thu),
-                              Counter(x: 28, y: fri),
-                              Counter(x: 29, y: sat),
-                            ];
-
                             return Padding(
                               padding: const EdgeInsets.all(7.0),
                               child: Column(
@@ -875,70 +795,135 @@ class _AdminDashboardState extends State<AdminDashboard> {
               const SizedBox(
                 height: 15,
               ),
-              SizedBox(
-                height: 350,
-                width: Get.width,
-                child: Obx(() {
-                  graphController.updateData(dummy: dummy);
-                  return BarChart(
-                      swapAnimationCurve: Curves.bounceInOut,
-                      BarChartData(
-                        minY: 0,
-                        maxY: 10,
-                        backgroundColor: Colors.grey.shade200,
-                        gridData: FlGridData(
-                          drawHorizontalLine: true,
-                          show: true,
-                          drawVerticalLine: false,
-                        ),
-                        borderData: FlBorderData(show: false),
-                        titlesData: FlTitlesData(
-                          show: true,
-                          topTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 33,
-                              getTitlesWidget: getTitle,
-                            ),
-                          ),
-                          rightTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                                showTitles: true,
-                                interval: 2,
-                                reservedSize: 30),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 33,
-                              getTitlesWidget: getBottomTitle,
-                            ),
-                          ),
-                        ),
-                        barGroups: graphController.data
-                            .map(
-                              (e) => BarChartGroupData(
-                                x: e.x,
-                                barRods: [
-                                  BarChartRodData(
-                                    toY: e.y,
-                                    color: Colors.grey[800],
-                                    width: 30,
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(5),
-                                      topLeft: Radius.circular(5),
-                                    ),
-                                  ),
-                                ],
+              StreamBuilder<QuerySnapshot>(
+                stream: CloudFirestoreHelper.cloudFirestoreHelper
+                    .fetchAllBookings(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    QuerySnapshot? document = snapshot.data;
+                    List<QueryDocumentSnapshot> documents = document!.docs;
+
+                    List dummy = [];
+
+                    double sun = 0;
+                    double mon = 0;
+                    double tue = 0;
+                    double wed = 0;
+                    double thu = 0;
+                    double fri = 0;
+                    double sat = 0;
+
+                    for (int i = 0; i < documents.length; i++) {
+                      String date =
+                          documents[i]['SelectedDateTime'].split('-').first;
+                      if (23 == int.parse(date)) {
+                        sun++;
+                      } else if (24 == int.parse(date)) {
+                        mon++;
+                      } else if (25 == int.parse(date)) {
+                        tue++;
+                      } else if (26 == int.parse(date)) {
+                        wed++;
+                      } else if (27 == int.parse(date)) {
+                        thu++;
+                      } else if (28 == int.parse(date)) {
+                        fri++;
+                      } else if (29 == int.parse(date)) {
+                        sat++;
+                      }
+                    }
+
+                    dummy = [
+                      Counter(x: 23, y: sun),
+                      Counter(x: 24, y: mon),
+                      Counter(x: 25, y: tue),
+                      Counter(x: 26, y: wed),
+                      Counter(x: 27, y: thu),
+                      Counter(x: 28, y: fri),
+                      Counter(x: 29, y: sat),
+                    ];
+
+                    return SizedBox(
+                        height: 350,
+                        width: Get.width,
+                        child: BarChart(
+                            swapAnimationCurve: Curves.bounceInOut,
+                            swapAnimationDuration: const Duration(seconds: 5),
+                            BarChartData(
+                              minY: 0,
+                              barTouchData: BarTouchData(
+                                enabled: true,
+                                touchTooltipData: BarTouchTooltipData(
+                                  tooltipBgColor: Colors.white,
+                                ),
                               ),
-                            )
-                            .toList(),
-                      ));
-                }),
-              )
+                              maxY: 10,
+                              backgroundColor: Colors.grey.shade200,
+                              gridData: FlGridData(
+                                drawHorizontalLine: true,
+                                show: true,
+                                drawVerticalLine: false,
+                              ),
+                              borderData: FlBorderData(show: false),
+                              titlesData: FlTitlesData(
+                                show: true,
+                                topTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    reservedSize: 33,
+                                    getTitlesWidget: getTitle,
+                                  ),
+                                ),
+                                rightTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                      showTitles: true,
+                                      interval: 2,
+                                      reservedSize: 30),
+                                ),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    reservedSize: 33,
+                                    getTitlesWidget: getBottomTitle,
+                                  ),
+                                ),
+                              ),
+                              barGroups: dummy
+                                  .map(
+                                    (e) => BarChartGroupData(
+                                      x: e.x,
+                                      barRods: [
+                                        BarChartRodData(
+                                          toY: e.y,
+                                          color: Colors.grey[800],
+                                          width: 30,
+                                          borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(5),
+                                            topLeft: Radius.circular(5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                  .toList(),
+                            )));
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        "Error: ${snapshot.error}",
+                        style: GoogleFonts.poppins(),
+                      ),
+                    );
+                  }
+
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -965,37 +950,37 @@ class _AdminDashboardState extends State<AdminDashboard> {
     if (x == 23) {
       text = Text(
         'S',
-        style: GoogleFonts.habibi(fontSize: 15),
+        style: GoogleFonts.habibi(fontSize: 16),
       );
     } else if (x == 24) {
       text = Text(
         'M',
-        style: GoogleFonts.habibi(fontSize: 15),
+        style: GoogleFonts.habibi(fontSize: 16),
       );
     } else if (x == 25) {
       text = Text(
         'T',
-        style: GoogleFonts.habibi(fontSize: 18),
+        style: GoogleFonts.habibi(fontSize: 16),
       );
     } else if (x == 26) {
       text = Text(
         'W',
-        style: GoogleFonts.habibi(fontSize: 15),
+        style: GoogleFonts.habibi(fontSize: 16),
       );
     } else if (x == 27) {
       text = Text(
         'T',
-        style: GoogleFonts.habibi(fontSize: 15),
+        style: GoogleFonts.habibi(fontSize: 16),
       );
     } else if (x == 28) {
       text = Text(
         'F',
-        style: GoogleFonts.habibi(fontSize: 15),
+        style: GoogleFonts.habibi(fontSize: 16),
       );
     } else {
       text = Text(
         'S',
-        style: GoogleFonts.habibi(fontSize: 15),
+        style: GoogleFonts.habibi(fontSize: 16),
       );
     }
 
