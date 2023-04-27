@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -25,11 +26,12 @@ class _ShopPageState extends State<ShopPage> {
     {'name': 'Furniture', 'width': 110.00},
     {'name': 'Gardening', 'width': 100.00},
     {'name': 'Painting', 'width': 90.00},
-    {'name': 'Solar', 'width': 75.00},
     {'name': 'Plumbing', 'width': 90.00},
+    {'name': 'Solar', 'width': 75.00},
   ];
 
   List data = [];
+  int index = 0;
 
   String selectedCategory = 'Recommended';
 
@@ -107,37 +109,27 @@ class _ShopPageState extends State<ShopPage> {
             color: Colors.blue,
           ),
           const SizedBox(height: 8),
-          StreamBuilder<QuerySnapshot>(
-            stream: CloudFirestoreHelper.cloudFirestoreHelper
-                .fetchShoppingRecords(),
-            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text("Error: ${snapshot.error}"),
-                );
-              } else if (snapshot.hasData) {
-                QuerySnapshot? document = snapshot.data;
-                List<QueryDocumentSnapshot> documents = document!.docs;
-
-                for (int i = 0; i < documents.length; i++) {
-                  if (documents[i].id == selectedCategory) {
-                    data = documents[i]['products'];
-                  } else if (documents[i].id == 'A') {
-                    data = documents[2]['products'];
-                  }
-                }
-
-                if (data.isEmpty) {
-                  data = documents[2]['products'];
-                }
-
-                return Container();
-              }
-
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+          Row(
+            children: [
+              Text(
+                "Most Popular Product",
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () {
+                  Get.toNamed("/all_product", arguments: data);
+                },
+                style: TextButton.styleFrom(textStyle: GoogleFonts.poppins()),
+                child: const Text(
+                  "View all",
+                  style: TextStyle(fontSize: 13),
+                ),
+              )
+            ],
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -148,6 +140,7 @@ class _ShopPageState extends State<ShopPage> {
                       onTap: () {
                         setState(() {
                           selectedCategory = '${e['name']}';
+                          index = category.indexOf(e);
                         });
                       },
                       child: categoryContainer(
@@ -161,55 +154,123 @@ class _ShopPageState extends State<ShopPage> {
                   .toList(),
             ),
           ),
-          SizedBox(
-            height: 480,
-            width: Get.width,
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
-              itemCount: 4,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                mainAxisExtent: 230,
-              ),
-              itemBuilder: (context, i) {
-                return Card(
-                  margin: const EdgeInsets.all(0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 8),
-                      Container(
-                        height: 150,
-                        width: 145,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: NetworkImage(data[i]['imageURL']),
-                            fit: BoxFit.cover,
+          const SizedBox(height: 8),
+          StreamBuilder<QuerySnapshot>(
+            stream: CloudFirestoreHelper.cloudFirestoreHelper
+                .fetchShoppingRecords(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error: ${snapshot.error}"),
+                );
+              } else if (snapshot.hasData) {
+                QuerySnapshot? document = snapshot.data;
+                List<QueryDocumentSnapshot> documents = document!.docs;
+
+                data = documents;
+                return SizedBox(
+                  height: 480,
+                  width: Get.width,
+                  child: GridView.builder(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
+                    itemCount: 4,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                      mainAxisExtent: 225,
+                    ),
+                    itemBuilder: (context, i) {
+                      return GestureDetector(
+                        onTap: () {
+                          _launchUrl(
+                              url: documents[index]['products'][i]['link']);
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.all(0),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 8),
+                                Center(
+                                  child: Container(
+                                    height: 160,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: NetworkImage(documents[index]
+                                            ['products'][i]['imageURL']),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 25,
+                                          width: 100,
+                                          child: Text(
+                                            documents[index]['products'][i]
+                                                ['name'],
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.habibi(
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                        Text(
+                                          '₹ ${documents[index]['products'][i]['price']}',
+                                          style:
+                                              GoogleFonts.ubuntu(fontSize: 15),
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.indigo.shade100,
+                                      ),
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.shopping_bag,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        data[i]['name'],
-                        style: GoogleFonts.habibi(fontSize: 16),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        'Price: ${data[i]['price']}',
-                        style: GoogleFonts.ubuntu(fontSize: 16),
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 );
-              },
-            ),
-          )
+              }
+
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -232,5 +293,12 @@ class _ShopPageState extends State<ShopPage> {
         style: GoogleFonts.habibi(),
       ),
     );
+  }
+
+  Future<void> _launchUrl({required String url}) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
   }
 }
