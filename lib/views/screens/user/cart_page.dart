@@ -17,6 +17,7 @@ class _CartPageState extends State<CartPage> {
   List data = Global.cart;
 
   final CartController cartController = Get.find<CartController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,8 +30,7 @@ class _CartPageState extends State<CartPage> {
         child: (Global.cart.isEmpty)
             ? Text("Cart is Empty")
             : Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 7.0, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                 child: ListView.builder(
                   itemCount: data.length,
                   itemBuilder: (context, i) {

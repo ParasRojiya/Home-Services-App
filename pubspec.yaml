@@ -51,6 +51,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   flutter_inappwebview: ^5.7.2+3
+  fl_chart:
   rating_dialog: ^2.0.4
   bubble: ^1.2.1
   flip_card:
