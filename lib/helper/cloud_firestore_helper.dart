@@ -90,7 +90,12 @@ class CloudFirestoreHelper {
     await bookingsRef.add(data);
   }
 
-  fetchAllBookings() {
+  Future<void> deleteBooking({required String id}) async {
+    connectionWithBookingsCollection();
+    await bookingsRef.doc(id).delete();
+  }
+
+  Stream<QuerySnapshot> fetchAllBookings() {
     connectionWithBookingsCollection();
     return bookingsRef.snapshots();
   }

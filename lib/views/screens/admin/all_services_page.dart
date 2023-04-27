@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/controllers/cart_controller.dart';
 
 import '../../../global/global.dart';
+import '../../../helper/cloud_firestore_helper.dart';
 
 class AllServicesPage extends StatefulWidget {
   const AllServicesPage({Key? key}) : super(key: key);
@@ -14,9 +16,15 @@ class AllServicesPage extends StatefulWidget {
 }
 
 class _AllServicesPageState extends State<AllServicesPage> {
+  // List cart = Global.currentUser!['cart'];
+
+  final CartController controller = Get.find<CartController>();
+
   @override
   void initState() {
     super.initState();
+    // print(cart);
+    //  print(Global.cart);
   }
 
   @override
@@ -132,6 +140,16 @@ class _AllServicesPageState extends State<AllServicesPage> {
                               ],
                             ),
                             const Spacer(),
+                            IconButton(
+                              icon: Icon((Global.cart.isEmpty)
+                                  ? Icons.shopping_cart_outlined
+                                  : cartIcon(deta: data[i])),
+                              onPressed: () async {
+                                setState(() {
+                                  addToCart(i: i, data: data);
+                                });
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -158,6 +176,61 @@ class _AllServicesPageState extends State<AllServicesPage> {
     }
     rating = rating / 5;
     return rating;
+  }
+
+  cartIcon({required deta}) {
+    for (int i = 0; i < Global.cart.length; i++) {
+      if (Global.cart[i]['name'] == deta['name']) {
+        return Icons.remove_shopping_cart_outlined;
+      } else {
+        return Icons.shopping_cart_outlined;
+      }
+    }
+  }
+
+  addToCart({required int i, required data}) async {
+    int counterA = 0;
+    int index = 0;
+    NINJA:
+    for (int j = 0; j < Global.cart.length; j++) {
+      if (Global.cart[j]['name'] == data[i]['name']) {
+        counterA++;
+        break NINJA;
+      }
+      index++;
+    }
+
+    print(counterA);
+    print(index);
+
+    if (counterA == 0) {
+      print("Isn't in cart");
+
+      Global.cart.add(data[i]);
+
+      Map<String, dynamic> dete = {
+        'cart': Global.cart,
+      };
+
+      await CloudFirestoreHelper.cloudFirestoreHelper
+          .updateUsersRecords(id: Global.currentUser!['email'], data: dete);
+
+      Get.snackbar("Added to cart", "${data[i]['name']} added to cart");
+      controller.addToCart(Global.cart.length);
+    } else if (counterA == 1) {
+      print("Is in cart");
+      Global.cart.removeAt(index);
+
+      Map<String, dynamic> dete = {
+        'cart': Global.cart,
+      };
+
+      await CloudFirestoreHelper.cloudFirestoreHelper
+          .updateUsersRecords(id: Global.currentUser!['email'], data: dete);
+
+      Get.snackbar("Removed from cart", "${data[i]['name']} removed from cart");
+      controller.addToCart(Global.cart.length);
+    }
   }
 }
 

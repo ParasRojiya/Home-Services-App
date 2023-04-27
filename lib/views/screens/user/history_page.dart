@@ -39,6 +39,8 @@ class _HistoryPageState extends State<HistoryPage>
   DateTime dateTime = DateTime.now();
   List<QueryDocumentSnapshot> documents = [];
 
+  int counter = 0;
+
   abcd() async {
     await CloudFirestoreHelper.cloudFirestoreHelper
         .selectUsersRecords()
@@ -79,22 +81,19 @@ class _HistoryPageState extends State<HistoryPage>
                 if (initailTabIndex == 0) {
                   data = pending;
                   leKachukoLe(documents: documents);
-
                   ongoing.clear();
                   completed.clear();
                 } else if (initailTabIndex == 1) {
-                  data = ongoing;
-                  leKachukoLe(documents: documents);
-
                   pending.clear();
                   completed.clear();
-                } else if (initailTabIndex == 2) {
-                  data = completed;
-                  leKachukoLe(documents: documents);
-                  print(completed);
+                  data = ongoing;
 
+                  leKachukoLe(documents: documents);
+                } else if (initailTabIndex == 2) {
                   pending.clear();
                   ongoing.clear();
+                  data = completed;
+                  leKachukoLe(documents: documents);
                 }
               },
             );
@@ -137,7 +136,12 @@ class _HistoryPageState extends State<HistoryPage>
             QuerySnapshot? document = snapshot.data;
             List<QueryDocumentSnapshot> documents = document!.docs;
 
-            leKachukoLe(documents: documents);
+            if (counter == 0) {
+              leKachukoLe(documents: documents);
+              ongoing.clear();
+              completed.clear();
+              counter++;
+            }
 
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -428,144 +432,131 @@ class _HistoryPageState extends State<HistoryPage>
                                                   const Text("Cancel Service"),
                                             )
                                           : Container()
-                                      : (completed.isNotEmpty)
-                                          ? (data[i] == completed[i])
-                                              ? TextButton(
-                                                  child: const Text(
-                                                      "Rate & Review"),
-                                                  onPressed: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      barrierDismissible: true,
-                                                      builder: (context) =>
-                                                          RatingDialog(
-                                                        initialRating:
-                                                            completed[i]
-                                                                    ['rating']
-                                                                .toDouble(),
-                                                        title: Text(
-                                                          completed[i]
-                                                              ['serviceName'],
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: const TextStyle(
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: Colors
-                                                                  .blueAccent),
+                                      : Container(),
+                                  (completed.isNotEmpty)
+                                      ? (data[i] == completed[i])
+                                          ? TextButton(
+                                              child:
+                                                  const Text("Rate & Review"),
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  barrierDismissible: true,
+                                                  builder: (context) =>
+                                                      RatingDialog(
+                                                    initialRating: completed[i]
+                                                            ['rating']
+                                                        .toDouble(),
+                                                    title: Text(
+                                                      completed[i]
+                                                          ['serviceName'],
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors
+                                                              .blueAccent),
+                                                    ),
+                                                    message: const Text(
+                                                      'Tap a star to set your rating',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 15),
+                                                    ),
+                                                    image: Container(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      height: 150,
+                                                      width: 80,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              completed[i]
+                                                                  ['imageURL']),
+                                                          fit: BoxFit.fill,
                                                         ),
-                                                        message: const Text(
-                                                          'Tap a star to set your rating',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 15),
-                                                        ),
-                                                        image: Container(
-                                                          alignment: Alignment
-                                                              .bottomCenter,
-                                                          height: 150,
-                                                          width: 80,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            image:
-                                                                DecorationImage(
-                                                              image: NetworkImage(
-                                                                  completed[i][
-                                                                      'imageURL']),
-                                                              fit: BoxFit.fill,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        submitButtonText:
-                                                            'Submit',
-                                                        commentHint:
-                                                            'Write a review(Optional)',
-                                                        onCancelled: () =>
-                                                            print('cancelled'),
-                                                        onSubmitted:
-                                                            (response) async {
-                                                          if (response.rating >=
-                                                              1) {
-                                                            Fluttertoast.showToast(
-                                                                msg:
-                                                                    "Thank You For Your Feedback",
-                                                                toastLength: Toast
-                                                                    .LENGTH_SHORT,
-                                                                gravity:
-                                                                    ToastGravity
-                                                                        .BOTTOM,
-                                                                timeInSecForIosWeb:
-                                                                    1,
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .white,
-                                                                textColor:
-                                                                    Colors
-                                                                        .black,
-                                                                fontSize: 16.0);
-                                                          }
-
-                                                          int ind = 0;
-
-                                                          for (int j = 0;
-                                                              j <
-                                                                  bookings
-                                                                      .length;
-                                                              j++) {
-                                                            if (bookings[j] ==
-                                                                data[i]) {
-                                                              ind = j;
-                                                            }
-                                                          }
-
-                                                          Map<String, dynamic>
-                                                              element =
-                                                              bookings[ind];
-
-                                                          element.update(
-                                                              "rating",
-                                                              (value) =>
-                                                                  response
-                                                                      .rating);
-                                                          element.update(
-                                                              "review",
-                                                              (value) =>
-                                                                  response
-                                                                      .comment);
-
-                                                          bookings
-                                                              .removeAt(ind);
-                                                          bookings.insert(
-                                                              ind, element);
-
-                                                          Map<String, dynamic>
-                                                              dete = {
-                                                            'bookings':
-                                                                bookings,
-                                                          };
-
-                                                          CloudFirestoreHelper
-                                                              .cloudFirestoreHelper
-                                                              .updateUsersRecords(
-                                                                  id: Global
-                                                                          .currentUser![
-                                                                      'email'],
-                                                                  data: dete);
-
-                                                          rateAndReview(
-                                                              i: i,
-                                                              response:
-                                                                  response);
-                                                        },
                                                       ),
-                                                    );
-                                                  },
-                                                )
-                                              : Container()
-                                          : Container(),
+                                                    ),
+                                                    submitButtonText: 'Submit',
+                                                    commentHint:
+                                                        'Write a review(Optional)',
+                                                    onCancelled: () =>
+                                                        print('cancelled'),
+                                                    onSubmitted:
+                                                        (response) async {
+                                                      if (response.rating >=
+                                                          1) {
+                                                        Fluttertoast.showToast(
+                                                            msg:
+                                                                "Thank You For Your Feedback",
+                                                            toastLength: Toast
+                                                                .LENGTH_SHORT,
+                                                            gravity:
+                                                                ToastGravity
+                                                                    .BOTTOM,
+                                                            timeInSecForIosWeb:
+                                                                1,
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                            textColor:
+                                                                Colors.black,
+                                                            fontSize: 16.0);
+                                                      }
+
+                                                      int ind = 0;
+
+                                                      for (int j = 0;
+                                                          j < bookings.length;
+                                                          j++) {
+                                                        if (bookings[j] ==
+                                                            data[i]) {
+                                                          ind = j;
+                                                        }
+                                                      }
+
+                                                      Map<String, dynamic>
+                                                          element =
+                                                          bookings[ind];
+
+                                                      element.update(
+                                                          "rating",
+                                                          (value) =>
+                                                              response.rating);
+                                                      element.update(
+                                                          "review",
+                                                          (value) =>
+                                                              response.comment);
+
+                                                      bookings.removeAt(ind);
+                                                      bookings.insert(
+                                                          ind, element);
+
+                                                      Map<String, dynamic>
+                                                          dete = {
+                                                        'bookings': bookings,
+                                                      };
+
+                                                      CloudFirestoreHelper
+                                                          .cloudFirestoreHelper
+                                                          .updateUsersRecords(
+                                                              id: Global
+                                                                      .currentUser![
+                                                                  'email'],
+                                                              data: dete);
+
+                                                      rateAndReview(
+                                                          i: i,
+                                                          response: response);
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          : Container()
+                                      : Container(),
                                 ],
                               ),
                               const SizedBox(height: 8),

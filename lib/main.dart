@@ -106,9 +106,9 @@ void main() async {
         GetPage(name: '/book_service', page: () => const BookService()),
         GetPage(name: '/shop_page', page: () => const ShopPage()),
         GetPage(name: '/add_card', page: () => const AddCardPage()),
+        GetPage(name: '/all_product', page: () => const AllProductPage()),
         GetPage(
             name: '/service_receipt', page: () => const ServiceReceiptPage()),
-        GetPage(name: '/all_product', page: () => const AllProductPage()),
 
         //WORKER SCREENS
         GetPage(name: '/worker_home_page', page: () => const WorkerHomePage()),

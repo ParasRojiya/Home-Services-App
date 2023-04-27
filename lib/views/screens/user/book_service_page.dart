@@ -13,6 +13,7 @@ import '../../../global/global.dart';
 import '../../../global/snack_bar.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../helper/local_notification_helper.dart';
+import '../../../widgets/worker_container.dart';
 
 class BookService extends StatefulWidget {
   const BookService({Key? key}) : super(key: key);
@@ -231,9 +232,17 @@ class _BookServiceState extends State<BookService> {
                         const Divider(
                           thickness: 0.5,
                         ),
+                        Text(
+                          "Available Workers :",
+                          style: GoogleFonts.poppins(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
                         Container(
-                          height: 5,
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          height: 255,
+                          // margin: const EdgeInsets.symmetric(horizontal: 8),
                           child: StreamBuilder(
                             stream: CloudFirestoreHelper.cloudFirestoreHelper
                                 .fetchAllWorker(),
@@ -250,7 +259,23 @@ class _BookServiceState extends State<BookService> {
                                 }
                                 print(categoryWorkers);
 
-                                return Container();
+                                return (categoryWorkers.isEmpty)
+                                    ? const Center(
+                                        child: Text(
+                                            "No Workers Available for this service"),
+                                      )
+                                    : ListView.builder(
+                                        itemCount: categoryWorkers.length,
+                                        itemBuilder: (context, i) {
+                                          return workerContainer(
+                                              name: categoryWorkers[i]['name'],
+                                              imageURL: categoryWorkers[i]
+                                                  ['imageURL'],
+                                              number: categoryWorkers[i]
+                                                  ['number'],
+                                              service: categoryWorkers[i]
+                                                  ['category']);
+                                        });
                               } else if (snapshot.hasError) {
                                 return Center(
                                   child: Text(
@@ -265,6 +290,9 @@ class _BookServiceState extends State<BookService> {
                               );
                             },
                           ),
+                        ),
+                        const Divider(
+                          thickness: 0.5,
                         ),
                         Text(
                           "Rating & Reviews :",
@@ -463,6 +491,9 @@ class _BookServiceState extends State<BookService> {
     await CloudFirestoreHelper.cloudFirestoreHelper
         .updateUsersRecords(id: Global.currentUser!['email'], data: data);
 
+    await CloudFirestoreHelper.cloudFirestoreHelper
+        .addServiceInBookingCollection(data: serviceData);
+
     serviceData.remove('rating');
     serviceData.remove('review');
     workerBookings.add(serviceData);
@@ -485,9 +516,6 @@ class _BookServiceState extends State<BookService> {
       'WorkerNumber': availableWorkers[workerIndex]['number'],
       'WorkerEmail': availableWorkers[workerIndex]['email'],
     };
-
-    await CloudFirestoreHelper.cloudFirestoreHelper
-        .addServiceInBookingCollection(data: serviceData);
 
     await LocalNotificationHelper.localNotificationHelper.sendSimpleNotification(
         title: res.currentData['name'],

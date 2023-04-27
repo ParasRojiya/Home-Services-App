@@ -14,6 +14,7 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+import '../../../controllers/cart_controller.dart';
 import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../helper/local_notification_helper.dart';
@@ -54,6 +55,8 @@ class _HomePageState extends State<HomePage> {
             title: message.notification!.title,
             msg: message.notification!.body);
   }
+
+  final CartController cartController = Get.put(CartController());
 
   @override
   void initState() {
@@ -101,6 +104,22 @@ class _HomePageState extends State<HomePage> {
             },
             icon: const Icon(CupertinoIcons.captions_bubble),
           ),
+          const SizedBox(width: 12),
+          InkWell(
+            onTap: () {
+              Get.toNamed('/cart_page');
+            },
+            child: GetBuilder(
+              builder: (CartController controller) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("${controller.length}"),
+                  const Icon(Icons.shopping_cart_outlined),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
         ],
       ),
       body: SingleChildScrollView(
@@ -346,7 +365,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         'wallet': element.data()?['wallet'],
         'rate': element.data()?['rate'],
         'comment': element.data()?['comment'],
+        'cart': element.data()?['cart'],
       };
+      Global.cart = element.data()?['cart'];
     });
   }
 
