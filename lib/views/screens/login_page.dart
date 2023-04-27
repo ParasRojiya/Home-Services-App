@@ -145,8 +145,10 @@ class _LoginPageState extends State<LoginPage> {
 
                         if (element.data()?['role'] == 'admin') {
                           await prefs.setBool('isAdmin', true);
+                          await prefs.setBool('isWorker', false);
                           await prefs.setBool('isLoggedIn', true);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? true;
+                          Global.isWorker = prefs.getBool('isWorker') ?? false;
 
                           Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
@@ -175,8 +177,10 @@ class _LoginPageState extends State<LoginPage> {
 
                         if (element.data()?['role'] == 'user') {
                           await prefs.setBool('isAdmin', false);
+                          await prefs.setBool('isWorker', false);
                           await prefs.setBool('isLoggedIn', true);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? false;
+                          Global.isWorker = prefs.getBool('isWorker') ?? false;
 
                           Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper
@@ -204,9 +208,11 @@ class _LoginPageState extends State<LoginPage> {
                         }
 
                         if (element.data()?['role'] == 'worker') {
-                          // await prefs.setBool('isAdmin', false);
-                          //  await prefs.setBool('isLoggedIn', true);
-                          //  Global.isAdmin = prefs.getBool('isAdmin') ?? false;
+                          await prefs.setBool('isAdmin', false);
+                          await prefs.setBool('isWorker', true);
+                          await prefs.setBool('isLoggedIn', true);
+                          Global.isAdmin = prefs.getBool('isAdmin') ?? false;
+                          Global.isWorker = prefs.getBool('isWorker') ?? true;
 
                           Global.user = await FireBaseAuthHelper
                               .fireBaseAuthHelper

@@ -18,7 +18,7 @@ class AllServicesPage extends StatefulWidget {
 class _AllServicesPageState extends State<AllServicesPage> {
   // List cart = Global.currentUser!['cart'];
 
-  final CartController controller = Get.find<CartController>();
+  final CartController controller = Get.put(CartController());
 
   @override
   void initState() {

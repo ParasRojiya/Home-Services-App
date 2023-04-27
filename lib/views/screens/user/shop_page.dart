@@ -2,10 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 
 class ShopPage extends StatefulWidget {
@@ -34,6 +35,7 @@ class _ShopPageState extends State<ShopPage> {
   int index = 0;
 
   String selectedCategory = 'Recommended';
+  List recentItems = Global.currentUser!['recentlyViewed'];
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +45,6 @@ class _ShopPageState extends State<ShopPage> {
           'Shopping',
           style: GoogleFonts.habibi(fontSize: 18, color: Colors.black),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.shopping_bag_outlined),
-          ),
-        ],
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -103,12 +99,91 @@ class _ShopPageState extends State<ShopPage> {
             }).toList(),
           ),
           const SizedBox(height: 10),
-          Container(
-            height: 180,
-            width: Get.width,
-            color: Colors.blue,
+          Text(
+            "Recently Viewed Products",
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-          const SizedBox(height: 8),
+          Container(
+            height: 280,
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: recentItems
+                    .map((e) => Container(
+                          height: 300,
+                          width: 230,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          margin: const EdgeInsets.all(4),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5.0, vertical: 2),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 8),
+                                Center(
+                                  child: Container(
+                                    height: 160,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: NetworkImage(e['imageURL']),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 25,
+                                          width: 100,
+                                          child: Text(
+                                            e['name'],
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.habibi(
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                        Text(
+                                          '₹ ${e['price']}',
+                                          style:
+                                              GoogleFonts.ubuntu(fontSize: 15),
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
           Row(
             children: [
               Text(
@@ -184,7 +259,15 @@ class _ShopPageState extends State<ShopPage> {
                     ),
                     itemBuilder: (context, i) {
                       return GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          List items = Global.currentUser!['recentlyViewed'];
+                          items.add(documents[index]['products'][i]);
+                          Map<String, dynamic> data = {'recentlyViewed': items};
+
+                          await CloudFirestoreHelper.cloudFirestoreHelper
+                              .updateUsersRecords(
+                                  id: Global.currentUser!['email'], data: data);
+
                           _launchUrl(
                               url: documents[index]['products'][i]['link']);
                         },
@@ -239,21 +322,6 @@ class _ShopPageState extends State<ShopPage> {
                                       ],
                                     ),
                                     const Spacer(),
-                                    Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Colors.indigo.shade100,
-                                      ),
-                                      child: IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                          Icons.shopping_bag,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                    ),
                                   ],
                                 )
                               ],

@@ -366,6 +366,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         'rate': element.data()?['rate'],
         'comment': element.data()?['comment'],
         'cart': element.data()?['cart'],
+        'recentlyViewed': element.data()?['recentlyViewed'],
       };
       Global.cart = element.data()?['cart'];
     });

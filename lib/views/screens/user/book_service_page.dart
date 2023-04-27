@@ -13,7 +13,6 @@ import '../../../global/global.dart';
 import '../../../global/snack_bar.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../helper/local_notification_helper.dart';
-import '../../../widgets/worker_container.dart';
 
 class BookService extends StatefulWidget {
   const BookService({Key? key}) : super(key: key);
@@ -229,20 +228,8 @@ class _BookServiceState extends State<BookService> {
                           timeInterval: const Duration(minutes: 30),
                         ),
                         const SizedBox(height: 8),
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        Text(
-                          "Available Workers :",
-                          style: GoogleFonts.poppins(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
                         Container(
-                          height: 255,
-                          // margin: const EdgeInsets.symmetric(horizontal: 8),
+                          height: 5,
                           child: StreamBuilder(
                             stream: CloudFirestoreHelper.cloudFirestoreHelper
                                 .fetchAllWorker(),
@@ -257,25 +244,8 @@ class _BookServiceState extends State<BookService> {
                                     categoryWorkers.add(worker);
                                   }
                                 }
-                                print(categoryWorkers);
 
-                                return (categoryWorkers.isEmpty)
-                                    ? const Center(
-                                        child: Text(
-                                            "No Workers Available for this service"),
-                                      )
-                                    : ListView.builder(
-                                        itemCount: categoryWorkers.length,
-                                        itemBuilder: (context, i) {
-                                          return workerContainer(
-                                              name: categoryWorkers[i]['name'],
-                                              imageURL: categoryWorkers[i]
-                                                  ['imageURL'],
-                                              number: categoryWorkers[i]
-                                                  ['number'],
-                                              service: categoryWorkers[i]
-                                                  ['category']);
-                                        });
+                                return Container();
                               } else if (snapshot.hasError) {
                                 return Center(
                                   child: Text(

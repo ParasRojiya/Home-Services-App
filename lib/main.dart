@@ -58,6 +58,7 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   Global.isAdmin = prefs.getBool('isAdmin') ?? false;
+  Global.isWorker = prefs.getBool('isWorker') ?? false;
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -69,7 +70,9 @@ void main() async {
       initialRoute: (isLoggedIn)
           ? (Global.isAdmin)
               ? "/admin_home_page"
-              : "/user_home_page"
+              : (Global.isWorker)
+                  ? "/worker_home_page"
+                  : "/user_home_page"
           : "/login_page",
       getPages: [
         GetPage(name: '/login_page', page: () => const LoginPage()),
@@ -113,7 +116,8 @@ void main() async {
             name: '/service_receipt', page: () => const ServiceReceiptPage()),
 
         //WORKER SCREENS
-        GetPage(name: '/worker_home_page', page: () => const WorkerHomePage()),
+        GetPage(
+            name: '/worker_home_page', page: () => const WorkerHomeScreen()),
       ],
     ),
   );

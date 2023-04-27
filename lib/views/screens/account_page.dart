@@ -365,6 +365,7 @@ class _AccountPageState extends State<AccountPage> {
                                       await SharedPreferences.getInstance();
                                   await prefs.setBool('isLoggedIn', false);
                                   prefs.remove('isAdmin');
+                                  prefs.remove('isWorker');
 
                                   await FireBaseAuthHelper.fireBaseAuthHelper
                                       .signOut();
