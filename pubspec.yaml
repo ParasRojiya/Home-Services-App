@@ -98,7 +98,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/logo/
-    - assets/images/
+    #- assets/images/
     - assets/images/barcode.png
     - assets/images/googlepay.jpg
     - assets/images/amazonpay.jpg
@@ -109,6 +109,10 @@ flutter:
     - assets/images/b-3.jpeg
     - assets/images/b-4.jpeg
     - assets/images/b-5.jpeg
+    - assets/images/icon_booking.png
+    - assets/images/icon_category.png
+    - assets/images/icon_user.png
+    - assets/images/icon_worker.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

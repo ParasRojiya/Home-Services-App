@@ -140,16 +140,18 @@ class _AllServicesPageState extends State<AllServicesPage> {
                               ],
                             ),
                             const Spacer(),
-                            IconButton(
-                              icon: Icon((Global.cart.isEmpty)
-                                  ? Icons.shopping_cart_outlined
-                                  : cartIcon(deta: data[i])),
-                              onPressed: () async {
-                                setState(() {
-                                  addToCart(i: i, data: data);
-                                });
-                              },
-                            ),
+                            (Global.isAdmin)
+                                ? Container()
+                                : IconButton(
+                                    icon: Icon((Global.cart.isEmpty)
+                                        ? Icons.shopping_cart_outlined
+                                        : cartIcon(deta: data[i])),
+                                    onPressed: () async {
+                                      setState(() {
+                                        addToCart(i: i, data: data);
+                                      });
+                                    },
+                                  ),
                           ],
                         ),
                       ),

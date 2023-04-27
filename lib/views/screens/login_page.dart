@@ -141,12 +141,17 @@ class _LoginPageState extends State<LoginPage> {
                           'DOB': element.data()?['DOB'],
                           'token': element.data()?['token'],
                           'wallet': element.data()?['wallet'],
+                          'rate': element.data()?['rate'],
+                          'comment': element.data()?['comment'],
+                          'cart': element.data()?['cart'],
+                          'recentlyViewed': element.data()?['recentlyViewed'],
                         };
 
                         if (element.data()?['role'] == 'admin') {
                           await prefs.setBool('isAdmin', true);
                           await prefs.setBool('isWorker', false);
                           await prefs.setBool('isLoggedIn', true);
+                          await prefs.setString('currentUser', email!);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? true;
                           Global.isWorker = prefs.getBool('isWorker') ?? false;
 
@@ -179,6 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                           await prefs.setBool('isAdmin', false);
                           await prefs.setBool('isWorker', false);
                           await prefs.setBool('isLoggedIn', true);
+                          await prefs.setString('currentUser', email!);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? false;
                           Global.isWorker = prefs.getBool('isWorker') ?? false;
 
@@ -211,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                           await prefs.setBool('isAdmin', false);
                           await prefs.setBool('isWorker', true);
                           await prefs.setBool('isLoggedIn', true);
+                          await prefs.setString('currentUser', email!);
                           Global.isAdmin = prefs.getBool('isAdmin') ?? false;
                           Global.isWorker = prefs.getBool('isWorker') ?? true;
 

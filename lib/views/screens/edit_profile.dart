@@ -435,8 +435,7 @@ class _EditProfileState extends State<EditProfile> {
       contactNo = null;
       address = null;
 
-      // Get.offNamedUntil('/user_home_page', (route) => false);
-      Get.back();
+      Get.offNamedUntil('/user_home_page', (route) => false);
     }
   }
 }

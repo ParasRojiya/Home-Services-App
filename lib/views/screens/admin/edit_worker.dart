@@ -166,6 +166,7 @@ class _EditWorkerState extends State<EditWorker> {
                 const SizedBox(height: 12),
                 TextFormField(
                     controller: workerEmailController,
+                    readOnly: (res != null) ? true : false,
                     validator: (val) =>
                         (val!.isEmpty) ? "Please enter worker Email" : null,
                     onSaved: (val) {
@@ -205,6 +206,7 @@ class _EditWorkerState extends State<EditWorker> {
                         onChanged: (val) {
                           setState(() {
                             gender = val;
+                            genderUpdated = true;
                           });
                         }),
                     Text(
@@ -218,6 +220,7 @@ class _EditWorkerState extends State<EditWorker> {
                         onChanged: (val) {
                           setState(() {
                             gender = val;
+                            genderUpdated = true;
                           });
                         }),
                     Text(
@@ -248,6 +251,7 @@ class _EditWorkerState extends State<EditWorker> {
                         onChanged: (val) {
                           setState(() {
                             category = val as String;
+                            categoryUpdated = true;
                           });
                         })
                   ],

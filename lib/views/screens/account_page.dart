@@ -46,6 +46,7 @@ class _AccountPageState extends State<AccountPage> {
         'wallet': element.data()?['wallet'],
         'rate': element.data()?['rate'],
         'comment': element.data()?['comment'],
+        'recentlyViewed': element.data()?['recentlyViewed'],
       };
     });
   }
@@ -148,27 +149,6 @@ class _AccountPageState extends State<AccountPage> {
                 Get.toNamed('/faqs');
               },
               icon: CupertinoIcons.flag,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              padding: const EdgeInsets.all(6),
-              child: Row(
-                children: [
-                  const Icon(CupertinoIcons.eye,
-                      color: Colors.black87, size: 22),
-                  const SizedBox(width: 15),
-                  Text(
-                    'Dark Theme',
-                    style: GoogleFonts.poppins(),
-                  ),
-                  const Spacer(),
-                  Switch(value: isDark, onChanged: (_) {})
-                ],
-              ),
             ),
             accountOptionContainer(
               title: "Privacy And Policy",

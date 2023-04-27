@@ -10,6 +10,7 @@ class Global {
   static User? user;
   static Map<String, dynamic>? currentUser;
   static List<dynamic> cart = [];
+  static String title = '';
   static List<Map<String, dynamic>> payment = [
     {
       'image': 'assets/images/googlepay.jpg',

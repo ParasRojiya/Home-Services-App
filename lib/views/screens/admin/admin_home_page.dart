@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:home_services_app/controllers/graph_controller.dart';
 import 'package:home_services_app/helper/firebase_auth_helper.dart';
 import 'package:home_services_app/views/screens/account_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fl_chart/fl_chart.dart';
+
 import '../../../global/global.dart';
 import '../../../helper/cloud_firestore_helper.dart';
 import '../../../widgets/category_container.dart';
@@ -258,173 +258,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      // SingleChildScrollView(
-      //   physics: const BouncingScrollPhysics(),
-      //   child: Padding(
-      //     padding: const EdgeInsets.all(12.0),
-      //     child: Column(
-      //       children: [
-      //         Container(
-      //           color: Colors.teal,
-      //           height: 180,
-      //           alignment: Alignment.center,
-      //           child: const Text("Special Offers in Carousel Slider"),
-      //         ),
-      //         Column(
-      //           children: [
-      //             Row(
-      //               children: [
-      //                 Text(
-      //                   "Categories",
-      //                   style: GoogleFonts.poppins(
-      //                     fontSize: 20,
-      //                     fontWeight: FontWeight.w600,
-      //                   ),
-      //                 ),
-      //                 const Spacer(),
-      //                 TextButton(
-      //                   onPressed: () {
-      //                     Get.toNamed("/all_categories_page");
-      //                   },
-      //                   style: TextButton.styleFrom(
-      //                       textStyle: GoogleFonts.poppins()),
-      //                   child: const Text("View all"),
-      //                 )
-      //               ],
-      //             ),
-      //             Container(
-      //               height: 420,
-      //               child: StreamBuilder<QuerySnapshot>(
-      //                 stream: CloudFirestoreHelper.cloudFirestoreHelper
-      //                     .fetchAllCategories(),
-      //                 builder: (context, AsyncSnapshot snapshot) {
-      //                   if (snapshot.hasData) {
-      //                     QuerySnapshot? document = snapshot.data;
-      //                     List<QueryDocumentSnapshot> documents =
-      //                         document!.docs;
-      //
-      //                     return GridView.builder(
-      //                       physics: const BouncingScrollPhysics(),
-      //                       gridDelegate:
-      //                           const SliverGridDelegateWithFixedCrossAxisCount(
-      //                         crossAxisCount: 2,
-      //                         mainAxisSpacing: 14,
-      //                         crossAxisSpacing: 14,
-      //                         mainAxisExtent: 200,
-      //                       ),
-      //                       itemCount:
-      //                           (documents.length >= 4) ? 4 : documents.length,
-      //                       itemBuilder: (context, i) {
-      //                         return InkWell(
-      //                           onTap: () {
-      //                             Get.toNamed('/all_services_page',
-      //                                 arguments: documents[i]);
-      //                             print(documents[i]['services']);
-      //                           },
-      //                           child: categoryContainer(
-      //                               categoryName: documents[i].id,
-      //                               color: Colors.blue.withOpacity(0.1),
-      //                               imageURL: documents[i]['imageURL']),
-      //                         );
-      //                       },
-      //                     );
-      //                   } else if (snapshot.hasError) {
-      //                     return Center(
-      //                       child: Text(
-      //                         "Error: ${snapshot.error}",
-      //                         style: GoogleFonts.poppins(),
-      //                       ),
-      //                     );
-      //                   }
-      //
-      //                   return const Center(
-      //                     child: CircularProgressIndicator(),
-      //                   );
-      //                 },
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //         Column(
-      //           children: [
-      //             Row(
-      //               children: [
-      //                 Text(
-      //                   "Workers",
-      //                   style: GoogleFonts.poppins(
-      //                     fontSize: 20,
-      //                     fontWeight: FontWeight.w600,
-      //                   ),
-      //                 ),
-      //                 const Spacer(),
-      //                 TextButton(
-      //                   onPressed: () {
-      //                     Get.toNamed("/all_workers");
-      //                   },
-      //                   style: TextButton.styleFrom(
-      //                       textStyle: GoogleFonts.poppins()),
-      //                   child: const Text("View all"),
-      //                 )
-      //               ],
-      //             ),
-      //             Container(
-      //               height: 420,
-      //               child: StreamBuilder<QuerySnapshot>(
-      //                 stream: CloudFirestoreHelper.cloudFirestoreHelper
-      //                     .fetchAllWorker(),
-      //                 builder: (context, AsyncSnapshot snapshot) {
-      //                   if (snapshot.hasData) {
-      //                     QuerySnapshot? document = snapshot.data;
-      //                     List<QueryDocumentSnapshot> documents =
-      //                         document!.docs;
-      //
-      //                     return GridView.builder(
-      //                       physics: const BouncingScrollPhysics(),
-      //                       gridDelegate:
-      //                           const SliverGridDelegateWithFixedCrossAxisCount(
-      //                         crossAxisCount: 2,
-      //                         mainAxisSpacing: 14,
-      //                         crossAxisSpacing: 14,
-      //                         mainAxisExtent: 225,
-      //                       ),
-      //                       itemCount:
-      //                           (documents.length >= 4) ? 4 : documents.length,
-      //                       itemBuilder: (context, i) {
-      //                         return InkWell(
-      //                           onTap: () {
-      //                             Get.toNamed('/edit_worker',
-      //                                 arguments: documents[i]);
-      //                           },
-      //                           child: workerContainer(
-      //                               hourlyCharge: documents[i]['hourlyCharge'],
-      //                               name: documents[i]['name'],
-      //                               number: documents[i]['number'],
-      //                               imageURL: documents[i]['imageURL'],
-      //                               service: documents[i]['category']),
-      //                         );
-      //                       },
-      //                     );
-      //                   } else if (snapshot.hasError) {
-      //                     return Center(
-      //                       child: Text(
-      //                         "Error: ${snapshot.error}",
-      //                         style: GoogleFonts.poppins(),
-      //                       ),
-      //                     );
-      //                   }
-      //
-      //                   return const Center(
-      //                     child: CircularProgressIndicator(),
-      //                   );
-      //                 },
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
@@ -444,7 +277,7 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
-  final GraphController graphController = Get.put(GraphController());
+  //final GraphController graphController = Get.put(GraphController());
 
   @override
   Widget build(BuildContext context) {
@@ -471,7 +304,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Get.toNamed('/all_categories_page');
                     },
                     child: Container(
-                      height: 130,
+                      height: 140,
                       width: Get.width * 0.47,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
@@ -518,7 +351,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                     ],
                                   ),
                                   Text(
-                                    'Category',
+                                    'Categories',
                                     style: GoogleFonts.habibi(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w500,
@@ -549,7 +382,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Get.toNamed('/all_workers');
                     },
                     child: Container(
-                      height: 130,
+                      height: 140,
                       width: Get.width * 0.47,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
@@ -600,7 +433,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                     ],
                                   ),
                                   Text(
-                                    'Worker',
+                                    'Workers',
                                     style: GoogleFonts.habibi(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w500,
@@ -637,7 +470,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Get.toNamed('/users_list');
                     },
                     child: Container(
-                      height: 130,
+                      height: 140,
                       width: Get.width * 0.47,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
@@ -685,7 +518,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                     ],
                                   ),
                                   Text(
-                                    'User',
+                                    'Users',
                                     style: GoogleFonts.habibi(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w500,
@@ -716,7 +549,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Get.toNamed('/all_bookings');
                     },
                     child: Container(
-                      height: 130,
+                      height: 140,
                       width: Get.width * 0.47,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(

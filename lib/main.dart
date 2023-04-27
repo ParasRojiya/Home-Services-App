@@ -32,6 +32,7 @@ import 'package:home_services_app/views/screens/user/history_page.dart';
 import 'package:home_services_app/views/screens/user/service_receipt_page.dart';
 import 'package:home_services_app/views/screens/user/shop_page.dart';
 import 'package:home_services_app/views/screens/user/worker_details_page.dart';
+import 'package:home_services_app/views/screens/worker/bookings_page.dart';
 import 'package:home_services_app/views/screens/worker/worker_home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -118,6 +119,7 @@ void main() async {
         //WORKER SCREENS
         GetPage(
             name: '/worker_home_page', page: () => const WorkerHomeScreen()),
+        GetPage(name: '/bookings_page', page: () => const Bookings()),
       ],
     ),
   );

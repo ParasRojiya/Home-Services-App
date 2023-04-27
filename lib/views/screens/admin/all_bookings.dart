@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 
 class AllBookings extends StatefulWidget {
   const AllBookings({Key? key}) : super(key: key);
@@ -52,7 +52,7 @@ class _AllBookingsState extends State<AllBookings> {
                       ExpansionPanel(
                         headerBuilder: (context, isExpanded) {
                           return Container(
-                            height: 120,
+                            height: 130,
                             width: Get.width,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
