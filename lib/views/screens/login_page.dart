@@ -53,9 +53,10 @@ class _LoginPageState extends State<LoginPage> {
           key: formKey,
           child: ListView(
             children: [
+              const SizedBox(height: 98),
               Container(
                 height: 260,
-                width: 190,
+                width: 200,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/logo/1.png"),
@@ -63,7 +64,16 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 6),
+              // Text(
+              //   "Login to your account",
+              //   style: GoogleFonts.poppins(
+              //     fontSize: 32,
+              //     fontWeight: FontWeight.w600,
+              //   ),
+              //   // textAlign: TextAlign.center,
+              // ),
+              const SizedBox(height: 18),
               TextFormField(
                 controller: emailController,
                 validator: (val) {
@@ -289,69 +299,69 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
               const SizedBox(height: 5),
-              const Divider(thickness: 2),
+
               const SizedBox(height: 15),
-              GestureDetector(
-                onTap: () async {
-                  ConnectivityResult connectivityResult =
-                      await (Connectivity().checkConnectivity());
-
-                  if (connectivityResult == ConnectivityResult.mobile ||
-                      connectivityResult == ConnectivityResult.wifi) {
-                    Global.user = await FireBaseAuthHelper.fireBaseAuthHelper
-                        .signInWithGoogle();
-
-                    if (Global.user != null) {
-                      Global.currentUser = {
-                        "name": Global.user!.displayName,
-                        "email": Global.user!.email,
-                        "role": "user",
-                        "password": "password"
-                      };
-
-                      Map<String, dynamic> data = {
-                        "name": Global.user!.displayName,
-                        "email": Global.user!.email,
-                        "role": "user",
-                        "password": "password",
-                        "isActive": true,
-                      };
-                      await CloudFirestoreHelper.cloudFirestoreHelper
-                          .insertDataInUsersCollection(data: data);
-                    }
-                    await snackBar(
-                        user: Global.user, context: context, name: "Login");
-                  } else {
-                    connectionSnackBar(context: context);
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Global.color, width: 1.2),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 7),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "https://play-lh.googleusercontent.com/6UgEjh8Xuts4nwdWzTnWH8QtLuHqRMUB7dp24JYVE2xcYzq4HA8hFfcAbU-R-PC_9uA1"),
-                        radius: 25,
-                      ),
-                      const SizedBox(width: 7),
-                      Text(
-                        "Continue with Google",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade700,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () async {
+              //     ConnectivityResult connectivityResult =
+              //         await (Connectivity().checkConnectivity());
+              //
+              //     if (connectivityResult == ConnectivityResult.mobile ||
+              //         connectivityResult == ConnectivityResult.wifi) {
+              //       Global.user = await FireBaseAuthHelper.fireBaseAuthHelper
+              //           .signInWithGoogle();
+              //
+              //       if (Global.user != null) {
+              //         Global.currentUser = {
+              //           "name": Global.user!.displayName,
+              //           "email": Global.user!.email,
+              //           "role": "user",
+              //           "password": "password"
+              //         };
+              //
+              //         Map<String, dynamic> data = {
+              //           "name": Global.user!.displayName,
+              //           "email": Global.user!.email,
+              //           "role": "user",
+              //           "password": "password",
+              //           "isActive": true,
+              //         };
+              //         await CloudFirestoreHelper.cloudFirestoreHelper
+              //             .insertDataInUsersCollection(data: data);
+              //       }
+              //       await snackBar(
+              //           user: Global.user, context: context, name: "Login");
+              //     } else {
+              //       connectionSnackBar(context: context);
+              //     }
+              //   },
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       border: Border.all(color: Global.color, width: 1.2),
+              //       borderRadius: BorderRadius.circular(100),
+              //     ),
+              //     padding: const EdgeInsets.symmetric(vertical: 7),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         const CircleAvatar(
+              //           backgroundImage: NetworkImage(
+              //               "https://play-lh.googleusercontent.com/6UgEjh8Xuts4nwdWzTnWH8QtLuHqRMUB7dp24JYVE2xcYzq4HA8hFfcAbU-R-PC_9uA1"),
+              //           radius: 25,
+              //         ),
+              //         const SizedBox(width: 7),
+              //         Text(
+              //           "Continue with Google",
+              //           style: GoogleFonts.poppins(
+              //             fontWeight: FontWeight.w600,
+              //             color: Colors.grey.shade700,
+              //             fontSize: 16,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               const SizedBox(height: 15),
             ],
           ),
