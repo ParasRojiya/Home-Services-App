@@ -89,12 +89,20 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 obscureText: isNotVisible,
                 decoration: InputDecoration(
+                  fillColor: Global.color.withOpacity(0.03),
+                  filled: true,
+                  contentPadding: EdgeInsets.all(5),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  hintStyle: GoogleFonts.habibi(
+                    fontWeight: FontWeight.w300,
+                  ),
+                  hintText: "Enter your password here",
                   prefixIcon: const Icon(Icons.password),
                   label: Text("Password",
                       style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       )),
                   suffixIcon: GestureDetector(
                     onTap: () {
