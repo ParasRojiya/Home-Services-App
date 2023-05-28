@@ -9,12 +9,12 @@ class FCMHelper {
   static final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   String API = "https://fcm.googleapis.com/fcm/send";
   String SERVER_KEY =
-      "AAAAfGGgBAA:APA91bFSBsw9_1HJZebDd-3976kdmOYbZ6fN_JB7kSmiMtO-8rO5QI9a8jTB2NxC2lPAs0DSISBkbiYvrarTmEXT6NvGONcaH58VSbmtxXDWHYjAvxJ3_55nhPIgAZgA7C9mVqW-8FCy";
+      "YOUR_SERVER_KEY";
 
   Future<String?> getToken() async {
     String? token = await firebaseMessaging.getToken(
       vapidKey:
-          "BGQ6RAED9svRujR-FzDz_Ay9Az7TJrckkKtCMUkD0f3TCEDC3TlSf49nGdN68zcxqGndH1Fwrfcqo9hiZsE34GQ",
+          "KEY",
     );
     print(token);
 
