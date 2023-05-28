@@ -1,7 +1,3 @@
 # Home Services App
 
-# 1 2 3
-## 4 5 6 
-### 7 8 9
-# 10 11 12
-I am priyam baldha
+<img src="https://github.com/ParasRojiya/Home-Services-App/blob/master/assets/output/HomeServices.jpg" style="height:450px"/>

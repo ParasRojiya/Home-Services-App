@@ -145,7 +145,7 @@ class _HistoryPageState extends State<HistoryPage>
 
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              itemCount: data.length,
+              itemCount: (initailTabIndex == 2) ? 2 : data.length,
               itemBuilder: (context, i) {
                 return Card(
                   child: ExpansionPanelList(

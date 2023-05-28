@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:home_services_app/helper/cloud_firestore_helper.dart';
 
 class ChatsPage extends StatefulWidget {
   const ChatsPage({Key? key}) : super(key: key);
@@ -57,7 +57,7 @@ class _ChatsPageState extends State<ChatsPage> {
                           Get.toNamed('/chat_page', arguments: documents[i].id);
                         },
                         child: SizedBox(
-                          height: 100,
+                          height: 120,
                           width: Get.width,
                           child: Card(
                             margin: const EdgeInsets.symmetric(
